@@ -1,5 +1,5 @@
 import React from "react"
-import { StatusBar, StyleSheet, ScrollView, Text } from "react-native"
+import { StatusBar, StyleSheet, View, Text } from "react-native"
 import { yummy as screenTheme } from "../config/Themes"
 import {
   withTheme,
@@ -29,70 +29,74 @@ class MenuItem extends React.Component {
 					this.props.navigation.navigate("MenuItemViewScreen")
 				}}
 			>
-				<Image style={styles.Image_ngw} source={Images.Ramen} resizeMode="cover" />
-				<Container style={styles.Container_ntc} elevation={0} useThemeGutterPadding={true}>
-					<Text
-						style={[
-							styles.Text_ng0,
-							theme.typography.headline4,
-							{
-								color: theme.colors.strong
-							}
-						]}
-					>
-						{this.props.title}
-					</Text>
-					<Text
-						style={[
-							styles.Text_njp,
-							theme.typography.subtitle2,
-							{
-								color: theme.colors.medium
-							}
-						]}
-					>
-						{this.props.description}
-					</Text>
-					<Text
-						style={[
-							styles.Text_nus,
-							theme.typography.caption,
-							{
-								color: theme.colors.light
-							}
-						]}
-					>
-						{this.props.calories} Cal.
-					</Text>
-					<Text
-						style={[
-							styles.Text_nm6,
-							theme.typography.headline5,
-							{
-								color: theme.colors.primary
-							}
-						]}
-					>
-						{this.props.price}
-					</Text>
-				</Container>
+				<View style={styles.ViewStyle}>
+					<Image style={styles.Image_ngw} source={Images.Ramen} />
+					<Container style={styles.Container_ntc} elevation={0} useThemeGutterPadding={true}>
+						<Text
+							style={[
+								styles.Text_ng0,
+								theme.typography.headline4,
+								{
+									color: theme.colors.strong
+								}
+							]}
+						>
+							{this.props.title}
+						</Text>
+						<Text
+							style={[
+								styles.Text_njp,
+								theme.typography.subtitle2,
+								{
+									color: theme.colors.medium
+								}
+							]}
+						>
+							{this.props.description}
+						</Text>
+						<Text
+							style={[
+								styles.Text_nus,
+								theme.typography.caption,
+								{
+									color: theme.colors.light
+								}
+							]}
+						>
+							{this.props.calories} Cal.
+						</Text>
+						<Text
+							style={[
+								styles.Text_nm6,
+								theme.typography.headline5,
+								{
+									color: theme.colors.primary
+								}
+							]}
+						>
+							{this.props.price}
+						</Text>
+					</Container>
+				</View>
 			</Touchable>
     )
   }
 }
 
 const styles = StyleSheet.create({
+	ViewStyle: {
+		overflow: "hidden",
+		borderRadius: 10
+	},
   Container_ntc: {
-    paddingVertical: 16
+		paddingVertical: 16,
   },
   Image_ngw: {
     width: "100%",
     height: "30%",
     minHeight: 0,
     paddingHorizontal: 20,
-    paddingTop: 0,
-    paddingBottom: 20,
-    margin: 0
+		paddingBottom: 20,
   },
   Text_ng0: {
     textAlign: "auto",
@@ -113,8 +117,19 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   Touchable_n6x: {
-    width: 300,
-    marginHorizontal: 20,
+		width: 300,
+		maxHeight: 350,
+		marginHorizontal: 20,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 4,
+		},
+		shadowOpacity: 0.1,
+		shadowRadius: 1.00,
+		backgroundColor: "white",
+		marginBottom: 100,
+		borderRadius: 10
   },
 })
 

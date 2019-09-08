@@ -48,16 +48,18 @@ class MenuScreen extends React.Component {
           showsVerticalScrollIndicator={true}
           showsHorizontalScrollIndicator={true}
         >
-          <CardContainer
-            style={styles.CardContainer_ntj}
-            icon="MaterialIcons/cloud"
-            title="Beautiful West Coast Villa"
-            elevation={2}
-            numColumns={3}
-            aspectRatio={1.5}
-            leftDescription="San Diego"
-            rightDescription="$100"
-          />
+          <Touchable>
+            <CardContainer
+              style={styles.CardContainer_ntj}
+              icon="MaterialIcons/cloud"
+              title="Beautiful West Coast Villa"
+              elevation={2}
+              numColumns={3}
+              aspectRatio={1.5}
+              leftDescription="San Diego"
+              rightDescription="$100"
+            />
+          </Touchable>
           {[1,1,1,1,1,1,1,1,1,1,1,1,1].map(num => <MenuItem 
             description={`Ground pork, kung pao chilies, and napa cabbage. All ramen are served with tokyo wavy noodles from sun noodle.`}
             title={`Spicy Miso Ramen`}
