@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "ios": {},
+    "name": "My App",
+    "slug": "my-app",
+    "splash": {
+      "image": "assets/images/splash.png"
+    },
+    "android": {
+      "permissions": []
+    },
+    "privacy": "unlisted",
+    "sdkVersion": "34.0.0",
+    "description": "My app powered by Draftbit",
+    "notification": {},
+    "version": "1.0.0",
+    "icon": "assets/images/icon.png"
+  }
+}
