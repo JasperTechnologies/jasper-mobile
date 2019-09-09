@@ -1,7 +1,8 @@
 import React from "react"
 import { StatusBar, StyleSheet, View, ScrollView, Text, FlatList } from "react-native"
 import { updateCart } from '../reducers/reducer';
-import { yummy as screenTheme } from "../config/Themes"
+import { yummy as screenTheme } from '../config/Themes';
+import { centsToDollar } from '../utilities/money';
 import { connect } from 'react-redux';
 import {
   withTheme,
@@ -110,18 +111,13 @@ class MenuItemViewScreen extends React.Component {
             >
               <FlatList
                 style={styles.FlatList_nqo}
-                data={[
-                  { color: "medium", title: "Beef ($2.69)", fieldName: "switchValue" },
-                  { color: "medium", title: "Beef ($2.69)", fieldName: "switchValue" },
-                  { color: "medium", title: "Beef ($2.69)", fieldName: "switchValue" },
-                  { color: "medium", title: "Beef ($2.69)", fieldName: "switchValue" },
-                  { color: "medium", title: "Beef ($2.69)", fieldName: "switchValue" },
-                  { color: "medium", title: "Beef ($2.69)", fieldName: "switchValue" },
-                  { color: "medium", title: "Beef ($2.69)", fieldName: "switchValue" },
-                  { color: "medium", title: "Beef ($2.69)", fieldName: "switchValue" },
-                  { color: "medium", title: "Beef ($2.69)", fieldName: "switchValue" },
-                  { color: "medium", title: "Beef ($2.69)", fieldName: "switchValue" }
-                ]}
+                data={currentMenuItem.ingredients ? currentMenuItem.ingredients.map(
+                  (ingredient) => ({
+                    color: "medium",
+                    title: `${ingredient.name} ${ingredient.price ? `($${centsToDollar(ingredient.price)})` : ''}`,
+                    fieldName: "switchValue"
+                  })
+                ) : []}
                 renderItem={({ item }) => (
                   <RowBodySwitch {...item} style={{ marginBottom: theme.spacing.small }} />
                 )}
