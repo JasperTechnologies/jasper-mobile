@@ -20,13 +20,27 @@ class MenuItemViewScreen extends React.Component {
     StatusBar.setBarStyle("light-content")
 
     this.state = {
-      theme: Object.assign(props.theme, screenTheme)
+      theme: Object.assign(props.theme, screenTheme),
+      quantity: 0
     }
+  }
+
+  updateQuantity = (newQuantity) => {
+    this.setState({ quantity: newQuantity})
+  }
+
+  handleAddItemToCart = () => {
+    const quantity = this.state.quantity
+    const { cart, currentMenuItemIndex, menuItems} = this.props
+    const currentMenuItem = menuItems[currentMenuItemIndex]
+    const newCartItem = { quantity, ...currentMenuItem}
+    const newCart = cart.concat(newCartItem)
+    this.props.updateCart(newCart)
   }
 
   render() {
     const { theme } = this.state
-    const { cart, currentMenuItemIndex, menuItems} = this.props
+    const { currentMenuItemIndex, menuItems} = this.props
     const currentMenuItem = menuItems[currentMenuItemIndex]
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
@@ -122,12 +136,13 @@ class MenuItemViewScreen extends React.Component {
           backgroundColor={theme.colors.divider}
           useThemeGutterPadding={true}
         >
-          <Stepper style={styles.Stepper_nrj} />
+          <Stepper onChange={this.updateQuantity} value={this.state.quantity} style={styles.Stepper_nrj} />
           <Button
             style={styles.Button_n5x}
             type="solid"
             color={theme.colors.primary}
             onPress={() => {
+              this.handleAddItemToCart()
               this.props.navigation.navigate("MenuScreen")
             }}
           >
@@ -136,6 +151,7 @@ class MenuItemViewScreen extends React.Component {
           <Touchable
             style={styles.Touchable_n3w}
             onPress={() => {
+              this.updateQuantity(0)
               this.props.navigation.navigate("MenuScreen")
             }}
           >

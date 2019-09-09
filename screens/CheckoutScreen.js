@@ -76,7 +76,7 @@ class CheckoutScreen extends React.Component {
               }
             ]}
           >
-            ${this.props.cart.reduce((total, current) => total + current.price)}
+            ${this.props.cart.reduce((initial, current) => initial + current.price, 0)}
           </Text>
         </Container>
         <Container style={styles.Container_n5a} elevation={0} useThemeGutterPadding={true}>
@@ -84,6 +84,7 @@ class CheckoutScreen extends React.Component {
             style={styles.Button_n7s}
             type="solid"
             onPress={() => {
+              this.props.updateCart([])
               this.props.navigation.navigate("ThankYouScreen")
             }}
           >
@@ -158,13 +159,13 @@ const mapStateToProps = state => {
   let cart = state.cart.map((cartItem, i) => ({ 
     key: i,                 
     icon: "MaterialIcons/favorite",
-    image: "https://apps-draftbit-com.s3.amazonaws.com/xxQUEDSJ/assets/12feda3c-cf78-41ac-8d9d-3cd2a64da115",
-    title: "Beautiful West Coast Villa x2",
-    subtitle: "$9.99",
-    ...cartItem
+    image: cartItem.imageURL,
+    subtitle: `${cartItem.price * cartItem.quantity}`,
+    ...cartItem,
+    title: cartItem.title + ` x${cartItem.quantity}`
   }));
   return {
-    cart: state.cart
+    cart
   };
 };
 

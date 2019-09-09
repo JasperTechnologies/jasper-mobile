@@ -30,7 +30,7 @@ class MenuScreen extends React.Component {
   render() {
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
-        <MenuHeader/>
+        <MenuHeader navigateToCheckout={() => this.props.navigation.navigate("CheckoutScreen")}/>
         <ScrollView
           contentContainerStyle={styles.ScrollView_na3}
           bounces={true}

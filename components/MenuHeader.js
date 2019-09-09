@@ -40,7 +40,7 @@ class MenuHeader extends React.Component {
 				<Touchable
 					style={styles.Touchable_nnl}
 					onPress={() => {
-						this.props.navigation.navigate("CheckoutScreen")
+						this.props.navigateToCheckout()
 					}}
 				>
 					<Icon
