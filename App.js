@@ -1,9 +1,14 @@
 import * as React from "react"
-import { Provider } from "@draftbit/ui"
+import { Provider as DProvider } from "@draftbit/ui"
 import { AppLoading } from "expo"
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 
 import cacheAssetsAsync from "./utilities/cacheAssetsAsync"
 import AppNavigator from "./AppNavigator"
+import reducer from './reducers/reducer';
+
+const store = createStore(reducer);
 
 export default class App extends React.PureComponent {
   state = {
@@ -22,8 +27,10 @@ export default class App extends React.PureComponent {
     }
 
     return (
-      <Provider>
-        <AppNavigator />
+      <Provider store={store}>
+        <DProvider>
+          <AppNavigator />
+        </DProvider>
       </Provider>
     )
   }

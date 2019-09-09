@@ -7,7 +7,6 @@ import {
   Image,
   Container,
 } from "@draftbit/ui"
-import Images from "../config/Images.js"
 
 class MenuItem extends React.Component {
   constructor(props) {
@@ -26,11 +25,11 @@ class MenuItem extends React.Component {
 			<Touchable
 				style={styles.Touchable_n6x}
 				onPress={() => {
-					this.props.navigation.navigate("MenuItemViewScreen")
+					this.props.onPress()
 				}}
 			>
 				<View style={styles.ViewStyle}>
-					<Image style={styles.Image_ngw} source={Images.Ramen} />
+					<Image style={styles.Image_ngw} source={this.props.imageURL} />
 					<Container style={styles.Container_ntc} elevation={0} useThemeGutterPadding={true}>
 						<Text
 							style={[
@@ -74,7 +73,7 @@ class MenuItem extends React.Component {
 								}
 							]}
 						>
-							{this.props.price}
+							${this.props.price}
 						</Text>
 					</Container>
 				</View>
@@ -90,35 +89,35 @@ const styles = StyleSheet.create({
 	},
   Container_ntc: {
 		paddingVertical: 16,
+		display: "flex",
+		flexDirection: 'column',
+		justifyContent: "flex-end",
   },
   Image_ngw: {
     width: "100%",
-    height: "30%",
+    height: 170,
     minHeight: 0,
     paddingHorizontal: 20,
 		paddingBottom: 20,
   },
   Text_ng0: {
-    textAlign: "auto",
     width: "100%"
   },
   Text_njp: {
-    textAlign: "auto",
     width: "100%",
     marginTop: 8
   },
   Text_nm6: {
-    textAlign: "left",
     marginTop: 16
   },
   Text_nus: {
-    textAlign: "auto",
     width: "100%",
     marginTop: 8
   },
   Touchable_n6x: {
 		width: 300,
-		maxHeight: 350,
+		height: "100%",
+		maxHeight: 400,
 		marginHorizontal: 20,
 		shadowColor: "#000",
 		shadowOffset: {

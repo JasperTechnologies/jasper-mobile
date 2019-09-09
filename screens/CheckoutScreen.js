@@ -1,5 +1,7 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, FlatList } from "react-native"
+import { updateCart } from '../reducers/reducer';
+import { connect } from 'react-redux';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   withTheme,
@@ -46,29 +48,7 @@ class CheckoutScreen extends React.Component {
         <Container style={styles.Container_nmz} elevation={0} useThemeGutterPadding={true}>
           <FlatList
             style={styles.FlatList_nix}
-            data={[
-              {
-                icon: "MaterialIcons/favorite",
-                image:
-                  "https://apps-draftbit-com.s3.amazonaws.com/xxQUEDSJ/assets/12feda3c-cf78-41ac-8d9d-3cd2a64da115",
-                title: "Beautiful West Coast Villa x2",
-                subtitle: "$9.99"
-              },
-              {
-                icon: "MaterialIcons/favorite",
-                image:
-                  "https://apps-draftbit-com.s3.amazonaws.com/xxQUEDSJ/assets/12feda3c-cf78-41ac-8d9d-3cd2a64da115",
-                title: "Beautiful West Coast Villa x2",
-                subtitle: "$9.99"
-              },
-              {
-                icon: "MaterialIcons/favorite",
-                image:
-                  "https://apps-draftbit-com.s3.amazonaws.com/xxQUEDSJ/assets/12feda3c-cf78-41ac-8d9d-3cd2a64da115",
-                title: "Beautiful West Coast Villa x2",
-                subtitle: "$9.99"
-              }
-            ]}
+            data={this.props.cart}
             renderItem={({ item }) => (
               <RowHeadlineImageIcon {...item} style={{ marginBottom: theme.spacing.small }} />
             )}
@@ -96,7 +76,7 @@ class CheckoutScreen extends React.Component {
               }
             ]}
           >
-            $29.97
+            ${this.props.cart.reduce((total, current) => total + current.price)}
           </Text>
         </Container>
         <Container style={styles.Container_n5a} elevation={0} useThemeGutterPadding={true}>
@@ -174,4 +154,22 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withTheme(CheckoutScreen)
+const mapStateToProps = state => {
+  let cart = state.cart.map((cartItem, i) => ({ 
+    key: i,                 
+    icon: "MaterialIcons/favorite",
+    image: "https://apps-draftbit-com.s3.amazonaws.com/xxQUEDSJ/assets/12feda3c-cf78-41ac-8d9d-3cd2a64da115",
+    title: "Beautiful West Coast Villa x2",
+    subtitle: "$9.99",
+    ...cartItem
+  }));
+  return {
+    cart: state.cart
+  };
+};
+
+const mapDispatchToProps = {
+  updateCart
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(CheckoutScreen));

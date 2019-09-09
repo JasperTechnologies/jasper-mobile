@@ -1,18 +1,15 @@
 import React from "react"
-import { StatusBar, StyleSheet, ScrollView, Text } from "react-native"
+import { StatusBar, StyleSheet, ScrollView } from "react-native"
+import { updateCart, updateCurrentMenuItemIndex } from '../reducers/reducer';
+import { connect } from 'react-redux';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   withTheme,
   ScreenContainer,
-  Touchable,
-  Icon,
-  CardContainer,
-  Image,
-  Container,
   Button
 } from "@draftbit/ui"
-import Images from "../config/Images.js"
 import MenuItem from "../components/MenuItem"
+import MenuHeader from "../components/MenuHeader"
 
 class MenuScreen extends React.Component {
   constructor(props) {
@@ -20,51 +17,34 @@ class MenuScreen extends React.Component {
     StatusBar.setBarStyle("light-content")
 
     this.state = {
-      theme: Object.assign(props.theme, screenTheme)
+      theme: Object.assign(props.theme, screenTheme),
+      cart: []
     }
   }
 
-  render() {
-    const { theme } = this.state
+  onPressMenuItem = (index) => {
+    this.props.updateCurrentMenuItemIndex(index)
+    this.props.navigation.navigate("MenuItemViewScreen")
+  }
 
+  render() {
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
-        <Touchable
-          style={styles.Touchable_nnl}
-          onPress={() => {
-            this.props.navigation.navigate("CheckoutScreen")
-          }}
-        >
-          <Icon
-            style={styles.Icon_n49}
-            name="Entypo/shopping-cart"
-            size={48}
-            color={theme.colors.strong}
-          />
-        </Touchable>
+        <MenuHeader/>
         <ScrollView
           contentContainerStyle={styles.ScrollView_na3}
           bounces={true}
           showsVerticalScrollIndicator={true}
           showsHorizontalScrollIndicator={true}
         >
-          <Touchable>
-            <CardContainer
-              style={styles.CardContainer_ntj}
-              icon="MaterialIcons/cloud"
-              title="Beautiful West Coast Villa"
-              elevation={2}
-              numColumns={3}
-              aspectRatio={1.5}
-              leftDescription="San Diego"
-              rightDescription="$100"
-            />
-          </Touchable>
-          {[1,1,1,1,1,1,1,1,1,1,1,1,1].map(num => <MenuItem 
-            description={`Ground pork, kung pao chilies, and napa cabbage. All ramen are served with tokyo wavy noodles from sun noodle.`}
-            title={`Spicy Miso Ramen`}
-            price={`$9.99`}
-            calories={`840`}
+          {this.props.menuItems.map(({description, title, price, calories, imageURL}, i) => <MenuItem 
+            key={i}
+            description={description}
+            title={title}
+            price={price}
+            calories={calories}
+            imageURL={imageURL}
+            onPress={this.onPressMenuItem.bind(this, i)}
           />)}
         </ScrollView>
         <Button
@@ -83,6 +63,18 @@ class MenuScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  MenuHeaderText: {
+    textDecorationLine: "underline",
+    textDecorationStyle: "solid",
+    paddingRight: 20,
+    paddingTop: 40
+  },
+  MenuHeaderContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: 20
+  },
   Button_nqn: {
     marginTop: 40
   },
@@ -105,4 +97,20 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withTheme(MenuScreen)
+const mapStateToProps = state => {
+  let cart = state.cart.map((cartItem, i) => ({ 
+    key: i,                 
+    ...cartItem
+  }));
+  return {
+    cart: state.cart,
+    menuItems: state.menuItems
+  };
+};
+
+const mapDispatchToProps = {
+  updateCart,
+  updateCurrentMenuItemIndex
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuScreen));

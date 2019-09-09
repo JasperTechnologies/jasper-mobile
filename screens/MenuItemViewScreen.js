@@ -1,6 +1,8 @@
 import React from "react"
 import { StatusBar, StyleSheet, View, ScrollView, Text, FlatList } from "react-native"
+import { updateCart } from '../reducers/reducer';
 import { yummy as screenTheme } from "../config/Themes"
+import { connect } from 'react-redux';
 import {
   withTheme,
   ScreenContainer,
@@ -11,7 +13,6 @@ import {
   Button,
   Touchable
 } from "@draftbit/ui"
-import Images from "../config/Images.js"
 
 class MenuItemViewScreen extends React.Component {
   constructor(props) {
@@ -25,10 +26,11 @@ class MenuItemViewScreen extends React.Component {
 
   render() {
     const { theme } = this.state
-
+    const { cart, currentMenuItemIndex, menuItems} = this.props
+    const currentMenuItem = menuItems[currentMenuItemIndex]
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
-        <Image style={styles.Image_ne5} source={Images.Ramen} resizeMode="cover" />
+        <Image style={styles.Image_ne5} source={currentMenuItem.imageURL} resizeMode="cover" />
         <Container style={styles.Container_nqd} elevation={0} useThemeGutterPadding={true}>
           <Text
             style={[
@@ -39,7 +41,7 @@ class MenuItemViewScreen extends React.Component {
               }
             ]}
           >
-            Spicy Miso Ramen
+            {currentMenuItem.title}
           </Text>
           <Text
             style={[
@@ -50,8 +52,7 @@ class MenuItemViewScreen extends React.Component {
               }
             ]}
           >
-            Ground pork, kung pao chilies, and napa cabbage. All ramen are served with tokyo wavy
-            noodles from sun noodle.
+            {currentMenuItem.descriptoin}
           </Text>
           <Text
             style={[
@@ -62,7 +63,7 @@ class MenuItemViewScreen extends React.Component {
               }
             ]}
           >
-            840 Cal.
+            {currentMenuItem.calories} Cal.
           </Text>
           <Text
             style={[
@@ -73,7 +74,7 @@ class MenuItemViewScreen extends React.Component {
               }
             ]}
           >
-            $ 12.99
+            ${currentMenuItem.price}
           </Text>
         </Container>
         <Container style={styles.Container_nqy} elevation={0} useThemeGutterPadding={true}>
@@ -224,4 +225,16 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withTheme(MenuItemViewScreen)
+const mapStateToProps = state => {
+  return {
+    cart: state.cart,
+    menuItems: state.menuItems,
+    currentMenuItemIndex: state.currentMenuItemIndex
+  };
+};
+
+const mapDispatchToProps = {
+  updateCart
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuItemViewScreen));
