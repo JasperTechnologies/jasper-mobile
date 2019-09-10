@@ -37,7 +37,7 @@ class MenuScreen extends React.Component {
           showsVerticalScrollIndicator={true}
           showsHorizontalScrollIndicator={true}
         >
-          {this.props.menuItems.map(({description, title, price, calories, imageURL}, i) => <MenuItem 
+          {this.props.menuItems.map(({description, title, price, calories, imageURL}, i) => <MenuItem
             key={i}
             description={description}
             title={title}
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => {
-  let cart = state.cart.map((cartItem, i) => ({ 
-    key: i,                 
+  let cart = state.cart.map((cartItem, i) => ({
+    key: i,
     ...cartItem
   }));
   return {
