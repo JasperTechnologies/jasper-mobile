@@ -1,6 +1,7 @@
 import React from "react"
 import { StatusBar, StyleSheet, View, ScrollView, Text, FlatList } from "react-native"
 import { updateCart } from '../reducers/reducer';
+import Homecoming from '../components/Homecoming';
 import { yummy as screenTheme } from '../config/Themes';
 import {
   centsToDollar,
@@ -142,6 +143,7 @@ class MenuItemViewScreen extends React.Component {
     const { currentMenuItem } = this.props;
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
+        <Homecoming navigation={this.props.navigation} />
         <Container style={styles.Container_MenuItemNav} elevation={0}>
           <IconButton
             style={styles.Touchable_Back}

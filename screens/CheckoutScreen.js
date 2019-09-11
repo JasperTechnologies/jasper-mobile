@@ -1,6 +1,7 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, FlatList } from "react-native"
 import { updateCart } from '../reducers/reducer';
+import Homecoming from '../components/Homecoming';
 import { connect } from 'react-redux';
 import { yummy as screenTheme } from "../config/Themes"
 import {
@@ -28,6 +29,7 @@ class CheckoutScreen extends React.Component {
 
     return (
       <ScreenContainer hasSafeArea={true} scrollable={false} style={styles.Root_n9y}>
+        <Homecoming navigation={this.props.navigation} />
         <Icon
           style={styles.Icon_nie}
           name="MaterialCommunityIcons/food-fork-drink"
@@ -156,8 +158,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => {
-  let cart = state.cart.map((cartItem, i) => ({ 
-    key: i,                 
+  let cart = state.cart.map((cartItem, i) => ({
+    key: i,
     icon: "MaterialIcons/favorite",
     image: cartItem.imageURL,
     subtitle: `${cartItem.price * cartItem.quantity}`,
