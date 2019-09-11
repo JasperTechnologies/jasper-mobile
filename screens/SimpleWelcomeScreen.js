@@ -55,7 +55,7 @@ class SimpleWelcomeScreen extends React.Component {
               type="solid"
               color={theme.colors.primary}
               onPress={() => {
-                this.props.navigation.navigate("MenuScreen")
+                this.props.navigation.navigate("LandingScreen")
               }}
             >
               Menu App

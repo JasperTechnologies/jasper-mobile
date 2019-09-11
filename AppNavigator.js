@@ -3,6 +3,7 @@ import { createAppContainer, createSwitchNavigator } from "react-navigation"
 import MenuItemViewScreen from "./screens/MenuItemViewScreen"
 import EmailPasswordLoginScreen from "./screens/EmailPasswordLoginScreen"
 import SimpleWelcomeScreen from "./screens/SimpleWelcomeScreen"
+import LandingScreen from "./screens/LandingScreen"
 import SignupWithEmailScreen from "./screens/SignupWithEmailScreen"
 import ForgotPasswordScreen from "./screens/ForgotPasswordScreen"
 import MenuScreen from "./screens/MenuScreen"
@@ -37,6 +38,10 @@ const AppNavigator = createSwitchNavigator(
     ForgotPasswordScreen: {
       screen: ForgotPasswordScreen,
       navigationOptions: ({ navigation }) => ({ title: "Forgot Password" })
+    },
+    LandingScreen: {
+      screen: LandingScreen,
+      navigationOptions: ({ navigation }) => ({ title: "Landing" })
     },
     MenuScreen: {
       screen: MenuScreen,

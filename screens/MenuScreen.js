@@ -2,6 +2,7 @@ import React from "react"
 import { StatusBar, StyleSheet, ScrollView } from "react-native"
 import { updateCart, updateCurrentMenuItemIndex } from '../reducers/reducer';
 import { connect } from 'react-redux';
+import Homecoming from '../components/Homecoming';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   withTheme,
@@ -30,6 +31,7 @@ class MenuScreen extends React.Component {
   render() {
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
+        <Homecoming navigation={this.props.navigation} />
         <MenuHeader navigateToCheckout={() => this.props.navigation.navigate("CheckoutScreen")}/>
         <ScrollView
           contentContainerStyle={styles.ScrollView_na3}

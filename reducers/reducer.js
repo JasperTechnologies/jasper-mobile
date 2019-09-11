@@ -1,7 +1,17 @@
 export const UPDATE_CART = 'UPDATE_CART';
 export const UPDATE_CURRENT_MENU_ITEM_INDEX = 'UPDATE_CURRENT_MENU_ITEM_INDEX'
 
-export default function reducer(state = { cart: [], menuItems: listOfBoba, currentMenuItemIndex: 0 }, action) {
+export default function reducer(state = {
+  user: {
+    id: 1,
+    email: "junsuhlee94@gmail.com",
+    logo: "https://images-platform.99static.com/XRHGOwbYOk1U4iP8XvmN04bFrRI=/200x200:1800x1800/500x500/top/smart/99designs-contests-attachments/76/76456/attachment_76456170",
+    name: "Boba Lush"
+  },
+  cart: [],
+  menuItems: listOfBoba,
+  currentMenuItemIndex: 0
+}, action) {
   switch (action.type) {
     case UPDATE_CART:
 			return { ...state, cart: action.newCart };
