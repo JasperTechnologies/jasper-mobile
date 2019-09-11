@@ -1,7 +1,7 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, FlatList } from "react-native"
 import { updateCart } from '../reducers/reducer';
-import Homecoming from '../components/Homecoming';
+import InactiveDetector from '../components/InactiveDetector';
 import { connect } from 'react-redux';
 import { yummy as screenTheme } from "../config/Themes"
 import {
@@ -29,88 +29,89 @@ class CheckoutScreen extends React.Component {
 
     return (
       <ScreenContainer hasSafeArea={true} scrollable={false} style={styles.Root_n9y}>
-        <Homecoming navigation={this.props.navigation} />
-        <Icon
-          style={styles.Icon_nie}
-          name="MaterialCommunityIcons/food-fork-drink"
-          size={100}
-          color={theme.colors.primary}
-        />
-        <Text
-          style={[
-            styles.Text_nxj,
-            theme.typography.headline1,
-            {
-              color: theme.colors.medium
-            }
-          ]}
-        >
-          Checkout
-        </Text>
-        <Container style={styles.Container_nmz} elevation={0} useThemeGutterPadding={true}>
-          <FlatList
-            style={styles.FlatList_nix}
-            data={this.props.cart}
-            renderItem={({ item }) => (
-              <RowHeadlineImageIcon {...item} style={{ marginBottom: theme.spacing.small }} />
-            )}
-            keyExtractor={(_item, idx) => idx.toString()}
+        <InactiveDetector navigation={this.props.navigation}>
+          <Icon
+            style={styles.Icon_nie}
+            name="MaterialCommunityIcons/food-fork-drink"
+            size={100}
+            color={theme.colors.primary}
           />
-        </Container>
-        <Container style={styles.Container_n5h} elevation={0} useThemeGutterPadding={true}>
           <Text
             style={[
-              styles.Text_n69,
-              theme.typography.headline2,
+              styles.Text_nxj,
+              theme.typography.headline1,
               {
                 color: theme.colors.medium
               }
             ]}
           >
-            Total
+            Checkout
           </Text>
-          <Text
-            style={[
-              styles.Text_n69,
-              theme.typography.headline4,
-              {
-                color: theme.colors.strong
-              }
-            ]}
-          >
-            ${this.props.cart.reduce((initial, current) => initial + current.price, 0)}
-          </Text>
-        </Container>
-        <Container style={styles.Container_n5a} elevation={0} useThemeGutterPadding={true}>
-          <Button
-            style={styles.Button_n7s}
-            type="solid"
-            onPress={() => {
-              this.props.updateCart([])
-              this.props.navigation.navigate("ThankYouScreen")
-            }}
-          >
-            Purchase
-          </Button>
-          <Touchable
-            style={styles.Touchable_n2o}
-            onPress={() => {
-              this.props.navigation.navigate("MenuScreen")
-            }}
-          >
+          <Container style={styles.Container_nmz} elevation={0} useThemeGutterPadding={true}>
+            <FlatList
+              style={styles.FlatList_nix}
+              data={this.props.cart}
+              renderItem={({ item }) => (
+                <RowHeadlineImageIcon {...item} style={{ marginBottom: theme.spacing.small }} />
+              )}
+              keyExtractor={(_item, idx) => idx.toString()}
+            />
+          </Container>
+          <Container style={styles.Container_n5h} elevation={0} useThemeGutterPadding={true}>
             <Text
               style={[
-                styles.Text_nmj,
-                theme.typography.button,
+                styles.Text_n69,
+                theme.typography.headline2,
                 {
-                  color: theme.colors.light
+                  color: theme.colors.medium
                 }
               ]}
             >
-              Back
+              Total
             </Text>
-          </Touchable>
-        </Container>
+            <Text
+              style={[
+                styles.Text_n69,
+                theme.typography.headline4,
+                {
+                  color: theme.colors.strong
+                }
+              ]}
+            >
+              ${this.props.cart.reduce((initial, current) => initial + current.price, 0)}
+            </Text>
+          </Container>
+          <Container style={styles.Container_n5a} elevation={0} useThemeGutterPadding={true}>
+            <Button
+              style={styles.Button_n7s}
+              type="solid"
+              onPress={() => {
+                this.props.updateCart([])
+                this.props.navigation.navigate("ThankYouScreen")
+              }}
+            >
+              Purchase
+            </Button>
+            <Touchable
+              style={styles.Touchable_n2o}
+              onPress={() => {
+                this.props.navigation.navigate("MenuScreen")
+              }}
+            >
+              <Text
+                style={[
+                  styles.Text_nmj,
+                  theme.typography.button,
+                  {
+                    color: theme.colors.light
+                  }
+                ]}
+              >
+                Back
+              </Text>
+            </Touchable>
+          </Container>
+        </InactiveDetector>
       </ScreenContainer>
     )
   }
