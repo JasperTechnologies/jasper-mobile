@@ -3,7 +3,8 @@ import { StatusBar, StyleSheet, View, ScrollView, Text, FlatList } from "react-n
 import v4 from 'uuid/v4';
 import {
   addItemToCart,
-  addEditedMenuItem
+  addEditedMenuItem,
+  clearEditingMenuItem
 } from '../reducers/reducer';
 import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from '../config/Themes';
@@ -63,6 +64,16 @@ class MenuItemViewScreen extends React.Component {
           quantity: newQuantity
         }
       });
+    }
+  }
+
+  handleBack = () => {
+    const { isEditingMenuItem } = this.props;
+    if (isEditingMenuItem) {
+      this.props.clearEditingMenuItem();
+      this.props.navigation.navigate("CheckoutScreen");
+    } else {
+      this.props.navigation.navigate("MenuScreen");
     }
   }
 
@@ -181,8 +192,7 @@ class MenuItemViewScreen extends React.Component {
                 size={32}
                 color={theme.colors.primary}
                 onPress={() => {
-                  this.updateQuantity(0)
-                  this.props.navigation.navigate("MenuScreen")
+                  this.handleBack();
                 }}
               />
             </Container>
@@ -351,7 +361,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   addItemToCart,
-  addEditedMenuItem
+  addEditedMenuItem,
+  clearEditingMenuItem
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuItemViewScreen));

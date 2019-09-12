@@ -1,4 +1,5 @@
 export const ADD_EDITED_MENU_ITEM = 'ADD_EDITED_MENU_ITEM';
+export const CLEAR_EDITING_MENU_ITEM = 'CLEAR_EDITING_MENU_ITEM';
 export const EDIT_MENU_ITEM = 'EDIT_MENU_ITEM';
 export const UPDATE_CURRENT_MENU_ITEM = 'UPDATE_CURRENT_MENU_ITEM'
 export const UPDATE_CURRENT_MENU_CATEGORY = 'UPDATE_CURRENT_MENU_CATEGORY';
@@ -28,6 +29,8 @@ export default function reducer(state = {
       const { editedItem } = action;
       return {
         ...state,
+        isEditingMenuItem: false,
+        editingMenuItemForm: null,
         cart: state.cart.reduce((newList, item) => {
           if (item.form.formId !== editedItem.form.formId) {
             newList.push(item);
@@ -38,6 +41,13 @@ export default function reducer(state = {
         }, [])
       }
     };
+    case CLEAR_EDITING_MENU_ITEM: {
+      return {
+        ...state,
+        isEditingMenuItem: false,
+        editingMenuItemForm: null
+      };
+    };
     case EDIT_MENU_ITEM: {
       return {
         ...state,
@@ -47,7 +57,7 @@ export default function reducer(state = {
           ...action.editingMenuItem,
           form: undefined
         }
-      }
+      };
     };
 		case UPDATE_CURRENT_MENU_ITEM: {
       return {
@@ -106,6 +116,12 @@ export function addItemToCart(itemWithForm) {
   return {
     type: ADD_ITEM_TO_CART,
     newItem: itemWithForm
+  };
+}
+
+export function clearEditingMenuItem() {
+  return {
+    type: CLEAR_EDITING_MENU_ITEM
   };
 }
 
