@@ -7,7 +7,9 @@ import { yummy as screenTheme } from "../config/Themes"
 import {
   withTheme,
   ScreenContainer,
-  Button
+  Button,
+  Container,
+  View
 } from "@draftbit/ui"
 import MenuItem from "../components/MenuItem"
 import MenuHeader from "../components/MenuHeader"
@@ -32,33 +34,37 @@ class MenuScreen extends React.Component {
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
         <InactiveDetector navigation={this.props.navigation}>
-          <MenuHeader navigateToCheckout={() => this.props.navigation.navigate("CheckoutScreen")}/>
-          <ScrollView
-            contentContainerStyle={styles.ScrollView_na3}
-            bounces={true}
-            showsVerticalScrollIndicator={true}
-            showsHorizontalScrollIndicator={true}
-          >
-            {this.props.menuItems.map(({description, title, price, calories, imageURL}, i) => <MenuItem
-              key={i}
-              description={description}
-              title={title}
-              price={price}
-              calories={calories}
-              imageURL={imageURL}
-              onPress={this.onPressMenuItem.bind(this, i)}
-            />)}
-          </ScrollView>
-          <Button
-            style={styles.Button_nqn}
-            icon="MaterialIcons/add"
-            type="solid"
-            onPress={() => {
-              this.props.navigation.navigate("CheckoutScreen")
-            }}
-          >
-            Checkout
-          </Button>
+          <Container style={styles.Menu_Page_Container}>
+            <MenuHeader navigateToCheckout={() => this.props.navigation.navigate("CheckoutScreen")}/>
+            <ScrollView
+              contentContainerStyle={styles.Menu_Scrollview}
+              bounces={true}
+              showsVerticalScrollIndicator={true}
+              showsHorizontalScrollIndicator={true}
+            >
+              {this.props.currentMenuItems.map(({description, title, price, calories, imageURL}, i) => <MenuItem
+                key={i}
+                description={description}
+                title={title}
+                price={price}
+                calories={calories}
+                imageURL={imageURL}
+                onPress={this.onPressMenuItem.bind(this, i)}
+              />)}
+            </ScrollView>
+            <View>
+              <Button
+                style={styles.Button_nqn}
+                icon="MaterialIcons/add"
+                type="solid"
+                onPress={() => {
+                  this.props.navigation.navigate("CheckoutScreen")
+                }}
+              >
+                Checkout
+              </Button>
+            </View>
+          </Container>
         </InactiveDetector>
       </ScreenContainer>
     )
@@ -66,36 +72,18 @@ class MenuScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  MenuHeaderText: {
-    textDecorationLine: "underline",
-    textDecorationStyle: "solid",
-    paddingRight: 20,
-    paddingTop: 40
-  },
-  MenuHeaderContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginLeft: 20
+  Menu_Page_Container: {
+    display: "flex",
+    height: "100%"
   },
   Button_nqn: {
-    marginTop: 40
   },
   CardContainer_ntj: {
     width: 300
   },
-  Icon_n49: {
-    width: 48,
-    height: 48,
-    alignSelf: "flex-end",
-    marginTop: 40,
-    marginRight: 40
-  },
-  ScrollView_na3: {
-    justifyContent: "center",
+  Menu_Scrollview: {
+    justifyContent: "flex-start",
     flexDirection: "row",
-    paddingBottom: 200,
-    marginTop: 60,
     flexWrap: "wrap"
   }
 })
@@ -107,7 +95,7 @@ const mapStateToProps = state => {
   }));
   return {
     cart: state.cart,
-    menuItems: state.menuItems
+    currentMenuItems: state.currentMenuItems
   };
 };
 

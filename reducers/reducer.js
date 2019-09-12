@@ -1,5 +1,6 @@
 export const UPDATE_CART = 'UPDATE_CART';
 export const UPDATE_CURRENT_MENU_ITEM_INDEX = 'UPDATE_CURRENT_MENU_ITEM_INDEX'
+export const UPDATE_CURRENT_MENU_CATEGORY = 'UPDATE_CURRENT_MENU_CATEGORY';
 
 export default function reducer(state = {
   user: {
@@ -10,6 +11,9 @@ export default function reducer(state = {
   },
   cart: [],
   menuItems: listOfBoba,
+  currentMenuItems: [],
+  menuCategories: listOfCategory,
+  currentMenuCategory: listOfCategory[0],
   currentMenuItemIndex: 0
 }, action) {
   switch (action.type) {
@@ -17,6 +21,20 @@ export default function reducer(state = {
 			return { ...state, cart: action.newCart };
 		case UPDATE_CURRENT_MENU_ITEM_INDEX:
 			return { ...state, currentMenuItemIndex: action.index}
+    case UPDATE_CURRENT_MENU_CATEGORY: {
+      const newCurrentMenuItems = state.menuItems.reduce((list, menu) => {
+        if ((menu.categories || []).find(category => category.name === action.category.name)) {
+          list.push(menu);
+        }
+        return list;
+      }, []);
+			return {
+        ...state,
+        currentMenuItems: newCurrentMenuItems,
+        currentMenuCategory: action.category
+      };
+    };
+
     default:
       return state;
   }
@@ -36,9 +54,28 @@ export function updateCurrentMenuItemIndex(index) {
   };
 }
 
+export function updateCurrentMenuCategory(category) {
+  return {
+    type: UPDATE_CURRENT_MENU_CATEGORY,
+    category
+  };
+}
+
+const listOfCategory = [
+  {
+    id: 1,
+    name: "Popular"
+  },
+  {
+    id: 2,
+    name: "Boba"
+  }
+];
+
 const listOfBoba = [
   {
     title: "Bubble Tea",
+    categories: [listOfCategory[0], listOfCategory[1]],
     description: "Served ice cold with chewy tapioca balls and an organic base of green and black tea",
     price: 699,
     calories: 400,
@@ -76,6 +113,7 @@ const listOfBoba = [
   },
   {
     title: "Avocado Matcha Boba Tea",
+    categories: [listOfCategory[0], listOfCategory[1]],
     description: "When the antioxidant power of matcha meets the creaminess of avocado, you’ve got a boba milk tea that you won’t want to refuse!",
     price: 999,
     calories: 620,
@@ -113,6 +151,7 @@ const listOfBoba = [
   },
   {
     title: "Thai Boba Tea",
+    categories: [listOfCategory[0], listOfCategory[1]],
     description: "Thai Iced Tea with Boba is simple to make and so much fun to drink, with just enough half and half to cool the burn so you can finish that bowl of spicy curry.",
     price: 799,
     calories: 320,
@@ -150,6 +189,7 @@ const listOfBoba = [
   },
   {
     title: "Popcorn Tea",
+    categories: [listOfCategory[1]],
     description: "This tea is made from green tea and toasted rice. The toasted rice gives it the popcorn-like flavor.",
     price: 799,
     calories: 510,
@@ -187,6 +227,7 @@ const listOfBoba = [
   },
   {
     title: "Taro B",
+    categories: [listOfCategory[1]],
     description: "This delicious purple tea is made with taro root and tastes creamy but not too sweet.  Many people swear it tastes just like cookies and cream.",
     price: 999,
     calories: 810,
@@ -224,6 +265,7 @@ const listOfBoba = [
   },
   {
     title: "Honeydew Boba",
+    categories: [listOfCategory[1]],
     description: "Honeydew flavor may be mixed with tea and cream to make a hot drink or blended with ice in a blender to make an ice drink.",
     price: 899,
     calories: 560,
@@ -261,6 +303,7 @@ const listOfBoba = [
   },
   {
     title: "Coconut Bubble Tea",
+    categories: [listOfCategory[1]],
     description: "Pure coconut water with a little fruit nectar added and some “toppings” can make a delicious, healthy drink.",
     price: 699,
     calories: 480,
@@ -298,6 +341,45 @@ const listOfBoba = [
   },
   {
     title: "Mousse Boba Tea",
+    categories: [listOfCategory[1]],
+    description: "It contains different types of tea at the bottom with some sugar and is topped off with a savory mousse.",
+    price: 999,
+    calories: 780,
+    imageURL: "https://cdn.vox-cdn.com/thumbor/VQTx2oXZRWTYMGtN-K-c4OHUBPo=/0x0:4223x3167/1200x800/filters:focal(1902x1200:2576x1874)/cdn.vox-cdn.com/uploads/chorus_image/image/61481407/cheesetea_shutterstock.0.jpg",
+    options: [
+      {
+        id: 1,
+        name: 'Boba',
+        type: 'INGREDIENT',
+        default: true,
+        price: 0
+      },
+      {
+        id: 2,
+        name: 'Small',
+        type: 'SIZE',
+        default: false,
+        price: 0
+      },
+      {
+        id: 3,
+        name: 'Medium',
+        type: 'SIZE',
+        default: true,
+        price: 50
+      },
+      {
+        id: 4,
+        name: 'Large',
+        type: 'SIZE',
+        default: false,
+        price: 75
+      }
+    ]
+  },
+  {
+    title: "Mousse Boba Tea",
+    categories: [listOfCategory[1]],
     description: "It contains different types of tea at the bottom with some sugar and is topped off with a savory mousse.",
     price: 999,
     calories: 780,
