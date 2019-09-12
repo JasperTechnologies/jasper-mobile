@@ -1,6 +1,6 @@
 import React from "react"
 import { StatusBar, StyleSheet, ScrollView } from "react-native"
-import { updateCart, updateCurrentMenuItemIndex } from '../reducers/reducer';
+import { updateCart, updateCurrentMenuItem } from '../reducers/reducer';
 import { connect } from 'react-redux';
 import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from "../config/Themes"
@@ -25,8 +25,8 @@ class MenuScreen extends React.Component {
     }
   }
 
-  onPressMenuItem = (index) => {
-    this.props.updateCurrentMenuItemIndex(index)
+  onPressMenuItem = (item) => {
+    this.props.updateCurrentMenuItem(item)
     this.props.navigation.navigate("MenuItemViewScreen")
   }
 
@@ -42,14 +42,16 @@ class MenuScreen extends React.Component {
               showsVerticalScrollIndicator={true}
               showsHorizontalScrollIndicator={true}
             >
-              {this.props.currentMenuItems.map(({description, title, price, calories, imageURL}, i) => <MenuItem
+              {this.props.currentMenuItems.map((item, i) => <MenuItem
                 key={i}
-                description={description}
-                title={title}
-                price={price}
-                calories={calories}
-                imageURL={imageURL}
-                onPress={this.onPressMenuItem.bind(this, i)}
+                description={item.description}
+                title={item.title}
+                price={item.price}
+                calories={item.calories}
+                imageURL={item.imageURL}
+                onPress={() => {
+                  this.onPressMenuItem(item);
+                }}
               />)}
             </ScrollView>
             <View>
@@ -101,7 +103,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   updateCart,
-  updateCurrentMenuItemIndex
+  updateCurrentMenuItem
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuScreen));

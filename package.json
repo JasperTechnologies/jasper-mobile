@@ -29,7 +29,8 @@
     "react-redux": "^7.1.1",
     "react-request": "^3.1.2",
     "redux": "^4.0.4",
-    "redux-axios-middleware": "^4.0.1"
+    "redux-axios-middleware": "^4.0.1",
+    "uuid": "^3.3.3"
   },
   "prettier": {
     "bracketSpacing": true,

@@ -1,5 +1,6 @@
-export const UPDATE_CART = 'UPDATE_CART';
-export const UPDATE_CURRENT_MENU_ITEM_INDEX = 'UPDATE_CURRENT_MENU_ITEM_INDEX'
+export const ADD_EDITED_MENU_ITEM = 'ADD_EDITED_MENU_ITEM';
+export const EDIT_MENU_ITEM = 'EDIT_MENU_ITEM';
+export const UPDATE_CURRENT_MENU_ITEM = 'UPDATE_CURRENT_MENU_ITEM'
 export const UPDATE_CURRENT_MENU_CATEGORY = 'UPDATE_CURRENT_MENU_CATEGORY';
 export const ADD_ITEM_TO_CART = 'ADD_ITEM_TO_CART';
 
@@ -15,15 +16,45 @@ export default function reducer(state = {
   currentMenuItems: [],
   menuCategories: listOfCategory,
   currentMenuCategory: listOfCategory[0],
-  currentMenuItemIndex: 0
+  currentMenuItemIndex: 0,
+  isEditingMenuItem: false,
+  editingMenuItemForm: null
 }, action) {
   switch (action.type) {
-    case ADD_ITEM_TO_CART:
+    case ADD_ITEM_TO_CART: {
       return { ...state, cart: [...state.cart, action.newItem ] };
-    case UPDATE_CART:
-			return { ...state, cart: action.newCart };
-		case UPDATE_CURRENT_MENU_ITEM_INDEX:
-			return { ...state, currentMenuItemIndex: action.index}
+    };
+    case ADD_EDITED_MENU_ITEM: {
+      const { editedItem } = action;
+      return {
+        ...state,
+        cart: state.cart.reduce((newList, item) => {
+          if (item.form.formId !== editedItem.form.formId) {
+            newList.push(item);
+          } else {
+            newList.push(editedItem);
+          }
+          return newList;
+        }, [])
+      }
+    };
+    case EDIT_MENU_ITEM: {
+      return {
+        ...state,
+        isEditingMenuItem: true,
+        editingMenuItemForm: action.editingMenuItem.form,
+        currentMenuItem: {
+          ...action.editingMenuItem,
+          form: undefined
+        }
+      }
+    };
+		case UPDATE_CURRENT_MENU_ITEM: {
+      return {
+        ...state,
+        currentMenuItem: action.currentMenuItem
+      };
+    };
     case UPDATE_CURRENT_MENU_CATEGORY: {
       const newCurrentMenuItems = state.menuItems.reduce((list, menu) => {
         if ((menu.categories || []).find(category => category.name === action.category.name)) {
@@ -43,17 +74,24 @@ export default function reducer(state = {
   }
 }
 
-export function updateCart(newCart) {
+export function addEditedMenuItem(editedItem) {
   return {
-    type: UPDATE_CART,
-    newCart
+    type: ADD_EDITED_MENU_ITEM,
+    editedItem
   };
 }
 
-export function updateCurrentMenuItemIndex(index) {
+export function editMenuItem(editingMenuItem) {
   return {
-    type: UPDATE_CURRENT_MENU_ITEM_INDEX,
-    index
+    type: EDIT_MENU_ITEM,
+    editingMenuItem
+  };
+}
+
+export function updateCurrentMenuItem(currentMenuItem) {
+  return {
+    type: UPDATE_CURRENT_MENU_ITEM,
+    currentMenuItem
   };
 }
 

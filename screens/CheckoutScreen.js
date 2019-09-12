@@ -1,6 +1,8 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, FlatList, ScrollView } from "react-native"
-import { updateCart } from '../reducers/reducer';
+import {
+  editMenuItem
+} from '../reducers/reducer';
 import InactiveDetector from '../components/InactiveDetector';
 import { connect } from 'react-redux';
 import { yummy as screenTheme } from "../config/Themes"
@@ -79,66 +81,75 @@ class CheckoutScreen extends React.Component {
                 {
                   cart.map((item, index) => {
                     return (
-                      <View key={`${item.name}-${index}`} style={styles.CartItem_Cell}>
-                        <View style={styles.CartItem_Cell_Image_Container}>
-                          <Image style={styles.CartItem_Cell_Image} source={item.imageURL} resizeMode="cover" />
-                        </View>
-                        <View style={styles.CartItem_Cell_Content}>
-                          <View>
-                            <View style={styles.CartItem_Top_Container}>
-                              <Text
-                                style={[
-                  								theme.typography.headline1,
-                  								{
-                  									color: theme.colors.strong
-                  								}
-                  							]}
-                              >
-                                {item.title}
-                              </Text>
-                              <View style={styles.CartItem_Count_Container}>
+                      <Touchable
+                        key={`${item.name}-${index}`}
+                        onPress={
+                          () => {
+                            this.props.editMenuItem(item);
+                            this.props.navigation.navigate("MenuItemViewScreen");
+                          }
+                        }
+                      >
+                        <View style={styles.CartItem_Cell}>
+                          <View style={styles.CartItem_Cell_Image_Container}>
+                            <Image style={styles.CartItem_Cell_Image} source={item.imageURL} resizeMode="cover" />
+                          </View>
+                          <View style={styles.CartItem_Cell_Content}>
+                            <View>
+                              <View style={styles.CartItem_Top_Container}>
                                 <Text
                                   style={[
-                                    theme.typography.headline3,
-                                    {
-                                      color: theme.colors.primary
-                                    }
-                                  ]}
+                    								theme.typography.headline1,
+                    								{
+                    									color: theme.colors.strong
+                    								}
+                    							]}
                                 >
-                                  {item.form.quantity}
+                                  {item.title}
                                 </Text>
-                              </View>
-                              <View style={styles.CartItem_Price_Container}>
-                                <Text
-                                  style={[
-                                    theme.typography.headline3
-                                  ]}
-                                >
-                                  {`$${centsToDollar(calculateTotalPrice(item.price, item.form.quantity, item.form.options))}`}
-                                </Text>
-                              </View>
-                            </View>
-                            {
-                              item.form.options.map((option, optionIndex) => {
-                                return (
+                                <View style={styles.CartItem_Count_Container}>
                                   <Text
-                                    key={`${option.name}-${optionIndex}`}
                                     style={[
-                      								theme.typography.headline4,
-                      								{
-                      									color: theme.colors.strong
-                      								}
-                      							]}
+                                      theme.typography.headline3,
+                                      {
+                                        color: theme.colors.primary
+                                      }
+                                    ]}
                                   >
-                                    {option.name}
+                                    {item.form.quantity}
                                   </Text>
-                                );
-                              })
-                            }
+                                </View>
+                                <View style={styles.CartItem_Price_Container}>
+                                  <Text
+                                    style={[
+                                      theme.typography.headline3
+                                    ]}
+                                  >
+                                    {`$${centsToDollar(calculateTotalPrice(item.price, item.form.quantity, item.form.options))}`}
+                                  </Text>
+                                </View>
+                              </View>
+                              {
+                                item.form.options.map((option, optionIndex) => {
+                                  return (
+                                    <Text
+                                      key={`${option.name}-${optionIndex}`}
+                                      style={[
+                        								theme.typography.headline4,
+                        								{
+                        									color: theme.colors.strong
+                        								}
+                        							]}
+                                    >
+                                      {option.name}
+                                    </Text>
+                                  );
+                                })
+                              }
+                            </View>
                           </View>
                         </View>
-                      </View>
-
+                      </Touchable>
                     );
                   })
                 }
@@ -209,7 +220,6 @@ class CheckoutScreen extends React.Component {
                 style={styles.Button_n7s}
                 type="solid"
                 onPress={() => {
-                  this.props.updateCart([])
                   this.props.navigation.navigate("ThankYouScreen")
                 }}
               >
@@ -348,7 +358,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  updateCart
+  editMenuItem
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(CheckoutScreen));

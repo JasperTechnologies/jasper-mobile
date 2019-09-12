@@ -1,6 +1,10 @@
 import React from "react"
 import { StatusBar, StyleSheet, View, ScrollView, Text, FlatList } from "react-native"
-import { addItemToCart } from '../reducers/reducer';
+import v4 from 'uuid/v4';
+import {
+  addItemToCart,
+  addEditedMenuItem
+} from '../reducers/reducer';
 import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from '../config/Themes';
 import {
@@ -38,15 +42,16 @@ const getDefaultOptions = (options) => {
 
 class MenuItemViewScreen extends React.Component {
   constructor(props) {
-    super(props)
-    StatusBar.setBarStyle("light-content")
-
+    super(props);
+    StatusBar.setBarStyle("light-content");
+    const { isEditingMenuItem } = props;
+    const DEFAULT_FORM = {
+      quantity: 1,
+      options: getDefaultOptions(props.currentMenuItem.options)
+    };
     this.state = {
       theme: Object.assign(props.theme, screenTheme),
-      form: {
-        quantity: 1,
-        options: getDefaultOptions(props.currentMenuItem.options)
-      }
+      form: isEditingMenuItem ? props.editingMenuItemForm : DEFAULT_FORM
     }
   }
 
@@ -61,12 +66,35 @@ class MenuItemViewScreen extends React.Component {
     }
   }
 
+  handleSubmit = () => {
+    const { isEditingMenuItem } = this.props;
+    if (isEditingMenuItem) {
+      this.addEditedMenuItem();
+      this.props.navigation.navigate("CheckoutScreen");
+    } else {
+      this.handleAddItemToCart();
+      this.props.navigation.navigate("MenuScreen");
+    }
+  }
+
+  addEditedMenuItem = () => {
+    const { currentMenuItem } = this.props;
+    const { form } = this.state;
+    this.props.addEditedMenuItem({
+      ...currentMenuItem,
+      form
+    });
+  }
+
   handleAddItemToCart = () => {
     const { currentMenuItem } = this.props;
     const { form } = this.state;
     this.props.addItemToCart({
       ...currentMenuItem,
-      form
+      form: {
+        ...form,
+        formId: v4()
+      }
     });
   }
 
@@ -215,8 +243,7 @@ class MenuItemViewScreen extends React.Component {
                 type="solid"
                 color={theme.colors.primary}
                 onPress={() => {
-                  this.handleAddItemToCart();
-                  this.props.navigation.navigate("MenuScreen")
+                  this.handleSubmit();
                 }}
               >
                 {`Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.options))}`}
@@ -316,12 +343,15 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    currentMenuItem: state.menuItems[state.currentMenuItemIndex]
+    currentMenuItem: state.currentMenuItem,
+    isEditingMenuItem: state.isEditingMenuItem,
+    editingMenuItemForm: state.editingMenuItemForm
   };
 };
 
 const mapDispatchToProps = {
-  addItemToCart
+  addItemToCart,
+  addEditedMenuItem
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuItemViewScreen));
