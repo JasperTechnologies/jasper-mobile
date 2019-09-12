@@ -1,6 +1,6 @@
 import React from "react"
 import { StatusBar, StyleSheet, View, ScrollView, Text, FlatList } from "react-native"
-import { updateCart } from '../reducers/reducer';
+import { addItemToCart } from '../reducers/reducer';
 import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from '../config/Themes';
 import {
@@ -62,11 +62,12 @@ class MenuItemViewScreen extends React.Component {
   }
 
   handleAddItemToCart = () => {
-    const quantity = this.state.quantity;
-    const { cart, currentMenuItem } = this.props;
-    const newCartItem = { quantity, ...currentMenuItem}
-    const newCart = cart.concat(newCartItem)
-    this.props.updateCart(newCart)
+    const { currentMenuItem } = this.props;
+    const { form } = this.state;
+    this.props.addItemToCart({
+      ...currentMenuItem,
+      form
+    });
   }
 
   handleSwitchOption = (option, isSelected) => {
@@ -144,81 +145,83 @@ class MenuItemViewScreen extends React.Component {
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
         <InactiveDetector navigation={this.props.navigation}>
-          <Container style={styles.Container_MenuItemNav} elevation={0}>
-            <IconButton
-              style={styles.Touchable_Back}
-              icon="MaterialIcons/arrow-back"
-              size={32}
-              color={theme.colors.primary}
-              onPress={() => {
-                this.updateQuantity(0)
-                this.props.navigation.navigate("MenuScreen")
-              }}
-            />
-          </Container>
-          <Image style={styles.Image_ne5} source={currentMenuItem.imageURL} resizeMode="cover" />
-          <Container style={styles.MenuItemName_Container} useThemeGutterPadding={true}>
-            <Text
-              style={[
-                styles.Text_nwi,
-                theme.typography.headline4,
-                {
-                  color: theme.colors.strong
-                }
-              ]}
-            >
-              {currentMenuItem.title}
-            </Text>
-          </Container>
-          <ScrollView
-            contentContainerStyle={styles.ScrollView_Main}
-            showsVerticalScrollIndicator={true}
-          >
-            <Container style={styles.Description_Container} useThemeGutterPadding={true}>
-                <Text
-                  style={[
-                    styles.Text_nn7,
-                    theme.typography.subtitle2,
-                    {
-                      color: theme.colors.medium
-                    }
-                  ]}
-                >
-                  {currentMenuItem.description}
-                </Text>
-                <Text
-                  style={[
-                    styles.Text_n2d,
-                    theme.typography.caption,
-                    {
-                      color: theme.colors.light
-                    }
-                  ]}
-                >
-                  {currentMenuItem.calories} Cal.
-                </Text>
+          <Container style={styles.MainItemView_Container}>
+            <Container style={styles.MenuItemNav_Container} elevation={0}>
+              <IconButton
+                style={styles.Touchable_Back}
+                icon="MaterialIcons/arrow-back"
+                size={32}
+                color={theme.colors.primary}
+                onPress={() => {
+                  this.updateQuantity(0)
+                  this.props.navigation.navigate("MenuScreen")
+                }}
+              />
             </Container>
-            {this.renderOptionsView()}
-            <Container style={styles.Stepper_Container}>
-              <Stepper onChange={this.updateQuantity} value={form.quantity} style={styles.Stepper_nrj} />
+            <Image style={styles.MenuItem_Image} source={currentMenuItem.imageURL} resizeMode="cover" />
+            <Container style={styles.MenuItemName_Container} useThemeGutterPadding={true}>
+              <Text
+                style={[
+                  styles.Text_nwi,
+                  theme.typography.headline4,
+                  {
+                    color: theme.colors.strong
+                  }
+                ]}
+              >
+                {currentMenuItem.title}
+              </Text>
             </Container>
-          </ScrollView>
-          <Container
-            style={styles.Container_Footer}
-            elevation={0}
-            useThemeGutterPadding={true}
-          >
-            <Button
-              style={styles.Button_n5x}
-              type="solid"
-              color={theme.colors.primary}
-              onPress={() => {
-                this.handleAddItemToCart()
-                this.props.navigation.navigate("MenuScreen")
-              }}
+            <ScrollView
+              contentContainerStyle={styles.ScrollView_Main}
+              showsVerticalScrollIndicator={true}
             >
-              {`Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.options))}`}
-            </Button>
+              <Container style={styles.Description_Container} useThemeGutterPadding={true}>
+                  <Text
+                    style={[
+                      styles.Text_nn7,
+                      theme.typography.subtitle2,
+                      {
+                        color: theme.colors.medium
+                      }
+                    ]}
+                  >
+                    {currentMenuItem.description}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.Text_n2d,
+                      theme.typography.caption,
+                      {
+                        color: theme.colors.light
+                      }
+                    ]}
+                  >
+                    {currentMenuItem.calories} Cal.
+                  </Text>
+              </Container>
+              {this.renderOptionsView()}
+              <Container style={styles.Stepper_Container}>
+                <Stepper onChange={this.updateQuantity} value={form.quantity} style={styles.Stepper_nrj} />
+              </Container>
+            </ScrollView>
+            <View
+              style={styles.Container_Footer}
+              elevation={0}
+              useThemeGutterPadding={true}
+            >
+              <Button
+                style={styles.Button_n5x}
+                type="solid"
+                color={theme.colors.primary}
+                onPress={() => {
+                  this.handleAddItemToCart();
+                  this.props.navigation.navigate("MenuScreen")
+                }}
+              >
+                {`Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.options))}`}
+              </Button>
+            </View>
           </Container>
         </InactiveDetector>
       </ScreenContainer>
@@ -231,7 +234,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 48
   },
-  Container_MenuItemNav: {
+  MainItemView_Container: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%"
+  },
+  MenuItemNav_Container: {
     justifyContent: "flex-start",
     alignItems: "center"
   },
@@ -244,12 +252,11 @@ const styles = StyleSheet.create({
   MenuItemName_Container: {
     paddingVertical: 16
   },
-  Image_ne5: {
+  MenuItem_Image: {
     width: "100%",
     height: "35%"
   },
-  ScrollView_Main: {
-  },
+  ScrollView_Main: {},
   Stepper_nrj: {
     width: 126,
     height: 42,
@@ -309,13 +316,12 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    cart: state.cart,
     currentMenuItem: state.menuItems[state.currentMenuItemIndex]
   };
 };
 
 const mapDispatchToProps = {
-  updateCart
+  addItemToCart
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuItemViewScreen));

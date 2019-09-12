@@ -18,3 +18,17 @@ export const calculateTotalPrice = (basePrice, quantity, options) => {
   }, 0);
   return (basePrice + optionPrices) * quantity;
 };
+
+export const getSubtotalOfCart = (items) => {
+  return items.reduce((sum, item) => {
+    return sum + calculateTotalPrice(item.price, item.form.quantity, item.form.options);
+  }, 0);
+};
+
+export const getSubtotalTaxOfCart = (items) => {
+  return getSubtotalOfCart(items) * 0.07;
+};
+
+export const getTotalOfCart = (items) => {
+  return getSubtotalTaxOfCart(items) + getSubtotalOfCart(items);
+};

@@ -1,16 +1,26 @@
 import React from "react"
-import { StatusBar, StyleSheet, Text, FlatList } from "react-native"
+import { StatusBar, StyleSheet, Text, FlatList, ScrollView } from "react-native"
 import { updateCart } from '../reducers/reducer';
 import InactiveDetector from '../components/InactiveDetector';
 import { connect } from 'react-redux';
 import { yummy as screenTheme } from "../config/Themes"
 import {
+  centsToDollar,
+  calculateTotalPrice,
+  getSubtotalOfCart,
+  getSubtotalTaxOfCart,
+  getTotalOfCart
+} from '../utilities/money';
+import {
   withTheme,
   ScreenContainer,
   Icon,
+  IconButton,
+  Image,
   Container,
   RowHeadlineImageIcon,
   Button,
+  View,
   Touchable
 } from "@draftbit/ui"
 
@@ -25,91 +35,187 @@ class CheckoutScreen extends React.Component {
   }
 
   render() {
-    const { theme } = this.state
-
+    const { theme } = this.state;
+    const { cart } = this.props;
     return (
       <ScreenContainer hasSafeArea={true} scrollable={false} style={styles.Root_n9y}>
         <InactiveDetector navigation={this.props.navigation}>
-          <Icon
-            style={styles.Icon_nie}
-            name="MaterialCommunityIcons/food-fork-drink"
-            size={100}
-            color={theme.colors.primary}
-          />
-          <Text
-            style={[
-              styles.Text_nxj,
-              theme.typography.headline1,
-              {
-                color: theme.colors.medium
-              }
-            ]}
-          >
-            Checkout
-          </Text>
-          <Container style={styles.Container_nmz} elevation={0} useThemeGutterPadding={true}>
-            <FlatList
-              style={styles.FlatList_nix}
-              data={this.props.cart}
-              renderItem={({ item }) => (
-                <RowHeadlineImageIcon {...item} style={{ marginBottom: theme.spacing.small }} />
-              )}
-              keyExtractor={(_item, idx) => idx.toString()}
-            />
-          </Container>
-          <Container style={styles.Container_n5h} elevation={0} useThemeGutterPadding={true}>
-            <Text
-              style={[
-                styles.Text_n69,
-                theme.typography.headline2,
+          <Container style={styles.Checkout_Container}>
+            <Container style={styles.Container_MenuItemNav} elevation={0}>
+              <IconButton
+                style={styles.Touchable_Back}
+                icon="MaterialIcons/arrow-back"
+                size={32}
+                color={theme.colors.primary}
+                onPress={() => {
+                  this.props.navigation.navigate("MenuScreen")
+                }}
+              />
+            </Container>
+            <ScrollView
+              contentContainerStyle={styles.ScrollView_Main}
+              showsVerticalScrollIndicator={true}
+            >
+              <Container style={styles.Checkout_Logo_Container}>
+                <Icon
+                  style={styles.Icon_nie}
+                  name="MaterialCommunityIcons/food-fork-drink"
+                  size={100}
+                  color={theme.colors.primary}
+                />
+                <Text
+                  style={[
+                    styles.Text_nxj,
+                    theme.typography.headline1,
+                    {
+                      color: theme.colors.medium
+                    }
+                  ]}
+                >
+                  Checkout
+                </Text>
+              </Container>
+              <Container style={styles.CartItem_Cell_Container} elevation={0} useThemeGutterPadding={true}>
                 {
-                  color: theme.colors.medium
+                  cart.map((item, index) => {
+                    return (
+                      <View key={`${item.name}-${index}`} style={styles.CartItem_Cell}>
+                        <View style={styles.CartItem_Cell_Image_Container}>
+                          <Image style={styles.CartItem_Cell_Image} source={item.imageURL} resizeMode="cover" />
+                        </View>
+                        <View style={styles.CartItem_Cell_Content}>
+                          <View>
+                            <View style={styles.CartItem_Top_Container}>
+                              <Text
+                                style={[
+                  								theme.typography.headline1,
+                  								{
+                  									color: theme.colors.strong
+                  								}
+                  							]}
+                              >
+                                {item.title}
+                              </Text>
+                              <View style={styles.CartItem_Count_Container}>
+                                <Text
+                                  style={[
+                                    theme.typography.headline3,
+                                    {
+                                      color: theme.colors.primary
+                                    }
+                                  ]}
+                                >
+                                  {item.form.quantity}
+                                </Text>
+                              </View>
+                              <View style={styles.CartItem_Price_Container}>
+                                <Text
+                                  style={[
+                                    theme.typography.headline3
+                                  ]}
+                                >
+                                  {`$${centsToDollar(calculateTotalPrice(item.price, item.form.quantity, item.form.options))}`}
+                                </Text>
+                              </View>
+                            </View>
+                            {
+                              item.form.options.map((option, optionIndex) => {
+                                return (
+                                  <Text
+                                    key={`${option.name}-${optionIndex}`}
+                                    style={[
+                      								theme.typography.headline4,
+                      								{
+                      									color: theme.colors.strong
+                      								}
+                      							]}
+                                  >
+                                    {option.name}
+                                  </Text>
+                                );
+                              })
+                            }
+                          </View>
+                        </View>
+                      </View>
+
+                    );
+                  })
                 }
-              ]}
-            >
-              Total
-            </Text>
-            <Text
-              style={[
-                styles.Text_n69,
-                theme.typography.headline4,
-                {
-                  color: theme.colors.strong
-                }
-              ]}
-            >
-              ${this.props.cart.reduce((initial, current) => initial + current.price, 0)}
-            </Text>
-          </Container>
-          <Container style={styles.Container_n5a} elevation={0} useThemeGutterPadding={true}>
-            <Button
-              style={styles.Button_n7s}
-              type="solid"
-              onPress={() => {
-                this.props.updateCart([])
-                this.props.navigation.navigate("ThankYouScreen")
-              }}
-            >
-              Purchase
-            </Button>
-            <Touchable
-              style={styles.Touchable_n2o}
-              onPress={() => {
-                this.props.navigation.navigate("MenuScreen")
-              }}
-            >
-              <Text
-                style={[
-                  styles.Text_nmj,
-                  theme.typography.button,
-                  {
-                    color: theme.colors.light
-                  }
-                ]}
+              </Container>
+              <Container style={styles.Price_Container} useThemeGutterPadding={true}>
+                <View style={styles.Price_Label_Container}>
+                  <Text
+                    style={[
+                      theme.typography.headline3
+                    ]}
+                  >
+                    Subtotal
+                  </Text>
+                </View>
+                <View style={styles.Price_Value_Container}>
+                  <Text
+                    style={[
+                      theme.typography.headline3
+                    ]}
+                  >
+                    {`$${centsToDollar(getSubtotalOfCart(cart))}`}
+                  </Text>
+                </View>
+              </Container>
+              <Container style={styles.Price_Container} useThemeGutterPadding={true}>
+                <View style={styles.Price_Label_Container}>
+                  <Text
+                    style={[
+                      theme.typography.headline3
+                    ]}
+                  >
+                    Tax
+                  </Text>
+                </View>
+                <View style={styles.Price_Value_Container}>
+                  <Text
+                    style={[
+                      theme.typography.headline3
+                    ]}
+                  >
+                    {`$${centsToDollar(getSubtotalTaxOfCart(cart))}`}
+                  </Text>
+                </View>
+              </Container>
+              <Container style={styles.Price_Container} useThemeGutterPadding={true}>
+                <View style={styles.Price_Label_Container}>
+                  <Text
+                    style={[
+                      theme.typography.headline1
+                    ]}
+                  >
+                    Total
+                  </Text>
+                </View>
+                <View style={styles.Price_Value_Container}>
+                  <Text
+                    style={[
+                      theme.typography.headline1
+                    ]}
+                  >
+                    {`$${centsToDollar(getTotalOfCart(cart))}`}
+                  </Text>
+                </View>
+              </Container>
+            </ScrollView>
+            <Container style={styles.Footer_Container} elevation={0} useThemeGutterPadding={true}>
+              <Button
+                style={styles.Button_n7s}
+                type="solid"
+                onPress={() => {
+                  this.props.updateCart([])
+                  this.props.navigation.navigate("ThankYouScreen")
+                }}
               >
-                Back
-              </Text>
-            </Touchable>
+                Purchase
+              </Button>
+            </Container>
           </Container>
         </InactiveDetector>
       </ScreenContainer>
@@ -118,11 +224,88 @@ class CheckoutScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  ScrollView_Main: {
+    flex: 1
+  },
+  Price_Container: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  Price_Label_Container: {
+    flex: 1,
+    alignItems: 'flex-start'
+  },
+  Price_Value_Container: {
+    flex: 1,
+    alignItems: 'flex-end',
+    paddingRight: 24
+  },
+  Checkout_Container: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%"
+  },
+  Checkout_Logo_Container: {
+    paddingBottom: 50
+  },
+  Container_MenuItemNav: {
+    justifyContent: "flex-start",
+    alignItems: "center"
+  },
+  Touchable_Back: {
+    alignSelf: "flex-start",
+    margin: 24
+  },
+  CartItem_Count_Container: {
+    borderWidth: 2,
+    borderColor: '#DDDDDD',
+    alignSelf: 'flex-start',
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    paddingBottom: 3,
+    marginTop: -5,
+    marginLeft: 10
+  },
+  CartItem_Price_Container: {
+    display: "flex",
+    flex: 1,
+    alignItems: "flex-end"
+  },
+  CartItem_Cell_Container: {
+    borderTopColor: '#DDDDDD',
+    borderTopWidth: 2,
+    paddingVertical: 24
+  },
+  CartItem_Top_Container: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  CartItem_Cell: {
+    display: "flex",
+    flexDirection: "row",
+		marginBottom: 24,
+    borderBottomColor: '#DDDDDD',
+    borderBottomWidth: 2,
+    minHeight: 150
+  },
+  CartItem_Cell_Image_Container: {
+    width: 100,
+    height: 100,
+    overflow: "hidden"
+  },
+  CartItem_Cell_Image: {
+    width: 100,
+    height: 100
+  },
+  CartItem_Cell_Content: {
+    flex: 1,
+    paddingHorizontal: 24
+  },
   Button_n7s: {
     width: "100%",
     height: 48
   },
-  Container_n5a: {
+  Footer_Container: {
     marginBottom: 24
   },
   Container_n5h: {
@@ -159,16 +342,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => {
-  let cart = state.cart.map((cartItem, i) => ({
-    key: i,
-    icon: "MaterialIcons/favorite",
-    image: cartItem.imageURL,
-    subtitle: `${cartItem.price * cartItem.quantity}`,
-    ...cartItem,
-    title: cartItem.title + ` x${cartItem.quantity}`
-  }));
   return {
-    cart
+    cart: state.cart
   };
 };
 

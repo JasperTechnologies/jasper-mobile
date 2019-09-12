@@ -1,6 +1,7 @@
 export const UPDATE_CART = 'UPDATE_CART';
 export const UPDATE_CURRENT_MENU_ITEM_INDEX = 'UPDATE_CURRENT_MENU_ITEM_INDEX'
 export const UPDATE_CURRENT_MENU_CATEGORY = 'UPDATE_CURRENT_MENU_CATEGORY';
+export const ADD_ITEM_TO_CART = 'ADD_ITEM_TO_CART';
 
 export default function reducer(state = {
   user: {
@@ -17,6 +18,8 @@ export default function reducer(state = {
   currentMenuItemIndex: 0
 }, action) {
   switch (action.type) {
+    case ADD_ITEM_TO_CART:
+      return { ...state, cart: [...state.cart, action.newItem ] };
     case UPDATE_CART:
 			return { ...state, cart: action.newCart };
 		case UPDATE_CURRENT_MENU_ITEM_INDEX:
@@ -58,6 +61,13 @@ export function updateCurrentMenuCategory(category) {
   return {
     type: UPDATE_CURRENT_MENU_CATEGORY,
     category
+  };
+}
+
+export function addItemToCart(itemWithForm) {
+  return {
+    type: ADD_ITEM_TO_CART,
+    newItem: itemWithForm
   };
 }
 
