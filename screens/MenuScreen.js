@@ -1,6 +1,6 @@
 import React from "react"
-import { StatusBar, StyleSheet, ScrollView } from "react-native"
-import { updateCart, updateCurrentMenuItem } from '../reducers/reducer';
+import { StatusBar, StyleSheet, ScrollView, Text } from "react-native"
+import { updateCurrentMenuItem } from '../reducers/reducer';
 import { connect } from 'react-redux';
 import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from "../config/Themes"
@@ -20,8 +20,7 @@ class MenuScreen extends React.Component {
     StatusBar.setBarStyle("light-content")
 
     this.state = {
-      theme: Object.assign(props.theme, screenTheme),
-      cart: []
+      theme: Object.assign(props.theme, screenTheme)
     }
   }
 
@@ -31,11 +30,12 @@ class MenuScreen extends React.Component {
   }
 
   render() {
+    const { cart } = this.props;
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
         <InactiveDetector navigation={this.props.navigation}>
           <Container style={styles.Menu_Page_Container}>
-            <MenuHeader navigateToCheckout={() => this.props.navigation.navigate("CheckoutScreen")}/>
+            <MenuHeader />
             <ScrollView
               contentContainerStyle={styles.Menu_Scrollview}
               bounces={true}
@@ -54,18 +54,20 @@ class MenuScreen extends React.Component {
                 }}
               />)}
             </ScrollView>
-            <View>
-              <Button
-                style={styles.Button_nqn}
-                icon="MaterialIcons/add"
-                type="solid"
-                onPress={() => {
-                  this.props.navigation.navigate("CheckoutScreen")
-                }}
-              >
-                Checkout
-              </Button>
-            </View>
+            {
+              cart.length ?
+              <View style={styles.Footer_Container}>
+                <Button
+                  style={styles.Button_nqn}
+                  type="solid"
+                  onPress={() => {
+                    this.props.navigation.navigate("CheckoutScreen")
+                  }}
+                >
+                  <Text>{`View Cart ${cart.length} items`}</Text>
+                </Button>
+              </View> : null
+            }
           </Container>
         </InactiveDetector>
       </ScreenContainer>
@@ -87,14 +89,12 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     flexDirection: "row",
     flexWrap: "wrap"
+  },
+  Footer_Container: {
   }
 })
 
 const mapStateToProps = state => {
-  let cart = state.cart.map((cartItem, i) => ({
-    key: i,
-    ...cartItem
-  }));
   return {
     cart: state.cart,
     currentMenuItems: state.currentMenuItems
@@ -102,7 +102,6 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  updateCart,
   updateCurrentMenuItem
 };
 

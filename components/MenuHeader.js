@@ -43,21 +43,6 @@ class MenuHeader extends React.Component {
 						/>
 					)}
 				</View>
-        <View style={styles.Header_Buttons_Container}>
-  				<Touchable
-  					style={styles.Cart_Touchable}
-  					onPress={() => {
-  						this.props.navigateToCheckout()
-  					}}
-  				>
-  					<Icon
-  						style={styles.Icon_n49}
-  						name="Entypo/shopping-cart"
-  						size={48}
-  						color={theme.colors.strong}
-  					/>
-  				</Touchable>
-        </View>
 			</View>
     )
   }
@@ -74,23 +59,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginLeft: 20,
     marginTop: 20
-  },
-  Header_Buttons_Container: {
-    display: 'flex',
-    flex: 1,
-    alignItems: 'flex-end'
-  },
-  Button_nqn: {
-    marginTop: 40
-  },
-  CardContainer_ntj: {
-    width: 300
-  },
-  Cart_Touchable: {
-    marginTop: 10,
-    marginRight: 20
-  },
-  Icon_n49: {
   },
   ScrollView_na3: {
     justifyContent: "center",

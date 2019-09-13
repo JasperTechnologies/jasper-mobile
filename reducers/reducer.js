@@ -4,6 +4,8 @@ export const EDIT_MENU_ITEM = 'EDIT_MENU_ITEM';
 export const UPDATE_CURRENT_MENU_ITEM = 'UPDATE_CURRENT_MENU_ITEM'
 export const UPDATE_CURRENT_MENU_CATEGORY = 'UPDATE_CURRENT_MENU_CATEGORY';
 export const ADD_ITEM_TO_CART = 'ADD_ITEM_TO_CART';
+export const REMOVE_ITEM_FROM_CART = 'REMOVE_ITEM_FROM_CART';
+export const CLEAR_CART = 'CLEAR_CART';
 
 export default function reducer(state = {
   user: {
@@ -22,8 +24,26 @@ export default function reducer(state = {
   editingMenuItemForm: null
 }, action) {
   switch (action.type) {
+    case CLEAR_CART: {
+      return {
+        ...state,
+        cart: []
+      };
+    };
     case ADD_ITEM_TO_CART: {
       return { ...state, cart: [...state.cart, action.newItem ] };
+    };
+    case REMOVE_ITEM_FROM_CART: {
+      const { removedItem } = action;
+      console.log(removedItem, state.cart)
+      return {
+        ...state,
+        isEditingMenuItem: false,
+        editingMenuItemForm: null,
+        cart: state.cart.filter((item) => {
+          return item.form.formId !== removedItem.form.formId;
+        })
+      };
     };
     case ADD_EDITED_MENU_ITEM: {
       const { editedItem } = action;
@@ -84,10 +104,23 @@ export default function reducer(state = {
   }
 }
 
+export function clearCart() {
+  return {
+    type: CLEAR_CART
+  };
+}
+
 export function addEditedMenuItem(editedItem) {
   return {
     type: ADD_EDITED_MENU_ITEM,
     editedItem
+  };
+}
+
+export function removeItemFromCart(removedItem) {
+  return {
+    type: REMOVE_ITEM_FROM_CART,
+    removedItem
   };
 }
 

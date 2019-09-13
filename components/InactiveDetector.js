@@ -1,7 +1,11 @@
 import React from "react";
 import { View, PanResponder } from "react-native";
+import { connect } from 'react-redux';
+import {
+  clearCart
+} from '../reducers/reducer';
 
-const TIMEOUT = 60000;
+const TIMEOUT = 120000;
 class InactiveDetector extends React.Component {
   constructor(props) {
     super(props);
@@ -17,7 +21,6 @@ class InactiveDetector extends React.Component {
 
   componentWillUnmount() {
     clearTimeout(this.timeout);
-    // clean form state
   }
 
   handleInactivity = () => {
@@ -36,6 +39,7 @@ class InactiveDetector extends React.Component {
   }
 
   homecoming = () => {
+    this.props.clearCart();
     this.props.navigation.navigate("LandingScreen")
   }
 
@@ -51,4 +55,12 @@ class InactiveDetector extends React.Component {
   }
 }
 
-export default InactiveDetector;
+const mapStateToProps = state => {
+  return {};
+};
+
+const mapDispatchToProps = {
+  clearCart
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(InactiveDetector);
