@@ -1,5 +1,8 @@
-import React from "react"
+import React, { useState } from "react"
 import { StatusBar, StyleSheet, KeyboardAvoidingView, Text } from "react-native"
+import { AsyncStorage } from 'react-native';
+import { useMutation, useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   withTheme,
@@ -11,6 +14,115 @@ import {
   Touchable
 } from "@draftbit/ui"
 import Images from "../config/Images.js"
+
+const LOGIN = gql`
+mutation login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    token
+    user {
+      id
+    }
+  }
+}
+`;
+
+function SignInForm({ theme, navigation }) {
+  const [login, { data, token }] = useMutation(LOGIN);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  return (
+    <Container style={styles.Container_n4k} elevation={0} useThemeGutterPadding={true}>
+      <Text
+        style={[
+          styles.Text_nsa,
+          theme.typography.overline,
+          {
+            color: theme.colors.medium
+          }
+        ]}
+      >
+        ENTER YOUR CREDENTIALS:
+      </Text>
+      <TextField
+        style={styles.TextField_n09}
+        type="solid"
+        label="Email Address"
+        placeholder="joe@example.com"
+        keyboardType="email-address"
+        leftIconMode="inset"
+        value={email}
+        controlled={true}
+        onChangeText={(value) => {
+          setEmail(value);
+        }}
+      />
+      <TextField
+        style={styles.TextField_n3z}
+        type="solid"
+        label="Password"
+        placeholder="**********"
+        leftIconMode="inset"
+        secureTextEntry={true}
+        value={password}
+        controlled={true}
+        onChangeText={(value) => {
+          setPassword(value);
+        }}
+      />
+      <Button
+        style={styles.Button_nnl}
+        type="solid"
+        color={theme.colors.primary}
+        onPress={() => {
+          console.log('payload', {
+            email,
+            password
+          } )
+          login({
+            variables: {
+              email,
+              password
+            }
+          }).then(
+            ({
+              data: {
+                login: {
+                  token
+                }
+              }
+            }) => {
+              console.log(token, 'hi')
+              AsyncStorage.setItem('userToken', token)
+                .then((data) => {})
+                .catch((err) => {});
+            },
+            (error) => {
+            },
+          )
+          navigation.navigate("SimpleWelcomeScreen")
+        }}
+      >
+        SIGN IN
+      </Button>
+    </Container>
+  );
+}
+
+const GET_MENU_ITEMS = gql`
+query MenuItems{
+  menuItems{
+    id
+    title
+    price
+  }
+}
+`;
+
+function CheckQuery() {
+  const { data, loading, error } = useQuery(GET_MENU_ITEMS);
+  console.log(data, loading, error);
+  return null;
+}
 
 class EmailPasswordLoginScreen extends React.Component {
   constructor(props) {
@@ -33,6 +145,7 @@ class EmailPasswordLoginScreen extends React.Component {
           behavior="padding"
           keyboardVerticalOffset={0}
         >
+          <CheckQuery />
           <Container style={styles.Container_n5z} elevation={0} useThemeGutterPadding={true}>
             <Image style={styles.Image_n71} source={Images.DraftbitMark} resizeMode="contain" />
             <Text
@@ -47,45 +160,7 @@ class EmailPasswordLoginScreen extends React.Component {
               Jasper Technologies
             </Text>
           </Container>
-          <Container style={styles.Container_n4k} elevation={0} useThemeGutterPadding={true}>
-            <Text
-              style={[
-                styles.Text_nsa,
-                theme.typography.overline,
-                {
-                  color: theme.colors.medium
-                }
-              ]}
-            >
-              ENTER YOUR CREDENTIALS:
-            </Text>
-            <TextField
-              style={styles.TextField_n09}
-              type="solid"
-              label="Email Address"
-              placeholder="joe@example.com"
-              keyboardType="email-address"
-              leftIconMode="inset"
-            />
-            <TextField
-              style={styles.TextField_n3z}
-              type="solid"
-              label="Password"
-              placeholder="**********"
-              leftIconMode="inset"
-              secureTextEntry={true}
-            />
-            <Button
-              style={styles.Button_nnl}
-              type="solid"
-              color={theme.colors.primary}
-              onPress={() => {
-                this.props.navigation.navigate("SimpleWelcomeScreen")
-              }}
-            >
-              SIGN IN
-            </Button>
-          </Container>
+          <SignInForm theme={theme} navigation={this.props.navigation} />
           <Container style={styles.Container_nul} elevation={0} useThemeGutterPadding={true}>
             <Touchable
               style={styles.Touchable_n2m}

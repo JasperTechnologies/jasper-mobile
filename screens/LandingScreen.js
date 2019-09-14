@@ -84,14 +84,15 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = state => {
-  return {
-    logo: state.user.logo,
-    name: state.user.name
-  };
-};
-
-const mapDispatchToProps = {
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme(LandingScreen));
+export default withTheme(LandingScreen);
+// const mapStateToProps = state => {
+//   return {
+//     logo: state.user.logo,
+//     name: state.user.name
+//   };
+// };
+//
+// const mapDispatchToProps = {
+// };
+//
+// export default connect(mapStateToProps, mapDispatchToProps)(withTheme(LandingScreen));

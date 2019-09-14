@@ -1,7 +1,9 @@
 import React from "react"
 import { StatusBar, StyleSheet, ScrollView, Text } from "react-native"
+import { useQuery } from '@apollo/react-hooks';
 import { updateCurrentMenuItem } from '../reducers/reducer';
 import { connect } from 'react-redux';
+import gql from 'graphql-tag';
 import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from "../config/Themes"
 import {
@@ -14,6 +16,24 @@ import {
 import MenuItem from "../components/MenuItem"
 import MenuHeader from "../components/MenuHeader"
 
+const GET_MENU_ITEMS = gql`
+query MenuItems{
+  menuItems{
+    id
+    title
+    price
+    options {
+      name
+    }
+  }
+}
+`;
+
+function CheckQuery() {
+  const { data } = useQuery(GET_MENU_ITEMS);
+  console.log(data);
+  return null;
+}
 class MenuScreen extends React.Component {
   constructor(props) {
     super(props)
@@ -36,6 +56,7 @@ class MenuScreen extends React.Component {
         <InactiveDetector navigation={this.props.navigation}>
           <Container style={styles.Menu_Page_Container}>
             <MenuHeader />
+            <CheckQuery />
             <ScrollView
               contentContainerStyle={styles.Menu_Scrollview}
               bounces={true}
@@ -93,16 +114,16 @@ const styles = StyleSheet.create({
   Footer_Container: {
   }
 })
-
-const mapStateToProps = state => {
-  return {
-    cart: state.cart,
-    currentMenuItems: state.currentMenuItems
-  };
-};
-
-const mapDispatchToProps = {
-  updateCurrentMenuItem
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuScreen));
+export default withTheme(MenuScreen);
+// const mapStateToProps = state => {
+//   return {
+//     cart: state.cart,
+//     currentMenuItems: state.currentMenuItems
+//   };
+// };
+//
+// const mapDispatchToProps = {
+//   updateCurrentMenuItem
+// };
+//
+// export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuScreen));
