@@ -1,12 +1,12 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, FlatList, ScrollView } from "react-native"
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import {
-  editMenuItem,
-  removeItemFromCart
-} from '../reducers/reducer';
+  GET_CURRENT_MENU_ITEMS,
+  GET_CART
+} from '../constants/graphql-query';
 import InactiveDetector from '../components/InactiveDetector';
 import CheckoutRemoveButton from '../components/CheckoutRemoveButton';
-import { connect } from 'react-redux';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   centsToDollar,
@@ -36,20 +36,14 @@ function EmptyView() {
   );
 }
 
-class CheckoutScreen extends React.Component {
-  constructor(props) {
-    super(props)
-    StatusBar.setBarStyle("dark-content")
-
-    this.state = {
-      theme: Object.assign(props.theme, screenTheme)
+function Checkout({theme}) {
+    const { data: cartData, loading, error } = useQuery(GET_CART);
+    if (loading || error) {
+      return null;
     }
-  }
-
-  renderCheckout = () => {
-    const { theme } = this.state;
-    const { cart } = this.props;
-    return (
+    const { cart } = cartData;
+    return  cart.length === 0?
+      <EmptyView /> :(
       <View style={{ flex: 1 }}>
         <ScrollView
           contentContainerStyle={styles.ScrollView_Main}
@@ -145,7 +139,7 @@ class CheckoutScreen extends React.Component {
                           }
                           <View style={styles.Remove_Button_Container}>
                             <CheckoutRemoveButton
-                              removeItemFromCart={this.props.removeItemFromCart}
+                              removeItemFromCart={() => console.log('remove')}
                               item={item}
                             />
                           </View>
@@ -231,11 +225,20 @@ class CheckoutScreen extends React.Component {
         </Container>
       </View>
     );
+}
+
+class CheckoutScreen extends React.Component {
+  constructor(props) {
+    super(props)
+    StatusBar.setBarStyle("dark-content")
+
+    this.state = {
+      theme: Object.assign(props.theme, screenTheme)
+    }
   }
 
   render() {
     const { theme } = this.state;
-    const { cart } = this.props;
     return (
       <ScreenContainer hasSafeArea={true} scrollable={false} style={styles.Root_n9y}>
         <InactiveDetector navigation={this.props.navigation}>
@@ -251,10 +254,7 @@ class CheckoutScreen extends React.Component {
                 }}
               />
             </Container>
-            {
-              cart.length ?
-              this.renderCheckout() : <EmptyView />
-            }
+            <Checkout theme={this.state.theme}/>
           </Container>
         </InactiveDetector>
       </ScreenContainer>
@@ -381,15 +381,5 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = state => {
-  return {
-    cart: state.cart
-  };
-};
 
-const mapDispatchToProps = {
-  editMenuItem,
-  removeItemFromCart
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme(CheckoutScreen));
+export default withTheme(CheckoutScreen);
