@@ -18,6 +18,12 @@ export const ADD_ITEM_TO_CART = gql`
   }
 `;
 
+export const REMOVE_ITEM_FROM_CART = gql`
+mutation RemoveItemFromCart($index: Int) {
+  removeItemFromCart(index: Int) @client
+}
+`;
+
 export const CLEAR_CART = gql`
   mutation ClearCart {
     clearCart @client

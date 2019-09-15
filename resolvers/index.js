@@ -18,6 +18,7 @@ export const typeDefs = gql`
     setCurrentMenuCategory(menuCategory: MenuCategory): Boolean
     setCurrentMenuItem(menuItem: MenuItem): Boolean
     addItemToCart(menuItemForm: MenuItemForm): Boolean
+    removeItemFrom(index: Int): Boolean
     clearCart: Boolean
   }
 `;
@@ -72,6 +73,18 @@ export const resolvers = {
     addItemToCart: async (_, { menuItemForm }, { cache }) => {
       const { cart } = await cache.readQuery({ query: GET_CART });
       const newCart = [...cart, menuItemForm];
+      await cache.writeQuery({
+        query: GET_CART,
+        data: {
+          cart: newCart
+        }
+      });
+      return null;
+    },
+    removeItemFromCart: async (_, { index }, { cache }) => {
+      const { cart } = await cache.readQuery({ query: GET_CART });
+      let newCart = [...cart]
+      newCart.splice(index, 1);
       await cache.writeQuery({
         query: GET_CART,
         data: {
