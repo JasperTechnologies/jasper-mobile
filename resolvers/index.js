@@ -17,6 +17,7 @@ export const typeDefs = gql`
 
   extend type Mutation {
     setCurrentMenuCategory(menuCategory: MenuCategory!): Boolean
+    clearCart: Boolean
   }
 `;
 
@@ -45,6 +46,16 @@ export const resolvers = {
           currentMenuItems: newCurrentMenuItems
         }
       });
+      return null;
+    },
+    clearCart: async (_, __, { cache }) => {
+      await cache.writeData(
+        {
+          data: {
+            cart: []
+          }
+        }
+      );
       return null;
     }
   }

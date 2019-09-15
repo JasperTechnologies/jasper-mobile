@@ -1,66 +1,58 @@
 import React from "react";
 import { View, PanResponder } from "react-native";
 import { connect } from 'react-redux';
+import { useMutation } from '@apollo/react-hooks';
+import { CLEAR_CART } from '../constants/graphql-mutation';
 import {
   clearCart
 } from '../reducers/reducer';
 
 const TIMEOUT = 120000;
-class InactiveDetector extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  componentWillMount() {
-    this.panResponder = PanResponder.create({
-      onMoveShouldSetPanResponderCapture: this.onMoveShouldSetPanResponderCapture,
-      onStartShouldSetPanResponderCapture: this.onMoveShouldSetPanResponderCapture,
-      onResponderTerminationRequest: this.handleInactivity
-    });
-    this.handleInactivity();
-  }
 
-  componentWillUnmount() {
-    clearTimeout(this.timeout);
-  }
+function InactiveDetector({
+  children,
+  navigation
+}) {
+  const [clearCart] = useMutation(CLEAR_CART);
+  this.timeout = null;
+  this.panResponder = PanResponder.create({
+    onMoveShouldSetPanResponderCapture: this.onMoveShouldSetPanResponderCapture,
+    onStartShouldSetPanResponderCapture: this.onMoveShouldSetPanResponderCapture,
+    onResponderTerminationRequest: this.handleInactivity
+  });
 
-  handleInactivity = () => {
+  this.handleInactivity = () => {
     clearTimeout(this.timeout);
 
     this.resetTimeout();
   }
 
-  resetTimeout = () => {
+  this.resetTimeout = () => {
     this.timeout = setTimeout(this.homecoming, TIMEOUT);
   }
 
-  onMoveShouldSetPanResponderCapture = () => {
+  this.onMoveShouldSetPanResponderCapture = () => {
     this.handleInactivity();
     return false;
   }
 
-  homecoming = () => {
-    this.props.clearCart();
-    this.props.navigation.navigate("LandingScreen")
+  this.homecoming = () => {
+    clearCart();
+    navigation.navigate("LandingScreen");
   }
 
-  render() {
-    return (
-      <View
-        collapsable={false}
-        {...this.panResponder.panHandlers}
-      >
-        {this.props.children}
-      </View>
-    );
-  }
+
+  clearTimeout(this.timeout);
+  this.handleInactivity();
+
+  return (
+    <View
+      collapsable={false}
+      {...this.panResponder.panHandlers}
+    >
+      {children}
+    </View>
+  );
 }
+
 export default InactiveDetector;
-// const mapStateToProps = state => {
-//   return {};
-// };
-//
-// const mapDispatchToProps = {
-//   clearCart
-// };
-//
-// export default connect(mapStateToProps, mapDispatchToProps)(InactiveDetector);
