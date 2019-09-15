@@ -1,22 +1,19 @@
 import gql from 'graphql-tag';
 import {
   GET_MENU_ITEMS,
-  GET_CURRENT_MENU_ITEMS
+  GET_CURRENT_MENU_ITEMS,
+  GET_CART
 } from '../constants/graphql-query';
 
 export const typeDefs = gql`
-  extend type MenuCategory {
-    id: String
-    name: String
-  }
-
   extend type Query {
-    cart: [MenuItem!]
+    cart: [MenuItemForm!]
     currentMenuCategory: MenuCategory!
   }
 
   extend type Mutation {
-    setCurrentMenuCategory(menuCategory: MenuCategory!): Boolean
+    setCurrentMenuCategory(menuCategory: MenuCategory): Boolean
+    addItemToCart(menuItemForm: MenuItemForm): Boolean
     clearCart: Boolean
   }
 `;
@@ -56,6 +53,17 @@ export const resolvers = {
           }
         }
       );
+      return null;
+    },
+    addItemToCart: async (_, { menuItemForm }, { cache }) => {
+      const { cart } = await cache.readQuery({ query: GET_CART });
+      const newCart = [...cart, menuItemForm];
+      await cache.writeQuery({
+        query: GET_CART,
+        data: {
+          cart: newCart
+        }
+      });
       return null;
     }
   }

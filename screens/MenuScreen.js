@@ -1,10 +1,15 @@
 import React from "react"
 import { StatusBar, StyleSheet, ScrollView, Text } from "react-native"
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { updateCurrentMenuItem } from '../reducers/reducer';
 import { connect } from 'react-redux';
 import gql from 'graphql-tag';
-import { GET_CURRENT_MENU_ITEMS } from '../constants/graphql-query';
+import {
+  GET_CURRENT_MENU_ITEMS,
+  GET_CART
+} from '../constants/graphql-query';
+// test
+import { ADD_ITEM_TO_CART } from '../constants/graphql-mutation';
 import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from "../config/Themes"
 import {
@@ -18,7 +23,46 @@ import MenuItem from "../components/MenuItem"
 import MenuHeader from "../components/MenuHeader"
 
 function MenuItems() {
-  const { data, loading, error } = useQuery(GET_CURRENT_MENU_ITEMS);
+  const [ addItemToCart ] = useMutation(ADD_ITEM_TO_CART);
+  const { data, loading, error } = useQuery(
+    GET_CURRENT_MENU_ITEMS,
+    {
+      onCompleted: (res) => {
+        if (res) {
+          addItemToCart({
+            variables: {
+              menuItemForm: {
+                "__typename": "MenuItem",
+                "calories": 620,
+                "options": [
+
+                ],
+                "categories": [
+                  {
+                    "__typename": "MenuCategory",
+                    "id": "ck0hl7gza3goz0b405z44489a",
+                    "name": "Boba",
+                  },
+                ],
+                "description": "Served ice cold with chewy tapioca balls and an organic base of green and black tea",
+                "form": {
+                  "__typename": "Form",
+                  "formId": "1",
+                  "options": [],
+                  "quantity": 1,
+                },
+                "id": "ck0hln7concp00b09fy7b50bw",
+                "pictureURL": "https://danielfooddiary.com/wp-content/uploads/2018/07/taiwanbubbletea3.jpg",
+                "price": 699,
+                "title": "Green Macha"
+              }
+            }
+          })
+        }
+
+      }
+    }
+  );
   if (loading || error) {
     return null;
   }
@@ -37,6 +81,29 @@ function MenuItems() {
       this.onPressMenuItem(item);
     }}
   />)
+}
+
+function ViewCartButton({navigation}) {
+  const { data: cartData, loading, error } = useQuery(GET_CART);
+  if (loading || error) {
+    return null;
+  }
+
+  const { cart } = cartData;
+  if (!cart.length) {
+    return null;
+  }
+  return (
+    <Button
+      style={styles.Button_nqn}
+      type="solid"
+      onPress={() => {
+        navigation.navigate("CheckoutScreen")
+      }}
+    >
+      <Text>{`View Cart ${cart.length} items`}</Text>
+    </Button>
+  )
 }
 class MenuScreen extends React.Component {
   constructor(props) {
@@ -68,20 +135,9 @@ class MenuScreen extends React.Component {
             >
               <MenuItems />
             </ScrollView>
-            {
-              cart.length ?
               <View style={styles.Footer_Container}>
-                <Button
-                  style={styles.Button_nqn}
-                  type="solid"
-                  onPress={() => {
-                    this.props.navigation.navigate("CheckoutScreen")
-                  }}
-                >
-                  <Text>{`View Cart ${cart.length} items`}</Text>
-                </Button>
-              </View> : null
-            }
+                <ViewCartButton navigation={this.props.navigation} />
+              </View>
           </Container>
         </InactiveDetector>
       </ScreenContainer>
@@ -108,15 +164,3 @@ const styles = StyleSheet.create({
   }
 })
 export default withTheme(MenuScreen);
-// const mapStateToProps = state => {
-//   return {
-//     cart: state.cart,
-//     currentMenuItems: state.currentMenuItems
-//   };
-// };
-//
-// const mapDispatchToProps = {
-//   updateCurrentMenuItem
-// };
-//
-// export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuScreen));

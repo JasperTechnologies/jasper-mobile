@@ -9,6 +9,16 @@ query MenuItems{
     calories
     pictureURL
     price
+    options{
+      title
+      priority
+      required
+      optionValues{
+        price
+        title
+        priority
+      }
+    }
     categories{
       id
       name
@@ -42,6 +52,38 @@ query GetCurrentMenuCategory{
   currentMenuCategory @client{
     id
     name
+  }
+}
+`;
+
+export const GET_CART = gql`
+query GetCart{
+  cart @client{
+    id
+    title
+    description
+    calories
+    pictureURL
+    price
+    options{
+      id
+      name
+      type
+      default
+      price
+    }
+    categories{
+      id
+      name
+    }
+    form{
+      formId
+      quantity
+      options{
+        id
+
+      }
+    }
   }
 }
 `;
