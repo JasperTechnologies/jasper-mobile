@@ -105,10 +105,17 @@ function SignInForm({ theme, navigation }) {
 }
 
 function CheckQuery({navigation}) {
-  const { data, loading, error } = useQuery(GET_MENU_ITEMS);
-  if (data !== undefined) {
-    navigation.navigate("LandingScreen")
-  }
+  const { data, loading, error } = useQuery(
+    GET_MENU_ITEMS,
+    {
+      onCompleted: (res) => {
+        const { menuItems } = res;
+        if (menuItems) {
+          navigation.navigate("LandingScreen")
+        }
+      }
+    }
+  );
   return null;
 }
 
