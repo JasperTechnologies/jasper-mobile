@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { updateCurrentMenuItem } from '../reducers/reducer';
 import { connect } from 'react-redux';
 import gql from 'graphql-tag';
+import { GET_MENU_ITEMS } from '../constants/graphql-query';
 import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from "../config/Themes"
 import {
@@ -16,22 +17,24 @@ import {
 import MenuItem from "../components/MenuItem"
 import MenuHeader from "../components/MenuHeader"
 
-const GET_MENU_ITEMS = gql`
-query MenuItems{
-  menuItems{
-    id
-    title
-    price
-    options {
-      name
-    }
+function MenuItems() {
+  const { data, loading, error } = useQuery(GET_MENU_ITEMS);
+    console.log(data)
+  if (loading) {
+    return null;
   }
-}
-`;
 
-function CheckQuery() {
-  const { data } = useQuery(GET_MENU_ITEMS);
-  console.log(data);
+  // {this.props.currentMenuItems.map((item, i) => <MenuItem
+  //   key={i}
+  //   description={item.description}
+  //   title={item.title}
+  //   price={item.price}
+  //   calories={item.calories}
+  //   imageURL={item.imageURL}
+  //   onPress={() => {
+  //     this.onPressMenuItem(item);
+  //   }}
+  // />)}
   return null;
 }
 class MenuScreen extends React.Component {
@@ -63,17 +66,7 @@ class MenuScreen extends React.Component {
               showsVerticalScrollIndicator={true}
               showsHorizontalScrollIndicator={true}
             >
-              {this.props.currentMenuItems.map((item, i) => <MenuItem
-                key={i}
-                description={item.description}
-                title={item.title}
-                price={item.price}
-                calories={item.calories}
-                imageURL={item.imageURL}
-                onPress={() => {
-                  this.onPressMenuItem(item);
-                }}
-              />)}
+              <MenuItems />
             </ScrollView>
             {
               cart.length ?

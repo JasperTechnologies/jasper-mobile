@@ -12,6 +12,28 @@ import {
   Image
 } from "@draftbit/ui"
 
+function LandingContainer() {
+  return (
+    <Container
+      style={styles.Landing_Container}
+    >
+      <View style={styles.Logo_View}>
+        <Image style={styles.Logo_Image} source={undefined} resizeMode="cover" />
+      </View>
+      <View style={styles.Welcome_Text_View}>
+        <Text style={styles.Welcome_Text}>
+          {`Welcome to ${'name'}`}
+        </Text>
+      </View>
+      <View style={styles.TabTo_Text_View}>
+        <Text style={styles.TabTo_Text_Text}>
+          Tab To Start Ordering
+        </Text>
+      </View>
+    </Container>
+  );
+}
+
 class LandingScreen extends React.Component {
   constructor(props) {
     super(props)
@@ -24,7 +46,6 @@ class LandingScreen extends React.Component {
 
   render() {
     const { theme } = this.state;
-    const { logo, name, navigation } = this.props;
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false}>
         <Touchable
@@ -32,23 +53,7 @@ class LandingScreen extends React.Component {
             navigation.navigate("MenuScreen")
           }}
         >
-          <Container
-            style={styles.Landing_Container}
-          >
-            <View style={styles.Logo_View}>
-              <Image style={styles.Logo_Image} source={logo} resizeMode="cover" />
-            </View>
-            <View style={styles.Welcome_Text_View}>
-              <Text style={styles.Welcome_Text}>
-                {`Welcome to ${name}`}
-              </Text>
-            </View>
-            <View style={styles.TabTo_Text_View}>
-              <Text style={styles.TabTo_Text_Text}>
-                Tab To Start Ordering
-              </Text>
-            </View>
-          </Container>
+          <LandingContainer />
         </Touchable>
       </ScreenContainer>
     )

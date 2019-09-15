@@ -3,6 +3,7 @@ import { StatusBar, StyleSheet, KeyboardAvoidingView, Text } from "react-native"
 import { AsyncStorage } from 'react-native';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { GET_MENU_ITEMS } from '../constants/graphql-query';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   withTheme,
@@ -106,16 +107,6 @@ function SignInForm({ theme, navigation }) {
     </Container>
   );
 }
-
-const GET_MENU_ITEMS = gql`
-query MenuItems{
-  menuItems{
-    id
-    title
-    price
-  }
-}
-`;
 
 function CheckQuery({navigation}) {
   const { data, loading, error } = useQuery(GET_MENU_ITEMS);
