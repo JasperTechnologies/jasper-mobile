@@ -24,7 +24,7 @@ const authLink = setContext(async (_, { headers }) => {
 });
 
 const cache = new InMemoryCache();
-const HTTP_LINK = createHttpLink({ uri: 'http://ec2-18-236-185-245.us-west-2.compute.amazonaws.com:4000/' });
+const HTTP_LINK = createHttpLink({ uri: "http://ec2-18-236-185-245.us-west-2.compute.amazonaws.com:4000/" });
 const client = new ApolloClient({
   link: authLink.concat(HTTP_LINK),
   cache,
@@ -36,7 +36,8 @@ cache.writeData({
   data: {
     cart: [],
     currentMenuCategory: null,
-    currentMenuItems: []
+    currentMenuItems: [],
+    currentMenuItem: null
   },
 });
 

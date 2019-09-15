@@ -1,6 +1,10 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { StatusBar, StyleSheet, View, ScrollView, Text, FlatList } from "react-native"
 import v4 from 'uuid/v4';
+import { useQuery } from '@apollo/react-hooks';
+import {
+  GET_CURRENT_MENU_ITEM
+} from '../constants/graphql-query';
 import {
   addItemToCart,
   addEditedMenuItem,
@@ -41,10 +45,164 @@ const getDefaultOptions = (options) => {
   }, []);
 };
 
-class MenuItemViewScreen extends React.Component {
+function MenuItemViewScreen({
+  theme,
+  navigation
+}) {
+  StatusBar.setBarStyle("light-content");
+  const [form, setForm] = useState({
+    quantity: 1,
+    options: []
+  });
+  const { data: { currentMenuItem }, loading: loadingCurrentMenuItem } = useQuery(
+    GET_CURRENT_MENU_ITEM,
+    {
+      onCompleted: ({ currentMenuItem }) => {
+        setForm({
+          ...form,
+          options: getDefaultOptions(currentMenuItem.options)
+        });
+      }
+    }
+  );
+
+  if (loadingCurrentMenuItem || !currentMenuItem) {
+    return null;
+  }
+
+  this.renderOptionsView = () => {
+    const { options } = currentMenuItem;
+    return options.map((option, index) => {
+      return (
+        <View key={`${option.title}-${index}`} style={styles.Option_Type_Container}>
+          <View style={styles.Option_Type_Header}>
+            <Text
+              style={[
+                styles.Text_nwi,
+                theme.typography.headline4,
+                {
+                  color: theme.colors.strong
+                }
+              ]}
+            >
+              {option.title}
+            </Text>
+          </View>
+          <FlatList
+            style={styles.Option_List}
+            data={option.optionValues ? option.optionValues.map(
+              (optionValue) => ({
+                optionValue: optionValue,
+                color: "medium",
+                title: `${optionValue.title} ${optionValue.price ? `($${centsToDollar(optionValue.price)})` : ''}`
+              })
+            ) : []}
+            renderItem={({ item }) => {
+              const isSelected = Boolean(form.options.find(o => o.id === item.option.id));
+              return (
+                <RowBodySwitch
+                  title={item.title}
+                  color={item.color}
+                  style={{ marginBottom: theme.spacing.small }} value={isSelected}
+                  onValueChange={() => {this.handleSwitchOption(item.optionValue, isSelected)}}
+                />
+              );
+            }}
+            keyExtractor={(_item, idx) => idx.toString()}
+          />
+        </View>
+      );
+    });
+  }
+
+  return (
+    <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
+      <InactiveDetector navigation={navigation}>
+        <Container style={styles.MainItemView_Container}>
+          <Container style={styles.MenuItemNav_Container} elevation={0}>
+            <IconButton
+              style={styles.Touchable_Back}
+              icon="MaterialIcons/arrow-back"
+              size={32}
+              color={theme.colors.primary}
+              onPress={() => {
+                this.handleBack();
+              }}
+            />
+          </Container>
+          <Image style={styles.MenuItem_Image} source={currentMenuItem.pictureURL} resizeMode="cover" />
+          <Container style={styles.MenuItemName_Container} useThemeGutterPadding={true}>
+            <Text
+              style={[
+                styles.Text_nwi,
+                theme.typography.headline4,
+                {
+                  color: theme.colors.strong
+                }
+              ]}
+            >
+              {currentMenuItem.title}
+            </Text>
+          </Container>
+          <ScrollView
+            contentContainerStyle={styles.ScrollView_Main}
+            showsVerticalScrollIndicator={true}
+          >
+            <Container style={styles.Description_Container} useThemeGutterPadding={true}>
+                <Text
+                  style={[
+                    styles.Text_nn7,
+                    theme.typography.subtitle2,
+                    {
+                      color: theme.colors.medium
+                    }
+                  ]}
+                >
+                  {currentMenuItem.description}
+                </Text>
+                <Text
+                  style={[
+                    styles.Text_n2d,
+                    theme.typography.caption,
+                    {
+                      color: theme.colors.light
+                    }
+                  ]}
+                >
+                  {currentMenuItem.calories} Cal.
+                </Text>
+            </Container>
+            {this.renderOptionsView()}
+            <Container style={styles.Stepper_Container}>
+              <Stepper onChange={this.updateQuantity} value={form.quantity} style={styles.Stepper_nrj} />
+            </Container>
+          </ScrollView>
+          <View
+            style={styles.Container_Footer}
+            elevation={0}
+            useThemeGutterPadding={true}
+          >
+            <Button
+              style={styles.Button_n5x}
+              type="solid"
+              color={theme.colors.primary}
+              onPress={() => {
+                this.handleSubmit();
+              }}
+            >
+              {`Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.options))}`}
+            </Button>
+          </View>
+        </Container>
+      </InactiveDetector>
+    </ScreenContainer>
+  );
+}
+
+class MenuItemViewScreen1 extends React.Component {
   constructor(props) {
     super(props);
-    StatusBar.setBarStyle("light-content");
+
     const { isEditingMenuItem } = props;
     const DEFAULT_FORM = {
       quantity: 1,
@@ -351,18 +509,18 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = state => {
-  return {
-    currentMenuItem: state.currentMenuItem,
-    isEditingMenuItem: state.isEditingMenuItem,
-    editingMenuItemForm: state.editingMenuItemForm
-  };
-};
+// const mapStateToProps = state => {
+//   return {
+//     currentMenuItem: state.currentMenuItem,
+//     isEditingMenuItem: state.isEditingMenuItem,
+//     editingMenuItemForm: state.editingMenuItemForm
+//   };
+// };
+//
+// const mapDispatchToProps = {
+//   addItemToCart,
+//   addEditedMenuItem,
+//   clearEditingMenuItem
+// };
 
-const mapDispatchToProps = {
-  addItemToCart,
-  addEditedMenuItem,
-  clearEditingMenuItem
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuItemViewScreen));
+export default withTheme(MenuItemViewScreen);

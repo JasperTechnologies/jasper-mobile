@@ -101,6 +101,43 @@ query GetCurrentMenuItems{
       id
       name
     }
+    options{
+      title
+      priority
+      required
+      optionValues{
+        price
+        title
+        priority
+      }
+    }
+  }
+}
+`;
+
+export const GET_CURRENT_MENU_ITEM = gql`
+query GetCurrentMenuItem{
+  currentMenuItem @client{
+    id
+    title
+    description
+    calories
+    pictureURL
+    price
+    categories{
+      id
+      name
+    }
+    options{
+      title
+      priority
+      required
+      optionValues{
+        price
+        title
+        priority
+      }
+    }
   }
 }
 `;

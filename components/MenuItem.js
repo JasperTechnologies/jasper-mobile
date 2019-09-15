@@ -1,6 +1,9 @@
 import React from "react"
 import { StatusBar, StyleSheet, View, Text } from "react-native"
-import { yummy as screenTheme } from "../config/Themes"
+import { useMutation } from '@apollo/react-hooks';
+import {
+  SET_CURRENT_MENU_ITEM
+} from '../constants/graphql-mutation';
 import {
   withTheme,
   Touchable,
@@ -8,78 +11,75 @@ import {
   Container,
 } from "@draftbit/ui"
 
-class MenuItem extends React.Component {
-  constructor(props) {
-    super(props)
-    StatusBar.setBarStyle("light-content")
-
-    this.state = {
-      theme: Object.assign(props.theme, screenTheme)
-    }
-  }
-
-  render() {
-    const { theme } = this.state
-
-    return (
-			<Touchable
-				style={styles.Touchable_n6x}
-				onPress={() => {
-					this.props.onPress()
-				}}
-			>
-				<View style={styles.ViewStyle}>
-					<Image style={styles.Image_ngw} source={this.props.imageURL} />
-					<Container style={styles.Container_ntc} elevation={0} useThemeGutterPadding={true}>
-						<Text
-							style={[
-								styles.Text_ng0,
-								theme.typography.headline4,
-								{
-									color: theme.colors.strong
-								}
-							]}
-						>
-							{this.props.title}
-						</Text>
-						<Text
-							style={[
-								styles.Text_njp,
-								theme.typography.subtitle2,
-								{
-									color: theme.colors.medium
-								}
-							]}
-						>
-							{this.props.description}
-						</Text>
-						<Text
-							style={[
-								styles.Text_nus,
-								theme.typography.caption,
-								{
-									color: theme.colors.light
-								}
-							]}
-						>
-							{this.props.calories} Cal.
-						</Text>
-						<Text
-							style={[
-								styles.Text_nm6,
-								theme.typography.headline5,
-								{
-									color: theme.colors.primary
-								}
-							]}
-						>
-							${this.props.price}
-						</Text>
-					</Container>
-				</View>
-			</Touchable>
-    )
-  }
+function MenuItem({
+  theme,
+  item,
+  navigation
+}) {
+  const [ setCurrentMenuItem ] = useMutation(SET_CURRENT_MENU_ITEM);
+  return (
+    <Touchable
+      style={styles.Touchable_n6x}
+      onPress={() => {
+        setCurrentMenuItem({
+          variables: {
+            menuItem: item
+          }
+        });
+        navigation.navigate("MenuItemViewScreen");
+      }}
+    >
+      <View style={styles.ViewStyle}>
+        <Image style={styles.Image_ngw} source={item.pictureURL} />
+        <Container style={styles.Container_ntc} elevation={0} useThemeGutterPadding={true}>
+          <Text
+            style={[
+              styles.Text_ng0,
+              theme.typography.headline4,
+              {
+                color: theme.colors.strong
+              }
+            ]}
+          >
+            {item.title}
+          </Text>
+          <Text
+            style={[
+              styles.Text_njp,
+              theme.typography.subtitle2,
+              {
+                color: theme.colors.medium
+              }
+            ]}
+          >
+            {item.description}
+          </Text>
+          <Text
+            style={[
+              styles.Text_nus,
+              theme.typography.caption,
+              {
+                color: theme.colors.light
+              }
+            ]}
+          >
+            {item.calories} Cal.
+          </Text>
+          <Text
+            style={[
+              styles.Text_nm6,
+              theme.typography.headline5,
+              {
+                color: theme.colors.primary
+              }
+            ]}
+          >
+            ${item.price}
+          </Text>
+        </Container>
+      </View>
+    </Touchable>
+  )
 }
 
 const styles = StyleSheet.create({

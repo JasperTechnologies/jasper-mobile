@@ -22,7 +22,7 @@ import {
 import MenuItem from "../components/MenuItem"
 import MenuHeader from "../components/MenuHeader"
 
-function MenuItems() {
+function MenuItems({navigation}) {
   const [ addItemToCart ] = useMutation(ADD_ITEM_TO_CART);
   const { data, loading, error } = useQuery(
     GET_CURRENT_MENU_ITEMS,
@@ -72,14 +72,8 @@ function MenuItems() {
 
   return currentMenuItems.map((item, i) => <MenuItem
     key={i}
-    description={item.description}
-    title={item.title}
-    price={item.price}
-    calories={item.calories}
-    imageURL={item.pictureURL}
-    onPress={() => {
-      this.onPressMenuItem(item);
-    }}
+    item={item}
+    navigation={navigation}
   />)
 }
 
@@ -115,11 +109,6 @@ class MenuScreen extends React.Component {
     }
   }
 
-  onPressMenuItem = (item) => {
-    this.props.updateCurrentMenuItem(item)
-    this.props.navigation.navigate("MenuItemViewScreen")
-  }
-
   render() {
     const { cart = [] } = this.props;
     return (
@@ -133,7 +122,7 @@ class MenuScreen extends React.Component {
               showsVerticalScrollIndicator={true}
               showsHorizontalScrollIndicator={true}
             >
-              <MenuItems />
+              <MenuItems navigation={this.props.navigation} />
             </ScrollView>
               <View style={styles.Footer_Container}>
                 <ViewCartButton navigation={this.props.navigation} />
