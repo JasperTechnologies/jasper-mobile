@@ -17,6 +17,15 @@ query MenuItems{
 }
 `;
 
+export const GET_USER = gql`
+query GetUser{
+  user{
+    name
+    pictureURL
+  }
+}
+`;
+
 export const GET_MENU_CATEGORIES = gql`
 query GetUserCategories{
   user{

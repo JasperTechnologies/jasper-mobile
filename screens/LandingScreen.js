@@ -1,7 +1,11 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, Animated, Easing } from "react-native"
 import { connect } from 'react-redux';
+import { useQuery } from '@apollo/react-hooks';
 import { yummy as screenTheme } from "../config/Themes"
+import {
+  GET_USER
+} from '../constants/graphql-query';
 import {
   withTheme,
   ScreenContainer,
@@ -24,6 +28,16 @@ const startAnimation = (scaleValue) => {
 }
 
 function LandingContainer() {
+  const { data: userData, loading, error } = useQuery(GET_USER);
+  if (loading || error) {
+    return null;
+  }
+  const {
+    user: {
+      name,
+      pictureURL
+    }
+  } = userData;
   let scaleValue = new Animated.Value(0)
   const cardScale = scaleValue.interpolate({
     inputRange: [0, 0.25, .5, .75, 1],
@@ -35,11 +49,11 @@ function LandingContainer() {
       style={styles.Landing_Container}
     >
       <View style={styles.Logo_View}>
-        <Image style={styles.Logo_Image} source={undefined} resizeMode="cover" />
+        <Image style={styles.Logo_Image} source={pictureURL} resizeMode="cover" />
       </View>
       <View style={styles.Welcome_Text_View}>
         <Text style={styles.Welcome_Text}>
-          {`Welcome to ${'name'}`}
+          {`Welcome to ${name}`}
         </Text>
       </View>
       <Animated.View style={{...styles.TabTo_Text_View, transform: [{ scale: cardScale }] }}>
