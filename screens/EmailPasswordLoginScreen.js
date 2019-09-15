@@ -91,15 +91,14 @@ function SignInForm({ theme, navigation }) {
                 }
               }
             }) => {
-              console.log(token, 'hi')
               AsyncStorage.setItem('userToken', token)
                 .then((data) => {})
                 .catch((err) => {});
+              navigation.navigate("SimpleWelcomeScreen")
             },
             (error) => {
             },
           )
-          navigation.navigate("SimpleWelcomeScreen")
         }}
       >
         SIGN IN
@@ -118,9 +117,12 @@ query MenuItems{
 }
 `;
 
-function CheckQuery() {
+function CheckQuery({navigation}) {
   const { data, loading, error } = useQuery(GET_MENU_ITEMS);
   console.log(data, loading, error);
+  if (data !== undefined) {
+    navigation.navigate("LandingScreen")
+  }
   return null;
 }
 
@@ -136,7 +138,6 @@ class EmailPasswordLoginScreen extends React.Component {
 
   render() {
     const { theme } = this.state
-
     return (
       <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_nll}>
         <KeyboardAvoidingView
@@ -145,7 +146,7 @@ class EmailPasswordLoginScreen extends React.Component {
           behavior="padding"
           keyboardVerticalOffset={0}
         >
-          <CheckQuery />
+          <CheckQuery navigation={this.props.navigation}/>
           <Container style={styles.Container_n5z} elevation={0} useThemeGutterPadding={true}>
             <Image style={styles.Image_n71} source={Images.DraftbitMark} resizeMode="contain" />
             <Text
