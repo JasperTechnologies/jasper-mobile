@@ -1,5 +1,5 @@
 import React from "react"
-import { StatusBar, StyleSheet, Text } from "react-native"
+import { StatusBar, StyleSheet, Text, Animated, Easing } from "react-native"
 import { connect } from 'react-redux';
 import { yummy as screenTheme } from "../config/Themes"
 import {
@@ -12,7 +12,24 @@ import {
   Image
 } from "@draftbit/ui"
 
+
+const startAnimation = (scaleValue) => {
+  Animated.loop(
+    Animated.timing(scaleValue, {
+      toValue: 1,
+      duration: 2000,
+      easing: Easing.linear,
+      useNativeDriver: true
+    })).start();
+}
+
 function LandingContainer() {
+  let scaleValue = new Animated.Value(0)
+  const cardScale = scaleValue.interpolate({
+    inputRange: [0, 0.25, .5, .75, 1],
+    outputRange: [1, 1.2, 1.4, 1.2, 1]
+  });
+  startAnimation(scaleValue)
   return (
     <Container
       style={styles.Landing_Container}
@@ -25,11 +42,11 @@ function LandingContainer() {
           {`Welcome to ${'name'}`}
         </Text>
       </View>
-      <View style={styles.TabTo_Text_View}>
-        <Text style={styles.TabTo_Text_Text}>
-          Tab To Start Ordering
-        </Text>
-      </View>
+      <Animated.View style={{...styles.TabTo_Text_View, transform: [{ scale: cardScale }] }}>
+        <Animated.Text style={styles.TabTo_Text_Text}>
+          Tap To Start
+        </Animated.Text>
+      </Animated.View>
     </Container>
   );
 }
@@ -45,7 +62,7 @@ class LandingScreen extends React.Component {
   }
 
   render() {
-    const { theme } = this.state;
+    const { navigation } = this.props;
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false}>
         <Touchable
