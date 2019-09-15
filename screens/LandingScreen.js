@@ -44,7 +44,7 @@ function LandingContainer() {
       </View>
       <Animated.View style={{...styles.TabTo_Text_View, transform: [{ scale: cardScale }] }}>
         <Animated.Text style={styles.TabTo_Text_Text}>
-          Tap To Start
+          Tap To Order
         </Animated.Text>
       </Animated.View>
     </Container>
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     paddingVertical: 24
   },
   TabTo_Text_Text: {
+    fontWeight: 'bold',
     fontSize: 40
   }
 })
