@@ -39,7 +39,11 @@ class CheckoutScreen extends React.Component {
                 }}
               />
             </Container>
-            <CheckoutBody theme={theme} navigateToPurchase={() => this.props.navigation.navigate("ThankYouScreen")}/>
+            <CheckoutBody 
+              theme={theme} 
+              navigateToPurchase={() => this.props.navigation.navigate("ThankYouScreen")}
+              navigateToMenuItem={() => this.props.navigation.navigate("MenuItemViewScreen")}
+              />
           </Container>
         </InactiveDetector>
       </ScreenContainer>

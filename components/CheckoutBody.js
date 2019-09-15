@@ -2,7 +2,7 @@ import React from "react"
 import { StyleSheet, Text, ScrollView } from "react-native"
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { GET_CART } from '../constants/graphql-query';
-import { REMOVE_ITEM_FROM_CART } from '../constants/graphql-mutation';
+import { REMOVE_ITEM_FROM_CART, SET_CURRENT_MENU_ITEM } from '../constants/graphql-mutation';
 import CartItem from './CartItem'
 import CheckoutTotalItem from './CheckoutTotalItem'
 import {
@@ -27,8 +27,9 @@ function EmptyView() {
   );
 }
 
-function CheckoutBody({theme, navigateToPurchase}) {
+function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 	const [ removeItemFromCart ] = useMutation(REMOVE_ITEM_FROM_CART);
+	const [ setCurrentMenuItem ] = useMutation(SET_CURRENT_MENU_ITEM);
 	const { data: cartData, loading, error } = useQuery(GET_CART);
 	if (loading || error) {
 		return null;
@@ -70,8 +71,12 @@ function CheckoutBody({theme, navigateToPurchase}) {
 									index={index}
 									onDelete={() => removeItemFromCart(index)}
 									onEdit={() => {
-										this.props.editMenuItem(item);
-										this.props.navigation.navigate("MenuItemViewScreen");
+										setCurrentMenuItem({
+											variables: {
+												menuItem: item
+											}
+										});
+										navigateToMenuItem()
 									}}
 								/>
 							);
