@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { updateCurrentMenuItem } from '../reducers/reducer';
 import { connect } from 'react-redux';
 import gql from 'graphql-tag';
-import { GET_MENU_ITEMS } from '../constants/graphql-query';
+import { GET_CURRENT_MENU_ITEMS } from '../constants/graphql-query';
 import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from "../config/Themes"
 import {
@@ -18,24 +18,25 @@ import MenuItem from "../components/MenuItem"
 import MenuHeader from "../components/MenuHeader"
 
 function MenuItems() {
-  const { data, loading, error } = useQuery(GET_MENU_ITEMS);
-    console.log(data)
-  if (loading) {
+  const { data, loading, error } = useQuery(GET_CURRENT_MENU_ITEMS);
+  if (loading || error) {
     return null;
   }
 
-  // {this.props.currentMenuItems.map((item, i) => <MenuItem
-  //   key={i}
-  //   description={item.description}
-  //   title={item.title}
-  //   price={item.price}
-  //   calories={item.calories}
-  //   imageURL={item.imageURL}
-  //   onPress={() => {
-  //     this.onPressMenuItem(item);
-  //   }}
-  // />)}
-  return null;
+
+  const { currentMenuItems } = data;
+
+  return currentMenuItems.map((item, i) => <MenuItem
+    key={i}
+    description={item.description}
+    title={item.title}
+    price={item.price}
+    calories={item.calories}
+    imageURL={item.pictureURL}
+    onPress={() => {
+      this.onPressMenuItem(item);
+    }}
+  />)
 }
 class MenuScreen extends React.Component {
   constructor(props) {
@@ -53,13 +54,12 @@ class MenuScreen extends React.Component {
   }
 
   render() {
-    const { cart } = this.props;
+    const { cart = [] } = this.props;
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
         <InactiveDetector navigation={this.props.navigation}>
           <Container style={styles.Menu_Page_Container}>
             <MenuHeader />
-            <CheckQuery />
             <ScrollView
               contentContainerStyle={styles.Menu_Scrollview}
               bounces={true}

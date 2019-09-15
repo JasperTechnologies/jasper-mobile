@@ -8,6 +8,7 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
 
+import { resolvers, typeDefs } from './resolvers';
 import cacheAssetsAsync from "./utilities/cacheAssetsAsync"
 import AppNavigator from "./AppNavigator"
 import reducer from './reducers/reducer';
@@ -22,10 +23,21 @@ const authLink = setContext(async (_, { headers }) => {
   }
 });
 
+const cache = new InMemoryCache();
 const HTTP_LINK = createHttpLink({ uri: 'http://ec2-18-236-185-245.us-west-2.compute.amazonaws.com:4000/' });
 const client = new ApolloClient({
   link: authLink.concat(HTTP_LINK),
-  cache: new InMemoryCache()
+  cache,
+  typeDefs,
+  resolvers,
+});
+
+cache.writeData({
+  data: {
+    cart: [],
+    currentMenuCategory: null,
+    currentMenuItems: []
+  },
 });
 
 export default class App extends React.PureComponent {

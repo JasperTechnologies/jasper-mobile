@@ -35,7 +35,6 @@ export default function reducer(state = {
     };
     case REMOVE_ITEM_FROM_CART: {
       const { removedItem } = action;
-      console.log(removedItem, state.cart)
       return {
         ...state,
         isEditingMenuItem: false,

@@ -1,14 +1,60 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, View } from "react-native"
 import { connect } from 'react-redux';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { yummy as screenTheme } from "../config/Themes"
 import { updateCurrentMenuCategory } from "../reducers/reducer";
 import MenuHeaderItem from "./MenuHeaderItem"
 import {
+  GET_MENU_CATEGORIES,
+  GET_CURRENT_MENU_CATEGORY,
+  GET_CURRENT_MENU_ITEMS
+} from '../constants/graphql-query';
+import { SET_CURRENT_MENU_CATEGORY } from '../constants/graphql-mutation';
+import {
   withTheme,
   Touchable,
   Icon,
-} from "@draftbit/ui"
+} from "@draftbit/ui";
+function HeaderItems() {
+  const [ setCurrentMenuCategory ] = useMutation(SET_CURRENT_MENU_CATEGORY);
+  const { data: menuCategoriesData, loading, error } = useQuery(
+    GET_MENU_CATEGORIES,
+    {
+      onCompleted: (res) => {
+        const { user: { menuCategories } } = res;
+        if (menuCategories.length) {
+          setCurrentMenuCategory({
+            variables: {
+              menuCategory: menuCategories[0]
+            }
+          });
+        }
+      }
+    }
+
+  );
+  const { data: currentMenuCategoryData } = useQuery(GET_CURRENT_MENU_CATEGORY);
+  if (loading || error) {
+    return null;
+  }
+
+  const currentMenuCategory = 0;
+  const { user: { menuCategories } } = menuCategoriesData;
+  return menuCategories.map((category, index) => <MenuHeaderItem
+    key={index}
+    name={category.name}
+    selected={currentMenuCategoryData.currentMenuCategory && currentMenuCategoryData.currentMenuCategory.id === category.id}
+    onPress={() => {
+      setCurrentMenuCategory({
+        variables: {
+          menuCategory: category
+        }
+      });
+    }}
+    />
+  );
+}
 
 class MenuHeader extends React.Component {
   constructor(props) {
@@ -22,7 +68,7 @@ class MenuHeader extends React.Component {
 	}
 
   componentWillMount() {
-    this.props.updateCurrentMenuCategory(this.props.menuCategories[0]);
+    // this.props.updateCurrentMenuCategory(this.props.menuCategories[0]);
   }
 
 	selectMenuHeaderItem(category) {
@@ -30,18 +76,11 @@ class MenuHeader extends React.Component {
 	}
 
   render() {
-    const { theme } = this.state
-    const { menuCategories, currentMenuCategory } = this.props;
+    const { theme } = this.state;
     return (
 			<View style={styles.Menu_Header_Container}>
 				<View style={styles.Menu_Category_Container}>
-          {menuCategories.map((category, index) => <MenuHeaderItem
-            key={index}
-						name={category.name}
-						selected={currentMenuCategory.id === category.id}
-						onPress={() => { this.selectMenuHeaderItem(category) }}
-						/>
-					)}
+          <HeaderItems />
 				</View>
 			</View>
     )
@@ -69,15 +108,15 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = state => {
-  return {
-    menuCategories: state.menuCategories,
-    currentMenuCategory: state.currentMenuCategory
-  };
-};
-
-const mapDispatchToProps = {
-  updateCurrentMenuCategory
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuHeader));
+// const mapStateToProps = state => {
+//   return {
+//     menuCategories: state.menuCategories,
+//     currentMenuCategory: state.currentMenuCategory
+//   };
+// };
+//
+// const mapDispatchToProps = {
+//   updateCurrentMenuCategory
+// };
+export default withTheme(MenuHeader);
+// export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuHeader));

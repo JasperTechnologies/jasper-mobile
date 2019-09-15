@@ -54,13 +54,13 @@ class InactiveDetector extends React.Component {
     );
   }
 }
-
-const mapStateToProps = state => {
-  return {};
-};
-
-const mapDispatchToProps = {
-  clearCart
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(InactiveDetector);
+export default InactiveDetector;
+// const mapStateToProps = state => {
+//   return {};
+// };
+//
+// const mapDispatchToProps = {
+//   clearCart
+// };
+//
+// export default connect(mapStateToProps, mapDispatchToProps)(InactiveDetector);

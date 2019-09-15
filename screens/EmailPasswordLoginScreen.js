@@ -75,10 +75,6 @@ function SignInForm({ theme, navigation }) {
         type="solid"
         color={theme.colors.primary}
         onPress={() => {
-          console.log('payload', {
-            email,
-            password
-          } )
           login({
             variables: {
               email,
@@ -110,7 +106,6 @@ function SignInForm({ theme, navigation }) {
 
 function CheckQuery({navigation}) {
   const { data, loading, error } = useQuery(GET_MENU_ITEMS);
-  console.log(data, loading, error);
   if (data !== undefined) {
     navigation.navigate("LandingScreen")
   }

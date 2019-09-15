@@ -46,6 +46,7 @@ class LandingScreen extends React.Component {
 
   render() {
     const { theme } = this.state;
+    const { navigation } = this.props;
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false}>
         <Touchable
