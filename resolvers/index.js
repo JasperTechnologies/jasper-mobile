@@ -54,7 +54,9 @@ export const resolvers = {
       await cache.writeData(
         {
           data: {
-            currentMenuItem: menuItem
+            currentMenuItem: menuItem,
+            editingMenuItemForm: menuItem.form,
+            iseditingMenuItemForm: true
           }
         }
       );
