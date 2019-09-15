@@ -10,6 +10,7 @@ query MenuItems{
     pictureURL
     price
     options{
+      id
       title
       priority
       required
@@ -102,6 +103,7 @@ query GetCurrentMenuItems{
       name
     }
     options{
+      id
       title
       priority
       required
@@ -129,6 +131,7 @@ query GetCurrentMenuItem{
       name
     }
     options{
+      id
       title
       priority
       required
