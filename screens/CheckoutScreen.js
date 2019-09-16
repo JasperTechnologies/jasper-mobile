@@ -32,7 +32,7 @@ class CheckoutScreen extends React.Component {
               <IconButton
                 style={styles.Touchable_Back}
                 icon="MaterialIcons/arrow-back"
-                size={32}
+                size={50}
                 color={theme.colors.primary}
                 onPress={() => {
                   this.props.navigation.navigate("MenuScreen")

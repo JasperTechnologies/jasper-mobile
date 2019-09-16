@@ -1,8 +1,6 @@
 import React from "react"
 import { StatusBar, StyleSheet, ScrollView, Text } from "react-native"
 import { useQuery } from '@apollo/react-hooks';
-import { connect } from 'react-redux';
-import gql from 'graphql-tag';
 import {
   GET_CURRENT_MENU_ITEMS,
   GET_CART
@@ -12,12 +10,11 @@ import { yummy as screenTheme } from "../config/Themes"
 import {
   withTheme,
   ScreenContainer,
-  Button,
   Container,
-  View
 } from "@draftbit/ui"
 import MenuItem from "../components/MenuItem"
 import MenuHeader from "../components/MenuHeader"
+import FooterNavButton from '../components/FooterNavButton'
 
 function MenuItems({navigation}) {
   const { data, loading, error } = useQuery(GET_CURRENT_MENU_ITEMS);
@@ -43,17 +40,10 @@ function ViewCartButton({navigation}) {
   if (!cart.length) {
     return null;
   }
-  return (
-    <Button
-      style={styles.Button_nqn}
-      type="solid"
-      onPress={() => {
-        navigation.navigate("CheckoutScreen")
-      }}
-    >
-      <Text>{`View Cart ${cart.length} items`}</Text>
-    </Button>
-  )
+  return <FooterNavButton 
+    onPress={() => navigation.navigate("CheckoutScreen")} 
+    text={`View Cart ${cart.length} items`}
+    />
 }
 class MenuScreen extends React.Component {
   constructor(props) {
@@ -80,9 +70,7 @@ class MenuScreen extends React.Component {
             >
               <MenuItems navigation={this.props.navigation} />
             </ScrollView>
-              <View style={styles.Footer_Container}>
-                <ViewCartButton navigation={this.props.navigation} />
-              </View>
+            <ViewCartButton navigation={this.props.navigation} />
           </Container>
         </InactiveDetector>
       </ScreenContainer>
@@ -95,8 +83,6 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "100%"
   },
-  Button_nqn: {
-  },
   CardContainer_ntj: {
     width: 300
   },
@@ -105,7 +91,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap"
   },
-  Footer_Container: {
-  }
 })
 export default withTheme(MenuScreen);

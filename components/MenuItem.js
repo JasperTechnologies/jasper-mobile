@@ -10,6 +10,7 @@ import {
   Image,
   Container,
 } from "@draftbit/ui"
+import { centsToDollar } from '../utilities/money';
 
 function MenuItem({
   theme,
@@ -74,7 +75,7 @@ function MenuItem({
               }
             ]}
           >
-            ${item.price}
+            ${centsToDollar(item.price)}
           </Text>
         </Container>
       </View>

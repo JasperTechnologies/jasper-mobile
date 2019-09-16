@@ -21,6 +21,7 @@ import {
   Button,
   View,
 } from "@draftbit/ui"
+import FooterNavButton from "./FooterNavButton";
 
 function EmptyView() {
   return (
@@ -111,15 +112,7 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 					amount={`$${centsToDollar(getTotalOfCart(cart))}`}
 					/>
 			</ScrollView>
-			<Container style={styles.Footer_Container} elevation={0} useThemeGutterPadding={true}>
-				<Button
-					style={styles.Button_n7s}
-					type="solid"
-					onPress={navigateToPurchase}
-				>
-					Purchase
-				</Button>
-			</Container>
+			<FooterNavButton text={'Purchase'} onPress={navigateToPurchase}/>
 		</View>
 	);
 }

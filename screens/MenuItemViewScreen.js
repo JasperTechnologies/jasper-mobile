@@ -32,6 +32,7 @@ import {
   Button,
   Touchable
 } from "@draftbit/ui"
+import FooterNavButton from "../components/FooterNavButton";
 
 const getDefaultOptionValues = (options) => {
   if (!options) {
@@ -204,7 +205,7 @@ function MenuItemViewScreen({
             <IconButton
               style={styles.Touchable_Back}
               icon="MaterialIcons/arrow-back"
-              size={32}
+              size={50}
               color={theme.colors.primary}
               onPress={() => {
                 this.handleBack();
@@ -258,22 +259,10 @@ function MenuItemViewScreen({
               <Stepper onChange={this.updateQuantity} value={form.quantity} style={styles.Stepper_nrj} />
             </Container>
           </ScrollView>
-          <View
-            style={styles.Container_Footer}
-            elevation={0}
-            useThemeGutterPadding={true}
-          >
-            <Button
-              style={styles.Button_n5x}
-              type="solid"
-              color={theme.colors.primary}
-              onPress={() => {
-                this.handleSubmit();
-              }}
-            >
-              {`Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.optionValues))}`}
-            </Button>
-          </View>
+          <FooterNavButton 
+            text={`Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.optionValues))}`}
+            onPress={this.handleSubmit}
+          />
         </Container>
       </InactiveDetector>
     </ScreenContainer>
