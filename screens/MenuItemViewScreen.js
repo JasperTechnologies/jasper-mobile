@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react"
 import { StatusBar, StyleSheet, View, ScrollView, Text, FlatList } from "react-native"
 import v4 from 'uuid/v4';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import {
   GET_CURRENT_MENU_ITEM
 } from '../constants/graphql-query';
-import {
-  addItemToCart,
-  addEditedMenuItem,
-  clearEditingMenuItem
-} from '../reducers/reducer';
+import { ADD_OR_REPLACE_ITEM_TO_CART } from '../constants/graphql-mutation';
+
 import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from '../config/Themes';
 import {
@@ -56,14 +53,31 @@ function MenuItemViewScreen({
     quantity: 1,
     optionValues: []
   });
-  const { data: { currentMenuItem }, loading: loadingCurrentMenuItem } = useQuery(
+  const [ addOrReplaceItemToCart ] = useMutation(ADD_OR_REPLACE_ITEM_TO_CART);
+  const {
+    data: {
+      currentMenuItem,
+      isEditingMenuItem,
+      editingMenuItemForm
+    },
+    loading: loadingCurrentMenuItem
+  } = useQuery(
     GET_CURRENT_MENU_ITEM,
     {
-      onCompleted: ({ currentMenuItem }) => {
-        setForm({
-          ...form,
-          optionValues: getDefaultOptionValues(currentMenuItem.options)
-        });
+      onCompleted: ({
+        currentMenuItem,
+        isEditingMenuItem,
+        editingMenuItemForm
+      }) => {
+        if (isEditingMenuItem) {
+          setForm(editingMenuItemForm);
+        } else {
+          setForm({
+            ...form,
+            optionValues: getDefaultOptionValues(currentMenuItem.options)
+          });
+        }
+
       }
     }
   );
@@ -84,7 +98,7 @@ function MenuItemViewScreen({
   this.handleSwitchOption = (optionValue, isSelected) => {
     if (isSelected) {
       const filteredOptions = form.optionValues.filter(o =>
-        o.id !== optionValue.id && o.optionId !== optionValue.optionId
+        !(o.id === optionValue.id && o.optionId === optionValue.optionId)
       );
       setForm({
         ...form,
@@ -99,9 +113,28 @@ function MenuItemViewScreen({
   }
 
   this.handleBack = () => {
-    const isEditingMenuItem = false;
     if (isEditingMenuItem) {
       // this.props.clearEditingMenuItem();
+      navigation.navigate("CheckoutScreen");
+    } else {
+      navigation.navigate("MenuScreen");
+    }
+  }
+
+  this.handleSubmit = () => {
+    addOrReplaceItemToCart({
+      variables: {
+        menuItemForm: {
+          ...currentMenuItem,
+          form: {
+            ...form,
+            __typename: 'EditingMenuItemForm',
+            formId: form.formId ? form.formId : v4()
+          }
+        }
+      }
+    });
+    if (isEditingMenuItem) {
       navigation.navigate("CheckoutScreen");
     } else {
       navigation.navigate("MenuScreen");

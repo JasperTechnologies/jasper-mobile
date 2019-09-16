@@ -5,23 +5,23 @@ export const centsToDollar = (cents) => {
   return (cents / 100).toFixed(2);
 };
 
-export const calculateTotalPrice = (basePrice, quantity, options) => {
+export const calculateTotalPrice = (basePrice, quantity, optionValues) => {
   if (isNaN(basePrice) || isNaN(quantity)) {
     return 0;
   }
 
-  const optionPrices = options.reduce((sum, option) => {
-    if (isNaN(option.price)) {
+  const optionPrices = optionValues.reduce((sum, optionValue) => {
+    if (isNaN(optionValue.price)) {
       return sum;
     }
-    return sum + option.price;
+    return sum + optionValue.price;
   }, 0);
   return (basePrice + optionPrices) * quantity;
 };
 
 export const getSubtotalOfCart = (items) => {
   return items.reduce((sum, item) => {
-    return sum + calculateTotalPrice(item.price, item.form.quantity, item.form.options);
+    return sum + calculateTotalPrice(item.price, item.form.quantity, item.form.optionValues);
   }, 0);
 };
 

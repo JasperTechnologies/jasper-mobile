@@ -12,13 +12,15 @@ export const typeDefs = gql`
     currentMenuCategory: MenuCategory!
     currentMenuItems: [MenuItem!]
     currentMenuItem: MenuItem!
+    editingMenuItemForm: EditingMenuItemForm!
+    isEditingMenuItem: Boolean!
   }
 
   extend type Mutation {
     setCurrentMenuCategory(menuCategory: MenuCategory): Boolean
     setCurrentMenuItem(menuItem: MenuItem): Boolean
-    addItemToCart(menuItemForm: MenuItemForm): Boolean
-    removeItemFrom(index: Int): Boolean
+    addOrReplaceItemToCart(menuItemForm: MenuItemForm): Boolean
+    removeItemFromCart(index: Int): Boolean
     clearCart: Boolean
   }
 `;
@@ -50,13 +52,23 @@ export const resolvers = {
       });
       return null;
     },
+    setEditingMenuItem: async (_, { menuItem, editingMenuItemForm }, { cache }) => {
+      await cache.writeData(
+        {
+          data: {
+            isEditingMenuItem: true,
+            currentMenuItem: menuItem,
+            editingMenuItemForm: editingMenuItemForm
+          }
+        }
+      );
+      return null;
+    },
     setCurrentMenuItem: async (_, { menuItem }, { cache }) => {
       await cache.writeData(
         {
           data: {
-            currentMenuItem: menuItem,
-            editingMenuItemForm: menuItem.form,
-            iseditingMenuItemForm: true
+            currentMenuItem: menuItem
           }
         }
       );
@@ -72,21 +84,37 @@ export const resolvers = {
       );
       return null;
     },
-    addItemToCart: async (_, { menuItemForm }, { cache }) => {
+    addOrReplaceItemToCart: async (_, { menuItemForm }, { cache }) => {
       const { cart } = await cache.readQuery({ query: GET_CART });
-      const newCart = [...cart, menuItemForm];
+      const newCart = [
+        ...cart.filter((item) => {
+          return item.form.formId !== menuItemForm.form.formId;
+        }),
+        menuItemForm
+      ];
       await cache.writeQuery({
         query: GET_CART,
         data: {
           cart: newCart
         }
       });
+      // cleaning state
+      await cache.writeData(
+        {
+          data: {
+            isEditingMenuItem: false,
+            currentMenuItem: null,
+            editingMenuItemForm: null
+          }
+        }
+      );
       return null;
     },
     removeItemFromCart: async (_, { index }, { cache }) => {
       const { cart } = await cache.readQuery({ query: GET_CART });
-      let newCart = [...cart]
-      newCart.splice(index, 1);
+      console.log(index)
+      const newCart = cart.splice(index, 1);
+
       await cache.writeQuery({
         query: GET_CART,
         data: {

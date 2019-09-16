@@ -12,15 +12,21 @@ export const SET_CURRENT_MENU_ITEM = gql`
   }
 `;
 
-export const ADD_ITEM_TO_CART = gql`
-  mutation AddItemToCart($menuItemForm: MenuItemForm) {
-    addItemToCart(menuItemForm: $menuItemForm) @client
+export const SET_EDITING_MENU_ITEM = gql`
+  mutation SetEditingMenuItem($editingMenuItemForm: EditingMenuItemForm, $menuItem: MenuItem) {
+    setEditingMenuItem(editingMenuItemForm: $editingMenuItemForm, menuItem: $menuItem) @client
+  }
+`;
+
+export const ADD_OR_REPLACE_ITEM_TO_CART = gql`
+  mutation AddOrReplaceItemToCart($menuItemForm: MenuItemForm) {
+    addOrReplaceItemToCart(menuItemForm: $menuItemForm) @client
   }
 `;
 
 export const REMOVE_ITEM_FROM_CART = gql`
 mutation RemoveItemFromCart($index: Int) {
-  removeItemFromCart(index: Int) @client
+  removeItemFromCart(index: $index) @client
 }
 `;
 

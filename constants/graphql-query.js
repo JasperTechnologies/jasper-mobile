@@ -15,6 +15,7 @@ query MenuItems{
       priority
       required
       optionValues{
+        id
         price
         title
         priority
@@ -66,23 +67,31 @@ query GetCart{
     calories
     pictureURL
     price
-    options{
-      id
-      name
-      type
-      default
-      price
-    }
     categories{
       id
       name
     }
+    options{
+      id
+      title
+      priority
+      required
+      optionValues{
+        id
+        price
+        title
+        priority
+      }
+    }
     form{
       formId
       quantity
-      options{
+      optionValues{
         id
-
+        optionId
+        price
+        title
+        priority
       }
     }
   }
@@ -108,6 +117,7 @@ query GetCurrentMenuItems{
       priority
       required
       optionValues{
+        id
         price
         title
         priority
@@ -119,6 +129,18 @@ query GetCurrentMenuItems{
 
 export const GET_CURRENT_MENU_ITEM = gql`
 query GetCurrentMenuItem{
+  isEditingMenuItem @client
+  editingMenuItemForm @client{
+    formId
+    quantity
+    optionValues{
+      id
+      optionId
+      price
+      title
+      priority
+    }
+  }
   currentMenuItem @client{
     id
     title
@@ -136,10 +158,27 @@ query GetCurrentMenuItem{
       priority
       required
       optionValues{
+        id
         price
         title
         priority
       }
+    }
+  }
+}
+`;
+
+export const GET_EDITING_MENU_ITEM = gql`
+query GetEditingMenuItem{
+  isEditingMenuItem @client
+  editingMenuItemForm @client{
+    quantity
+    optionValues{
+      id
+      formId
+      price
+      title
+      priority
     }
   }
 }

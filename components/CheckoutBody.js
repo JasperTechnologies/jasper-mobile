@@ -2,7 +2,10 @@ import React from "react"
 import { StyleSheet, Text, ScrollView } from "react-native"
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { GET_CART } from '../constants/graphql-query';
-import { REMOVE_ITEM_FROM_CART, SET_CURRENT_MENU_ITEM } from '../constants/graphql-mutation';
+import {
+  REMOVE_ITEM_FROM_CART,
+  SET_EDITING_MENU_ITEM
+} from '../constants/graphql-mutation';
 import CartItem from './CartItem'
 import CheckoutTotalItem from './CheckoutTotalItem'
 import {
@@ -29,7 +32,7 @@ function EmptyView() {
 
 function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 	const [ removeItemFromCart ] = useMutation(REMOVE_ITEM_FROM_CART);
-	const [ setCurrentMenuItem ] = useMutation(SET_CURRENT_MENU_ITEM);
+	const [ setEditingMenuItem ] = useMutation(SET_EDITING_MENU_ITEM);
 	const { data: cartData, loading, error } = useQuery(GET_CART);
 	if (loading || error) {
 		return null;
@@ -65,37 +68,44 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 					{
 						cart.map((item, index) => {
 							return (
-								<CartItem 
-									key={index} 
-									item={item} 
+								<CartItem
+									key={index}
+									item={item}
 									index={index}
-									onDelete={() => removeItemFromCart(index)}
+									onDelete={() => {
+                    removeItemFromCart({
+                      variables: {
+												index
+											}
+                    })
+                  }}
 									onEdit={() => {
-										setCurrentMenuItem({
+										setEditingMenuItem({
 											variables: {
-												menuItem: item
+												menuItem: item,
+                        editingMenuItemForm: item.form
 											}
 										});
-										navigateToMenuItem()
+										navigateToMenuItem();
 									}}
 								/>
 							);
 						})
 					}
 				</Container>
-				<CheckoutTotalItem 
-					textTheme={theme.typography.headline3} 
-					title={"Subtotal"} 
+				<CheckoutTotalItem
+					textTheme={theme.typography.headline3}
+					title={"Subtotal"}
 					amount={`$${centsToDollar(getSubtotalOfCart(cart))}`}
 					/>
-				<CheckoutTotalItem 
-					textTheme={theme.typography.headline3} 
-					title={"Tax"} 
+				<CheckoutTotalItem
+					textTheme={theme.typography.headline3}
+					title={"Tax"}
 					amount={`$${centsToDollar(getSubtotalTaxOfCart(cart))}`}
 					/>
-				<CheckoutTotalItem 
-					textTheme={theme.typography.headline1} 
-					title={"Total"} 
+				<CheckoutTotalItem
+					textTheme={theme.typography.headline1}
+					title={"Total"}
 					amount={`$${centsToDollar(getTotalOfCart(cart))}`}
 					/>
 			</ScrollView>

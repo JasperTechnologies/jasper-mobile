@@ -22,7 +22,7 @@ return <Touchable
 >
 	<View style={styles.CartItem_Cell}>
 		<View style={styles.CartItem_Cell_Image_Container}>
-			<Image style={styles.CartItem_Cell_Image} source={item.imageURL} resizeMode="cover" />
+			<Image style={styles.CartItem_Cell_Image} source={item.pictureURL} resizeMode="cover" />
 		</View>
 		<View style={styles.CartItem_Cell_Content}>
 			<View>
@@ -55,15 +55,15 @@ return <Touchable
 								theme.typography.headline3
 							]}
 						>
-							{`$${centsToDollar(calculateTotalPrice(item.price, item.form.quantity, item.form.options))}`}
+							{`$${centsToDollar(calculateTotalPrice(item.price, item.form.quantity, item.form.optionValues))}`}
 						</Text>
 					</View>
 				</View>
 				{
-					item.form.options.map((option, optionIndex) => {
+					item.form.optionValues.map((optionValue, optionIndex) => {
 						return (
 							<Text
-								key={`${option.name}-${optionIndex}`}
+								key={`${optionValue.name}-${optionIndex}`}
 								style={[
 									theme.typography.headline4,
 									{
@@ -71,7 +71,7 @@ return <Touchable
 									}
 								]}
 							>
-								{option.name}
+								{optionValue.title}
 							</Text>
 						);
 					})
