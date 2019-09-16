@@ -11,7 +11,6 @@ import { WEBSERVER_URI } from 'react-native-dotenv';
 import { resolvers, typeDefs } from './resolvers';
 import cacheAssetsAsync from "./utilities/cacheAssetsAsync"
 import AppNavigator from "./AppNavigator"
-import reducer from './reducers/reducer';
 
 const authLink = setContext(async (_, { headers }) => {
   const userToken = await AsyncStorage.getItem('userToken');

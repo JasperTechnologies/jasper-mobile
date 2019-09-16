@@ -1,7 +1,6 @@
 import React from "react"
 import { StatusBar, StyleSheet, ScrollView, Text } from "react-native"
 import { useQuery } from '@apollo/react-hooks';
-import { updateCurrentMenuItem } from '../reducers/reducer';
 import { connect } from 'react-redux';
 import gql from 'graphql-tag';
 import {

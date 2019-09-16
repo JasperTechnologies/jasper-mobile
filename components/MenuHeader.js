@@ -3,7 +3,6 @@ import { StatusBar, StyleSheet, Text, View } from "react-native"
 import { connect } from 'react-redux';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { yummy as screenTheme } from "../config/Themes"
-import { updateCurrentMenuCategory } from "../reducers/reducer";
 import MenuHeaderItem from "./MenuHeaderItem"
 import {
   GET_MENU_CATEGORIES,
@@ -67,14 +66,6 @@ class MenuHeader extends React.Component {
     }
 	}
 
-  componentWillMount() {
-    // this.props.updateCurrentMenuCategory(this.props.menuCategories[0]);
-  }
-
-	selectMenuHeaderItem(category) {
-		this.props.updateCurrentMenuCategory(category);
-	}
-
   render() {
     const { theme } = this.state;
     return (
@@ -108,15 +99,4 @@ const styles = StyleSheet.create({
   }
 })
 
-// const mapStateToProps = state => {
-//   return {
-//     menuCategories: state.menuCategories,
-//     currentMenuCategory: state.currentMenuCategory
-//   };
-// };
-//
-// const mapDispatchToProps = {
-//   updateCurrentMenuCategory
-// };
 export default withTheme(MenuHeader);
-// export default connect(mapStateToProps, mapDispatchToProps)(withTheme(MenuHeader));

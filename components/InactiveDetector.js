@@ -3,9 +3,6 @@ import { View, PanResponder } from "react-native";
 import { connect } from 'react-redux';
 import { useMutation } from '@apollo/react-hooks';
 import { CLEAR_CART } from '../constants/graphql-mutation';
-import {
-  clearCart
-} from '../reducers/reducer';
 
 const TIMEOUT = 120000;
 
