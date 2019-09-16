@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react"
-import { StatusBar, StyleSheet, View, ScrollView, Text, FlatList } from "react-native"
+import React, { useState } from "react"
+import { StatusBar, StyleSheet, ScrollView, Text } from "react-native"
 import v4 from 'uuid/v4';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import {
@@ -11,26 +11,19 @@ import {
 } from '../constants/graphql-mutation';
 
 import InactiveDetector from '../components/InactiveDetector';
-import { yummy as screenTheme } from '../config/Themes';
+import MenuItemOptions from '../components/MenuItemOptions';
 import {
   centsToDollar,
   calculateTotalPrice
 } from '../utilities/money';
-import {
-  getOptionsByType
-} from '../utilities/menu';
 
-import { connect } from 'react-redux';
 import {
   withTheme,
   ScreenContainer,
   Image,
   Container,
-  RowBodySwitch,
   IconButton,
-  Stepper,
-  Button,
-  Touchable
+  Stepper
 } from "@draftbit/ui"
 import FooterNavButton from "../components/FooterNavButton";
 
@@ -63,7 +56,6 @@ function MenuItemViewScreen({
     data: {
       currentMenuItem,
       isEditingMenuItem,
-      editingMenuItemForm
     },
     loading: loadingCurrentMenuItem
   } = useQuery(
@@ -148,54 +140,11 @@ function MenuItemViewScreen({
   }
 
   this.renderOptionsView = () => {
-    const { options } = currentMenuItem;
-    return options.map((option, index) => {
-      return (
-        <View key={`${option.title}-${index}`} style={styles.Option_Type_Container}>
-          <View style={styles.Option_Type_Header}>
-            <Text
-              style={[
-                styles.Text_nwi,
-                theme.typography.headline4,
-                {
-                  color: theme.colors.strong
-                }
-              ]}
-            >
-              {option.title}
-            </Text>
-          </View>
-          <FlatList
-            style={styles.Option_List}
-            data={option.optionValues ? option.optionValues.map(
-              (optionValue) => ({
-                optionValueForm: {
-                  ...optionValue,
-                  optionId: option.id,
-                },
-                color: "medium",
-                title: `${optionValue.title} ${optionValue.price ? `($${centsToDollar(optionValue.price)})` : ''}`
-              })
-            ) : []}
-            renderItem={({ item }) => {
-              const isSelected = Boolean(form.optionValues.find(o => o.id === item.optionValueForm.id && option.id === item.optionValueForm.optionId));
-              return (
-                <RowBodySwitch
-                  title={item.title}
-                  color={item.color}
-                  style={{ marginBottom: theme.spacing.small }} value={isSelected}
-                  onValueChange={() => {
-                    this.handleSwitchOption(item.optionValueForm, isSelected)
-                  }}
-                />
-              );
-            }}
-            keyExtractor={(_item, idx) => idx.toString()}
-          />
-        </View>
-      );
-    });
+    const { options, theme } = currentMenuItem;
+    return <MenuItemOptions options={options} form={form} theme={theme}/>
   }
+
+  
 
   return (
     <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
@@ -234,7 +183,7 @@ function MenuItemViewScreen({
                 <Text
                   style={[
                     styles.Text_nn7,
-                    theme.typography.subtitle2,
+                    theme.typography.subtitle1,
                     {
                       color: theme.colors.medium
                     }
