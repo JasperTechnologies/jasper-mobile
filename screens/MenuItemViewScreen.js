@@ -2,9 +2,7 @@ import React, { useState } from "react"
 import { StatusBar, StyleSheet, ScrollView, Text } from "react-native"
 import v4 from 'uuid/v4';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import {
-  GET_CURRENT_MENU_ITEM
-} from '../constants/graphql-query';
+import { GET_CURRENT_MENU_ITEM } from '../constants/graphql-query';
 import {
   ADD_OR_REPLACE_ITEM_TO_CART,
   CLEAR_EDITING_MENU_ITEM_STATE
@@ -12,10 +10,7 @@ import {
 
 import InactiveDetector from '../components/InactiveDetector';
 import MenuItemOptions from '../components/MenuItemOptions';
-import {
-  centsToDollar,
-  calculateTotalPrice
-} from '../utilities/money';
+import { centsToDollar, calculateTotalPrice } from '../utilities/money';
 
 import {
   withTheme,
@@ -108,6 +103,21 @@ function MenuItemViewScreen({
       });
     }
   }
+
+  this.handleCheckBoxOption = (optionValue, isSelected) => {
+    if (isSelected) {
+      return 
+    } else {
+      const filteredOptions = form.optionValues.map(o => false).filter(o =>
+        (o.id === optionValue.id && o.optionId === optionValue.optionId)
+      );
+      setForm({
+        ...form,
+        optionValues: [optionValue]
+      });
+    }
+  }
+
 
   this.handleBack = () => {
     clearEditingMenuItemState();

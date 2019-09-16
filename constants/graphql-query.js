@@ -14,6 +14,7 @@ query MenuItems{
       title
       priority
       required
+      maxSelections
       optionValues{
         id
         price
@@ -76,6 +77,7 @@ query GetCart{
       title
       priority
       required
+      maxSelections
       optionValues{
         id
         price
@@ -116,6 +118,7 @@ query GetCurrentMenuItems{
       title
       priority
       required
+      maxSelections
       optionValues{
         id
         price
@@ -157,6 +160,7 @@ query GetCurrentMenuItem{
       title
       priority
       required
+      maxSelections
       optionValues{
         id
         price
