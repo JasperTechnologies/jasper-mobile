@@ -5,7 +5,10 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import {
   GET_CURRENT_MENU_ITEM
 } from '../constants/graphql-query';
-import { ADD_OR_REPLACE_ITEM_TO_CART } from '../constants/graphql-mutation';
+import {
+  ADD_OR_REPLACE_ITEM_TO_CART,
+  CLEAR_EDITING_MENU_ITEM_STATE
+} from '../constants/graphql-mutation';
 
 import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from '../config/Themes';
@@ -54,6 +57,7 @@ function MenuItemViewScreen({
     optionValues: []
   });
   const [ addOrReplaceItemToCart ] = useMutation(ADD_OR_REPLACE_ITEM_TO_CART);
+  const [ clearEditingMenuItemState ] = useMutation(CLEAR_EDITING_MENU_ITEM_STATE);
   const {
     data: {
       currentMenuItem,
@@ -113,8 +117,8 @@ function MenuItemViewScreen({
   }
 
   this.handleBack = () => {
+    clearEditingMenuItemState();
     if (isEditingMenuItem) {
-      // this.props.clearEditingMenuItem();
       navigation.navigate("CheckoutScreen");
     } else {
       navigation.navigate("MenuScreen");
@@ -134,6 +138,7 @@ function MenuItemViewScreen({
         }
       }
     });
+    clearEditingMenuItemState();
     if (isEditingMenuItem) {
       navigation.navigate("CheckoutScreen");
     } else {

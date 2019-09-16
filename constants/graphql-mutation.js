@@ -35,3 +35,9 @@ export const CLEAR_CART = gql`
     clearCart @client
   }
 `;
+
+export const CLEAR_EDITING_MENU_ITEM_STATE = gql`
+  mutation ClearEditingMenuItemState {
+    clearEditingMenuItemState @client
+  }
+`;

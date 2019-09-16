@@ -22,6 +22,7 @@ export const typeDefs = gql`
     addOrReplaceItemToCart(menuItemForm: MenuItemForm): Boolean
     removeItemFromCart(index: Int): Boolean
     clearCart: Boolean
+    clearEditingMenuItemState: Boolean
   }
 `;
 
@@ -98,6 +99,9 @@ export const resolvers = {
           cart: newCart
         }
       });
+      return null;
+    },
+    clearEditingMenuItemState: async (_, __, { cache }) => {
       // cleaning state
       await cache.writeData(
         {
@@ -112,9 +116,9 @@ export const resolvers = {
     },
     removeItemFromCart: async (_, { index }, { cache }) => {
       const { cart } = await cache.readQuery({ query: GET_CART });
-      console.log(index)
-      const newCart = cart.splice(index, 1);
-
+      const newCart = cart.filter((c, i) => {
+        return i !== index;
+      });
       await cache.writeQuery({
         query: GET_CART,
         data: {

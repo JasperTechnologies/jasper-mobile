@@ -1,6 +1,6 @@
 import React from "react"
 import { StyleSheet, Text, ScrollView } from "react-native"
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
 import { GET_CART } from '../constants/graphql-query';
 import {
   REMOVE_ITEM_FROM_CART,
@@ -34,6 +34,7 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 	const [ removeItemFromCart ] = useMutation(REMOVE_ITEM_FROM_CART);
 	const [ setEditingMenuItem ] = useMutation(SET_EDITING_MENU_ITEM);
 	const { data: cartData, loading, error } = useQuery(GET_CART);
+  const [ getCart ] = useLazyQuery(GET_CART);
 	if (loading || error) {
 		return null;
 	}
@@ -77,7 +78,8 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
                       variables: {
 												index
 											}
-                    })
+                    });
+                    getCart();
                   }}
 									onEdit={() => {
 										setEditingMenuItem({
