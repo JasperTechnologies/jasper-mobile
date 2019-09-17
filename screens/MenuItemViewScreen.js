@@ -174,7 +174,7 @@ function MenuItemViewScreen({
           <Image style={styles.MenuItem_Image} source={currentMenuItem.pictureURL} resizeMode="cover" />
           <ScrollView
             contentContainerStyle={styles.ScrollView_Main}
-            showsVerticalScrollIndicator={true}
+            showsVerticalScrollIndicator={false}
           >
             <Container style={styles.Invisible_View} />
             <Container style={{
@@ -246,7 +246,12 @@ const styles = StyleSheet.create({
   },
   MenuItemNav_Container: {
     justifyContent: "flex-start",
-    alignItems: "center"
+    width: "100%",
+    alignItems: "flex-start",
+    height: 80
+  },
+  Touchable_Back: {
+    padding: 18
   },
   Container_n2x: {
     justifyContent: "flex-end",
@@ -260,7 +265,7 @@ const styles = StyleSheet.create({
   MenuItem_Image: {
     width: "100%",
     height: 300,
-    top: 90,
+    top: 80,
     position: "absolute"
   },
   ScrollView_Main: {},
@@ -272,21 +277,10 @@ const styles = StyleSheet.create({
     height: 42,
     marginBottom: 16
   },
-  Text_n14: {
-    paddingBottom: 40
-  },
   Text_n2d: {
     textAlign: "auto",
     width: "100%",
     marginTop: 8
-  },
-  Text_n54: {
-    textAlign: "center"
-  },
-  Text_ngd: {
-    textAlign: "auto",
-    width: "100%",
-    marginTop: 16
   },
   Text_nn7: {
     textAlign: "auto",
@@ -296,10 +290,6 @@ const styles = StyleSheet.create({
   Text_nwi: {
     textAlign: "auto",
     width: "100%"
-  },
-  Touchable_Back: {
-    alignSelf: "flex-start",
-    margin: 24
   },
   Option_Type_Container: {
     width: "100%"
