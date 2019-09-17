@@ -1,38 +1,93 @@
 import React from "react"
-import { View, Text, FlatList, StyleSheet } from "react-native"
+import {
+	View,
+	Text,
+	FlatList,
+	StyleSheet,
+	TouchableOpacity
+} from "react-native"
 import { centsToDollar } from '../utilities/money';
 import { withTheme, RowBodySwitch, RowBodyCheckbox } from "@draftbit/ui"
 
 function MenuItemOptions({options, theme, form}) {
 
-	this.renderCheckBoxOptionValue = (item, option) => {
+	this.renderRadioButton = (item, option) => {
 		const isSelected = Boolean(form.optionValues.find(o => o.id === item.optionValueForm.id && option.id === item.optionValueForm.optionId));
-		const selectedValue = isSelected === true ? 'checked' : 'unchecked'
 		return (
-			<RowBodyCheckbox
-				title={item.title}
-				color={theme.primary}
-				style={{ marginBottom: theme.spacing.small }} 
-				status={selectedValue}
-				onPress={() => {
-					this.handleCheckBoxOption(item.optionValueForm, isSelected)
-				}}
-			/>
+			<View style={styles.Option_Value_Row_View}>
+				<View style={styles.Option_Value_Value_View}>
+					<TouchableOpacity
+						style={[
+							styles.Radio_Button,
+							{
+								borderColor: theme.colors.primary
+							}
+						]}
+						onPress={() => {
+							this.handleRadioButton(item.optionValueForm, isSelected);
+						}}
+					>
+						{ isSelected ?
+							<View style={[
+								styles.Checked_Radio_Button,
+								{
+									backgroundColor: theme.colors.primary
+								}
+							]} /> : null
+						}
+					</TouchableOpacity>
+				</View>
+				<View style={styles.Option_Value_Title_View}>
+					<Text
+						style={[
+							styles.Option_Value_Title_Text,
+							isSelected && { color: theme.colors.primary }
+						]}
+					>
+						{item.title}
+					</Text>
+				</View>
+			</View>
 		);
 	}
 
-	this.renderSwitchOptionValue = (item, option) => {
+	this.renderCheckBoxButton = (item, option) => {
 		const isSelected = Boolean(form.optionValues.find(o => o.id === item.optionValueForm.id && option.id === item.optionValueForm.optionId));
 		return (
-			<RowBodySwitch
-				title={item.title}
-				color={item.color}
-				style={{ marginBottom: theme.spacing.small }} 
-				value={isSelected}
-				onValueChange={() => {
-					this.handleSwitchOption(item.optionValueForm, isSelected)
-				}}
-			/>
+			<View style={styles.Option_Value_Row_View}>
+				<View style={styles.Option_Value_Value_View}>
+					<TouchableOpacity
+						style={[
+							styles.Checkbox_Button,
+							{
+								borderColor: theme.colors.primary
+							}
+						]}
+						onPress={() => {
+							this.handleCheckBoxButton(item.optionValueForm, isSelected)
+						}}
+					>
+						{ isSelected ?
+							<View style={[
+								styles.Checked_Checkbox_Button,
+								{
+									backgroundColor: theme.colors.primary
+								}
+							]} /> : null
+						}
+					</TouchableOpacity>
+				</View>
+				<View style={styles.Option_Value_Title_View}>
+					<Text
+						style={[
+							styles.Option_Value_Title_Text,
+							isSelected && { color: theme.colors.primary }
+						]}
+					>
+						{item.title}
+					</Text>
+				</View>
+			</View>
 		);
 	}
 
@@ -42,8 +97,8 @@ function MenuItemOptions({options, theme, form}) {
 				<View style={styles.Option_Type_Header}>
 					<Text
 						style={[
-							styles.Text_nwi,
-							theme.typography.headline4,
+							styles.Option_Title_Text,
+							theme.typography.headline1,
 							{
 								color: theme.colors.strong
 							}
@@ -65,10 +120,12 @@ function MenuItemOptions({options, theme, form}) {
 						})
 					) : []}
 					renderItem={({item}) => {
+						// render radio button
 						if(option.maxSelections === 1) {
-							return this.renderCheckBoxOptionValue(item, option)
+							return this.renderRadioButton(item, option)
 						}
-						return this.renderSwitchOptionValue(item, option)
+						// render checkbox
+						return this.renderCheckBoxButton(item, option)
 					}}
 					keyExtractor={(_item, idx) => idx.toString()}
 				/>
@@ -78,7 +135,7 @@ function MenuItemOptions({options, theme, form}) {
 }
 
 const styles = StyleSheet.create({
-  Text_nwi: {
+  Option_Title_Text: {
     textAlign: "auto",
     width: "100%"
   },
@@ -88,11 +145,55 @@ const styles = StyleSheet.create({
   Option_Type_Header: {
     width: "100%",
     backgroundColor: "#eee",
-    padding: 16
+    paddingHorizontal: 48,
+		paddingVertical: 32
   },
   Option_List: {
     width: "100%"
-  }
+  },
+	Option_Value_Row_View: {
+		width: "100%",
+		display: "flex",
+		flexDirection: "row",
+		paddingHorizontal: 48
+	},
+	Option_Value_Title_View: {
+		height: 100,
+		justifyContent: "center"
+	},
+	Option_Value_Value_View: {
+		width: 56,
+		height: 100,
+		justifyContent: "center"
+	},
+	Radio_Button: {
+		height: 32,
+    width: 32,
+    borderRadius: 50,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+	},
+	Checked_Radio_Button: {
+		width: 22,
+    height: 22,
+    borderRadius: 50,
+	},
+	Checkbox_Button: {
+		height: 32,
+    width: 32,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+	},
+	Checked_Checkbox_Button: {
+		width: 22,
+    height: 22,
+	},
+	Option_Value_Title_Text: {
+		fontSize: 18,
+		fontWeight: "500"
+	}
 })
 
 export default withTheme(MenuItemOptions)

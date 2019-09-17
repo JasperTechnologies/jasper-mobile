@@ -87,7 +87,7 @@ function MenuItemViewScreen({
     }
   }
 
-  this.handleSwitchOption = (optionValue, isSelected) => {
+  this.handleCheckBoxButton = (optionValue, isSelected) => {
     if (isSelected) {
       const filteredOptions = form.optionValues.filter(o =>
         !(o.id === optionValue.id && o.optionId === optionValue.optionId)
@@ -104,16 +104,14 @@ function MenuItemViewScreen({
     }
   }
 
-  this.handleCheckBoxOption = (optionValue, isSelected) => {
-    if (isSelected) {
-      return
-    } else {
-      const filteredOptions = form.optionValues.map(o => false).filter(o =>
-        (o.id === optionValue.id && o.optionId === optionValue.optionId)
+  this.handleRadioButton = (optionValue, isSelected) => {
+    if (!isSelected) {
+      const filteredOptions = form.optionValues.filter(o =>
+        o.optionId !== optionValue.optionId
       );
       setForm({
         ...form,
-        optionValues: [optionValue]
+        optionValues: [...filteredOptions, optionValue]
       });
     }
   }
@@ -181,11 +179,10 @@ function MenuItemViewScreen({
               backgroundColor: theme.colors.background,
               paddingBottom: 130
             }}>
-              <Container style={styles.MenuItemName_Container} useThemeGutterPadding={true}>
+              <Container style={styles.MenuItemName_Container}>
                 <Text
                   style={[
-                    styles.Text_nwi,
-                    theme.typography.headline4,
+                    theme.typography.headline1,
                     {
                       color: theme.colors.strong
                     }
@@ -194,11 +191,10 @@ function MenuItemViewScreen({
                   {currentMenuItem.title}
                 </Text>
               </Container>
-              <Container style={styles.Description_Container} useThemeGutterPadding={true}>
+              <Container style={styles.Description_Container}>
                   <Text
                     style={[
-                      styles.Text_nn7,
-                      theme.typography.subtitle1,
+                      theme.typography.headline4,
                       {
                         color: theme.colors.medium
                       }
@@ -208,8 +204,7 @@ function MenuItemViewScreen({
                   </Text>
                   <Text
                     style={[
-                      styles.Text_n2d,
-                      theme.typography.caption,
+                      theme.typography.headline4,
                       {
                         color: theme.colors.light
                       }
@@ -260,7 +255,12 @@ const styles = StyleSheet.create({
     flexGrow: 1
   },
   MenuItemName_Container: {
-    paddingVertical: 16
+    paddingVertical: 32,
+    paddingHorizontal: 48
+  },
+  Description_Container: {
+    paddingHorizontal: 48,
+    paddingBottom: 32
   },
   MenuItem_Image: {
     width: "100%",
@@ -277,20 +277,6 @@ const styles = StyleSheet.create({
     height: 42,
     marginBottom: 16
   },
-  Text_n2d: {
-    textAlign: "auto",
-    width: "100%",
-    marginTop: 8
-  },
-  Text_nn7: {
-    textAlign: "auto",
-    width: "100%",
-    marginTop: 8
-  },
-  Text_nwi: {
-    textAlign: "auto",
-    width: "100%"
-  },
   Option_Type_Container: {
     width: "100%"
   },
@@ -305,9 +291,6 @@ const styles = StyleSheet.create({
   Container_Footer: {
     width: "100%",
     padding: 10
-  },
-  Description_Container: {
-    paddingBottom: 16
   },
   Stepper_Container: {
     alignItems: "center"
