@@ -177,7 +177,7 @@ function MenuItemViewScreen({
             <Container style={styles.Invisible_View} />
             <Container style={{
               backgroundColor: theme.colors.background,
-              paddingBottom: 130
+              paddingBottom: 200
             }}>
               <Container style={styles.MenuItemName_Container}>
                 <Text
@@ -215,7 +215,7 @@ function MenuItemViewScreen({
               </Container>
               {this.renderOptionsView()}
               <Container style={styles.Stepper_Container}>
-                <Stepper onChange={this.updateQuantity} value={form.quantity} style={styles.Stepper_nrj} />
+                <Stepper onChange={this.updateQuantity} value={form.quantity} style={styles.Stepper} />
               </Container>
             </Container>
           </ScrollView>
@@ -272,10 +272,9 @@ const styles = StyleSheet.create({
   Invisible_View: {
     height: 300
   },
-  Stepper_nrj: {
+  Stepper: {
     width: 126,
-    height: 42,
-    marginBottom: 16
+    height: 42
   },
   Option_Type_Container: {
     width: "100%"

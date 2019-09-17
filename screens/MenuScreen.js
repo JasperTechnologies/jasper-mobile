@@ -40,8 +40,8 @@ function ViewCartButton({navigation}) {
   if (!cart.length) {
     return null;
   }
-  return <FooterNavButton 
-    onPress={() => navigation.navigate("CheckoutScreen")} 
+  return <FooterNavButton
+    onPress={() => navigation.navigate("CheckoutScreen")}
     text={`View Cart ${cart.length} items`}
     />
 }
@@ -89,7 +89,8 @@ const styles = StyleSheet.create({
   Menu_Scrollview: {
     justifyContent: "flex-start",
     flexDirection: "row",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    paddingBottom: 100
   },
 })
 export default withTheme(MenuScreen);

@@ -82,20 +82,14 @@ const styles = StyleSheet.create({
   Menu_Header_Container: {
     display: 'flex',
     flexDirection: 'row',
-    paddingVertical: 10
+    paddingTop: 20,
+    paddingBottom: 30
   },
   Menu_Category_Container: {
     display: 'flex',
     flexDirection: 'row',
     marginLeft: 20,
     marginTop: 20
-  },
-  ScrollView_na3: {
-    justifyContent: "center",
-    flexDirection: "row",
-    paddingTop: 150,
-    paddingBottom: 200,
-    flexWrap: "wrap"
   }
 })
 

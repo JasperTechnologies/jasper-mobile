@@ -95,17 +95,45 @@ function MenuItemOptions({options, theme, form}) {
 		return (
 			<View key={`${option.title}-${index}`} style={styles.Option_Type_Container}>
 				<View style={styles.Option_Type_Header}>
-					<Text
-						style={[
-							styles.Option_Title_Text,
-							theme.typography.headline1,
-							{
-								color: theme.colors.strong
-							}
-						]}
-					>
-						{option.title}
-					</Text>
+					<View style={styles.Option_Title_Text_Container}>
+						<Text
+							style={[
+								styles.Option_Title_Text,
+								theme.typography.headline1,
+								{
+									color: theme.colors.strong
+								}
+							]}
+						>
+							{option.title}
+						</Text>
+					</View>
+					{
+						option.required ?
+						<View style={styles.Option_Required_Text_Container}>
+							<Text
+								style={[
+									styles.Option_Required_Text,
+									theme.typography.headline4
+								]}
+							>
+								Required
+							</Text>
+						</View> :
+						<View style={styles.Option_Optional_Text_Container}>
+							<Text
+								style={[
+									styles.Option_Optional_Text,
+									theme.typography.headline4,
+									{
+										color: theme.colors.medium
+									}
+								]}
+							>
+								Optional
+							</Text>
+						</View>
+					}
 				</View>
 				<FlatList
 					style={styles.Option_List}
@@ -135,19 +163,36 @@ function MenuItemOptions({options, theme, form}) {
 }
 
 const styles = StyleSheet.create({
-  Option_Title_Text: {
-    textAlign: "auto",
-    width: "100%"
-  },
+	Option_Title_Text_Container: {
+		display: "flex",
+		justifyContent: "center"
+	},
+  Option_Title_Text: {},
   Option_Type_Container: {
     width: "100%"
   },
   Option_Type_Header: {
     width: "100%",
     backgroundColor: "#eee",
+		display: "flex",
+		flexDirection: "row",
     paddingHorizontal: 48,
 		paddingVertical: 32
   },
+	Option_Required_Text_Container: {
+		paddingLeft: 24,
+		display: "flex",
+		justifyContent: "center"
+	},
+	Option_Required_Text: {
+		color: "#2a909c"
+	},
+	Option_Optional_Text_Container: {
+		paddingLeft: 24,
+		display: "flex",
+		justifyContent: "center"
+	},
+	Option_Optional_Text: {},
   Option_List: {
     width: "100%"
   },

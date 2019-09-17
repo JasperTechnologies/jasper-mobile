@@ -112,7 +112,7 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 					amount={`$${centsToDollar(getTotalOfCart(cart))}`}
 					/>
 			</ScrollView>
-			<FooterNavButton text={'Purchase'} onPress={navigateToPurchase}/>
+			<FooterNavButton text={'Purchase'} onPress={navigateToPurchase} />
 		</View>
 	);
 }
