@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, PanResponder } from "react-native";
 import { connect } from 'react-redux';
 import { useMutation } from '@apollo/react-hooks';
@@ -37,6 +37,12 @@ function InactiveDetector({
     clearCart();
     navigation.navigate("LandingScreen");
   }
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(this.timeout);
+    };
+  });
 
 
   clearTimeout(this.timeout);
