@@ -106,7 +106,7 @@ function MenuItemViewScreen({
 
   this.handleCheckBoxOption = (optionValue, isSelected) => {
     if (isSelected) {
-      return 
+      return
     } else {
       const filteredOptions = form.optionValues.map(o => false).filter(o =>
         (o.id === optionValue.id && o.optionId === optionValue.optionId)
@@ -154,7 +154,7 @@ function MenuItemViewScreen({
     return <MenuItemOptions options={options} form={form} theme={theme}/>
   }
 
-  
+
 
   return (
     <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
@@ -172,53 +172,59 @@ function MenuItemViewScreen({
             />
           </Container>
           <Image style={styles.MenuItem_Image} source={currentMenuItem.pictureURL} resizeMode="cover" />
-          <Container style={styles.MenuItemName_Container} useThemeGutterPadding={true}>
-            <Text
-              style={[
-                styles.Text_nwi,
-                theme.typography.headline4,
-                {
-                  color: theme.colors.strong
-                }
-              ]}
-            >
-              {currentMenuItem.title}
-            </Text>
-          </Container>
           <ScrollView
             contentContainerStyle={styles.ScrollView_Main}
             showsVerticalScrollIndicator={true}
           >
-            <Container style={styles.Description_Container} useThemeGutterPadding={true}>
+            <Container style={styles.Invisible_View} />
+            <Container style={{
+              backgroundColor: theme.colors.background,
+              paddingBottom: 130
+            }}>
+              <Container style={styles.MenuItemName_Container} useThemeGutterPadding={true}>
                 <Text
                   style={[
-                    styles.Text_nn7,
-                    theme.typography.subtitle1,
+                    styles.Text_nwi,
+                    theme.typography.headline4,
                     {
-                      color: theme.colors.medium
+                      color: theme.colors.strong
                     }
                   ]}
                 >
-                  {currentMenuItem.description}
+                  {currentMenuItem.title}
                 </Text>
-                <Text
-                  style={[
-                    styles.Text_n2d,
-                    theme.typography.caption,
-                    {
-                      color: theme.colors.light
-                    }
-                  ]}
-                >
-                  {currentMenuItem.calories} Cal.
-                </Text>
-            </Container>
-            {this.renderOptionsView()}
-            <Container style={styles.Stepper_Container}>
-              <Stepper onChange={this.updateQuantity} value={form.quantity} style={styles.Stepper_nrj} />
+              </Container>
+              <Container style={styles.Description_Container} useThemeGutterPadding={true}>
+                  <Text
+                    style={[
+                      styles.Text_nn7,
+                      theme.typography.subtitle1,
+                      {
+                        color: theme.colors.medium
+                      }
+                    ]}
+                  >
+                    {currentMenuItem.description}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.Text_n2d,
+                      theme.typography.caption,
+                      {
+                        color: theme.colors.light
+                      }
+                    ]}
+                  >
+                    {currentMenuItem.calories} Cal.
+                  </Text>
+              </Container>
+              {this.renderOptionsView()}
+              <Container style={styles.Stepper_Container}>
+                <Stepper onChange={this.updateQuantity} value={form.quantity} style={styles.Stepper_nrj} />
+              </Container>
             </Container>
           </ScrollView>
-          <FooterNavButton 
+          <FooterNavButton
             text={`Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.optionValues))}`}
             onPress={this.handleSubmit}
           />
@@ -253,9 +259,14 @@ const styles = StyleSheet.create({
   },
   MenuItem_Image: {
     width: "100%",
-    height: "35%"
+    height: 300,
+    top: 90,
+    position: "absolute"
   },
   ScrollView_Main: {},
+  Invisible_View: {
+    height: 300
+  },
   Stepper_nrj: {
     width: 126,
     height: 42,
