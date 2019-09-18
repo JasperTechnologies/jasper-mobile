@@ -14,80 +14,92 @@ function MenuItemOptions({options, theme, form}) {
 	this.renderRadioButton = (item, option) => {
 		const isSelected = Boolean(form.optionValues.find(o => o.id === item.optionValueForm.id && option.id === item.optionValueForm.optionId));
 		return (
-			<View style={styles.Option_Value_Row_View}>
-				<View style={styles.Option_Value_Value_View}>
-					<TouchableOpacity
-						style={[
-							styles.Radio_Button,
-							{
-								borderColor: theme.colors.primary
-							}
-						]}
-						onPress={() => {
-							this.handleRadioButton(item.optionValueForm, isSelected);
-						}}
-					>
-						{ isSelected ?
-							<View style={[
-								styles.Checked_Radio_Button,
+			<TouchableOpacity
+				onPress={() => {
+					this.handleRadioButton(item.optionValueForm, isSelected);
+				}}
+			>
+				<View style={styles.Option_Value_Row_View}>
+					<View style={styles.Option_Value_Value_View}>
+						<TouchableOpacity
+							style={[
+								styles.Radio_Button,
 								{
-									backgroundColor: theme.colors.primary
+									borderColor: theme.colors.primary
 								}
-							]} /> : null
-						}
-					</TouchableOpacity>
+							]}
+							onPress={() => {
+								this.handleRadioButton(item.optionValueForm, isSelected);
+							}}
+						>
+							{ isSelected ?
+								<View style={[
+									styles.Checked_Radio_Button,
+									{
+										backgroundColor: theme.colors.primary
+									}
+								]} /> : null
+							}
+						</TouchableOpacity>
+					</View>
+					<View style={styles.Option_Value_Title_View}>
+						<Text
+							style={[
+								styles.Option_Value_Title_Text,
+								isSelected && { color: theme.colors.primary }
+							]}
+						>
+							{item.title}
+						</Text>
+					</View>
 				</View>
-				<View style={styles.Option_Value_Title_View}>
-					<Text
-						style={[
-							styles.Option_Value_Title_Text,
-							isSelected && { color: theme.colors.primary }
-						]}
-					>
-						{item.title}
-					</Text>
-				</View>
-			</View>
+			</TouchableOpacity>
 		);
 	}
 
 	this.renderCheckBoxButton = (item, option) => {
 		const isSelected = Boolean(form.optionValues.find(o => o.id === item.optionValueForm.id && option.id === item.optionValueForm.optionId));
 		return (
-			<View style={styles.Option_Value_Row_View}>
-				<View style={styles.Option_Value_Value_View}>
-					<TouchableOpacity
-						style={[
-							styles.Checkbox_Button,
-							{
-								borderColor: theme.colors.primary
-							}
-						]}
-						onPress={() => {
-							this.handleCheckBoxButton(item.optionValueForm, isSelected)
-						}}
-					>
-						{ isSelected ?
-							<View style={[
-								styles.Checked_Checkbox_Button,
+			<TouchableOpacity
+				onPress={() => {
+					this.handleCheckBoxButton(item.optionValueForm, isSelected)
+				}}
+			>
+				<View style={styles.Option_Value_Row_View}>
+					<View style={styles.Option_Value_Value_View}>
+						<TouchableOpacity
+							style={[
+								styles.Checkbox_Button,
 								{
-									backgroundColor: theme.colors.primary
+									borderColor: theme.colors.primary
 								}
-							]} /> : null
-						}
-					</TouchableOpacity>
+							]}
+							onPress={() => {
+								this.handleCheckBoxButton(item.optionValueForm, isSelected)
+							}}
+						>
+							{ isSelected ?
+								<View style={[
+									styles.Checked_Checkbox_Button,
+									{
+										backgroundColor: theme.colors.primary
+									}
+								]} /> : null
+							}
+						</TouchableOpacity>
+					</View>
+					<View style={styles.Option_Value_Title_View}>
+						<Text
+							style={[
+								styles.Option_Value_Title_Text,
+								isSelected && { color: theme.colors.primary }
+							]}
+						>
+							{item.title}
+						</Text>
+					</View>
 				</View>
-				<View style={styles.Option_Value_Title_View}>
-					<Text
-						style={[
-							styles.Option_Value_Title_Text,
-							isSelected && { color: theme.colors.primary }
-						]}
-					>
-						{item.title}
-					</Text>
-				</View>
-			</View>
+			</TouchableOpacity>
 		);
 	}
 
