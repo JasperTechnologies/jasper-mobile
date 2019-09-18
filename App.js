@@ -38,7 +38,8 @@ cache.writeData({
     currentMenuItems: [],
     currentMenuItem: null,
     isEditingMenuItem: false,
-    editingMenuItemForm: null
+    editingMenuItemForm: null,
+    tipPercentIndex: 0
   },
 });
 

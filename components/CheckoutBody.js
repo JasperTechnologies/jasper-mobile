@@ -1,7 +1,10 @@
 import React from "react"
 import { StyleSheet, Text, ScrollView, TouchableWithoutFeedback } from "react-native"
 import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
-import { GET_CART, GET_TIP_PERCENT_INDEX } from '../constants/graphql-query';
+import {
+  GET_CART,
+  GET_TIP_PERCENT_INDEX
+} from '../constants/graphql-query';
 import {
   REMOVE_ITEM_FROM_CART,
 	SET_EDITING_MENU_ITEM,
@@ -39,13 +42,13 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 	const [ setEditingMenuItem ] = useMutation(SET_EDITING_MENU_ITEM);
 	const [ setTipPercent ] = useMutation(SET_TIP_PERCENT_INDEX);
 	const { data: cartData, loading, error } = useQuery(GET_CART);
-	const { data: currentTipIndex } = useQuery(GET_TIP_PERCENT_INDEX);
+	const { data: { tipPercentIndex } } = useQuery(GET_TIP_PERCENT_INDEX);
 
   const [ getCart ] = useLazyQuery(GET_CART);
 	if (loading || error) {
 		return null;
 	}
-	const tipPercent = currentTipIndex !== undefined? tipPercentages[currentTipIndex] : 0
+
 	const { cart } = cartData;
 	return  cart.length === 0?
 		<EmptyView /> :(
@@ -105,14 +108,38 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 				</Container>
 				<View style={styles.Tip_Section}>
 					<Text style={[theme.typography.headline1, {marginLeft: 305, marginBottom: 20}]}>Tip Amount</Text>
-					<View style={styles.Tip_View} useThemeGutterPadding={true}>
+					<View style={styles.Tip_View}>
 						{tipPercentages.map((tip, index) => (
-							<TouchableWithoutFeedback key={index} onPress={() => setTipPercent(index)}>
-								<View style={index === tipPercent? {...styles.Selected_Tip_Box, backgroundColor: theme.colors.primary} : styles.Tip_Box}>
-									<Text style={index === tipPercent? styles.Selected_Tip_Text : styles.Tip_Text}>
+							<TouchableWithoutFeedback
+                key={index}
+                onPress={() => {
+                  setTipPercent({
+                    variables: {
+                      percentIndex: index
+                    }
+                  })
+                }}>
+								<View
+                  style={
+                    index === tipPercentIndex ?
+                    {
+                      ...styles.Selected_Tip_Box,
+                      backgroundColor: theme.colors.primary
+                    } : styles.Tip_Box
+                  }
+                >
+									<Text
+                    style={
+                      index === tipPercentIndex ? styles.Selected_Tip_Text : styles.Tip_Text
+                    }
+                  >
 										{tip}%
 									</Text>
-									<Text style={index === tipPercent? styles.Selected_Tip_Text : styles.Tip_Text}>
+									<Text
+                    style={
+                      index === tipPercentIndex ? styles.Selected_Tip_Text : styles.Tip_Text
+                    }
+                  >
 										${centsToDollar(getTipsOfCart(cart, tip))}
 									</Text>
 								</View>
@@ -129,7 +156,7 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline3}
 					title={"Tip"}
-					amount={`$${centsToDollar(getTipsOfCart(cart, tipPercent))}`}
+					amount={`$${centsToDollar(getTipsOfCart(cart, tipPercentages[tipPercentIndex]))}`}
 					/>
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline3}
@@ -139,7 +166,7 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline1}
 					title={"Total"}
-					amount={`$${centsToDollar(getTotalOfCart(cart, tipPercent))}`}
+					amount={`$${centsToDollar(getTotalOfCart(cart, tipPercentages[tipPercentIndex]))}`}
 					/>
 			</ScrollView>
 			<FooterNavButton text={'Purchase'} onPress={navigateToPurchase} />
@@ -184,36 +211,33 @@ const styles = StyleSheet.create({
     alignSelf: "center"
 	},
 	Tip_View: {
-		flex: 1, 
-		flexDirection: 'row', 
+		flex: 1,
+		flexDirection: 'row',
 		justifyContent: 'center'
 	},
 	Tip_Box: {
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
-		width: 150, 
-		height: 150, 
-		backgroundColor: 'white', 
-		borderRadius: 4,
-    borderWidth: 0.5,
-    borderColor: '#d6d7da',
+		width: 200,
+		height: 250,
+		backgroundColor: 'white',
+    margin: 12
 	},
 	Selected_Tip_Box: {
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
-		width: 150, 
-		height: 150, 
-		borderRadius: 4,
-    borderWidth: 0.5,
+		width: 200,
+		height: 250,
+    margin: 12
 	},
 	Selected_Tip_Text: {
-		color: "white",
-		fontSize: 20
+		color: "#FFFFFF",
+		fontSize: 32
 	},
 	Tip_Text: {
-		fontSize: 20
+		fontSize: 32
 	},
 	ScrollView_Main: {
 		paddingBottom: 100

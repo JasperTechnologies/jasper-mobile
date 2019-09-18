@@ -1,10 +1,12 @@
-export const getOptionsByType = (options) => {
-  return options.reduce((res, option) => {
-    if (res[option.type]) {
-      res[option.type].push(option);
-    } else {
-      res[option.type] = [option];
+export const isMenuItemReadyToAdd = (options, optionValuesForm) => {
+  return options.reduce((isReady, option) => {
+    if (option.required) {
+      // check required option is selected
+      return option.optionValues.reduce((requiredSelected, optionValue) => {
+        const selected = optionValuesForm.find(o => o.optionId === option.id && o.id === optionValue.id);
+        return selected || requiredSelected;
+      }, false) && isReady;
     }
-    return res;
-  }, {});
+    return true;
+  }, false);
 };

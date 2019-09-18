@@ -131,8 +131,7 @@ export const resolvers = {
       return null;
     },
     setTipPercentIndex: async (_, { percentIndex }, { cache }) => {
-      console.log('here', percentIndex)
-      await cache.writeQuery({
+      await cache.writeData({
         data: {
           tipPercentIndex: percentIndex
         }

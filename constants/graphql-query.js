@@ -190,8 +190,6 @@ query GetEditingMenuItem{
 
 export const GET_TIP_PERCENT_INDEX = gql`
 query GetTipPercentIndex{
-  getTipPercentIndex @client{
-    tipPercentIndex
-  }
+  tipPercentIndex @client
 }
 `;

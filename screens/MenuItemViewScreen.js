@@ -9,7 +9,11 @@ import {
 } from '../constants/graphql-mutation';
 
 import MenuItemOptions from '../components/MenuItemOptions';
-import { centsToDollar, calculateTotalPrice } from '../utilities/money';
+import {
+  centsToDollar,
+  calculateTotalPrice
+} from '../utilities/money';
+import { isMenuItemReadyToAdd } from '../utilities/menu';
 
 import {
   withTheme,
@@ -220,6 +224,7 @@ function MenuItemViewScreen({
         <FooterNavButton
           text={`Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.optionValues))}`}
           onPress={this.handleSubmit}
+          disabled={!isMenuItemReadyToAdd(currentMenuItem.options, form.optionValues)}
         />
       </Container>
     </ScreenContainer>

@@ -3,7 +3,12 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
 import { Button, withTheme} from "@draftbit/ui"
 import { LinearGradient } from "expo-linear-gradient";
 
-function FooterNavButton({onPress, text, theme}) {
+function FooterNavButton({
+  onPress,
+  text,
+  theme,
+  disabled
+}) {
   return (
     <LinearGradient
       colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)', 'rgba(255,255,255,1)']}
@@ -14,12 +19,16 @@ function FooterNavButton({onPress, text, theme}) {
         style={[
           styles.Footer_Nav_Button,
           {
-            backgroundColor: theme.colors.primary
+            backgroundColor: disabled ? '#DEDEDE' : theme.colors.primary
           }
         ]}
+        disabled={disabled}
 			>
 				<Text style={[
-          styles.Footer_Nav_Button_Text
+          styles.Footer_Nav_Button_Text,
+          {
+            color: disabled ? '#FFFFFF' : '#FFFFFF'
+          }
         ]}>
           {text}
         </Text>
@@ -46,7 +55,6 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   Footer_Nav_Button_Text: {
-    color: "#FFFFFF",
     fontSize: 24,
     fontWeight: "800"
   }
