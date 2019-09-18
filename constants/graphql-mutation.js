@@ -12,6 +12,12 @@ export const SET_CURRENT_MENU_ITEM = gql`
   }
 `;
 
+export const SET_TIP_PERCENT_INDEX = gql`
+  mutation SetTipPercentIndex($percentIndex: Int) {
+    setTipPercentIndex(percentIndex: $percentIndex) @client
+  }
+`;
+
 export const SET_EDITING_MENU_ITEM = gql`
   mutation SetEditingMenuItem($editingMenuItemForm: EditingMenuItemForm, $menuItem: MenuItem) {
     setEditingMenuItem(editingMenuItemForm: $editingMenuItemForm, menuItem: $menuItem) @client
