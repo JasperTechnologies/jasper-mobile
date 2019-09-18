@@ -14,11 +14,13 @@ export const typeDefs = gql`
     currentMenuItem: MenuItem!
     editingMenuItemForm: EditingMenuItemForm!
     isEditingMenuItem: Boolean!
+    tipPercentIndex: Int!
   }
 
   extend type Mutation {
     setCurrentMenuCategory(menuCategory: MenuCategory): Boolean
     setCurrentMenuItem(menuItem: MenuItem): Boolean
+    setTipPercentIndex(percentIndex: Int): Int
     addOrReplaceItemToCart(menuItemForm: MenuItemForm): Boolean
     removeItemFromCart(index: Int): Boolean
     clearCart: Boolean
@@ -124,6 +126,15 @@ export const resolvers = {
         query: GET_CART,
         data: {
           cart: newCart
+        }
+      });
+      return null;
+    },
+    setTipPercentIndex: async (_, { percentIndex }, { cache }) => {
+      console.log('here', percentIndex)
+      await cache.writeQuery({
+        data: {
+          tipPercentIndex: percentIndex
         }
       });
       return null;
