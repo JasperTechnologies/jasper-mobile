@@ -1,6 +1,5 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, Animated, Easing } from "react-native"
-import { JASPER_INLINE_LOGO } from 'react-native-dotenv';
 import { useQuery } from '@apollo/react-hooks';
 import { yummy as screenTheme } from "../config/Themes"
 import {
