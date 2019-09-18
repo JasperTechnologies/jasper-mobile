@@ -1,7 +1,5 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, FlatList, ScrollView } from "react-native"
-
-import InactiveDetector from '../components/InactiveDetector';
 import CheckoutBody from '../components/CheckoutBody'
 import { yummy as screenTheme } from "../config/Themes"
 import {
@@ -26,26 +24,24 @@ class CheckoutScreen extends React.Component {
     const { theme } = this.state;
     return (
       <ScreenContainer hasSafeArea={true} scrollable={false} style={styles.Root_n9y}>
-        <InactiveDetector navigation={this.props.navigation}>
-          <Container style={styles.Checkout_Container}>
-            <Container style={styles.Container_MenuItemNav} elevation={0}>
-              <IconButton
-                style={styles.Touchable_Back}
-                icon="MaterialIcons/arrow-back"
-                size={50}
-                color={theme.colors.primary}
-                onPress={() => {
-                  this.props.navigation.navigate("MenuScreen")
-                }}
-              />
-            </Container>
-            <CheckoutBody 
-              theme={theme} 
-              navigateToPurchase={() => this.props.navigation.navigate("ThankYouScreen")}
-              navigateToMenuItem={() => this.props.navigation.navigate("MenuItemViewScreen")}
-              />
+        <Container style={styles.Checkout_Container}>
+          <Container style={styles.Container_MenuItemNav} elevation={0}>
+            <IconButton
+              style={styles.Touchable_Back}
+              icon="MaterialIcons/arrow-back"
+              size={50}
+              color={theme.colors.primary}
+              onPress={() => {
+                this.props.navigation.navigate("MenuScreen")
+              }}
+            />
           </Container>
-        </InactiveDetector>
+          <CheckoutBody
+            theme={theme}
+            navigateToPurchase={() => this.props.navigation.navigate("ThankYouScreen")}
+            navigateToMenuItem={() => this.props.navigation.navigate("MenuItemViewScreen")}
+            />
+        </Container>
       </ScreenContainer>
     )
   }

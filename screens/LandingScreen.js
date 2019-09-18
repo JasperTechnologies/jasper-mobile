@@ -1,10 +1,13 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { StatusBar, StyleSheet, Text, Animated, Easing } from "react-native"
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   GET_USER
 } from '../constants/graphql-query';
+import {
+  CLEAR_CART
+} from '../constants/graphql-mutation';
 import {
   withTheme,
   ScreenContainer,
@@ -27,6 +30,10 @@ const startAnimation = (scaleValue) => {
 
 function LandingContainer() {
   const { data: userData, loading, error } = useQuery(GET_USER);
+  const [ clearCart ] = useMutation(CLEAR_CART);
+  useEffect(() => {
+    clearCart();
+  }, []);
   if (loading || error) {
     return null;
   }
@@ -36,6 +43,7 @@ function LandingContainer() {
       pictureURL
     }
   } = userData;
+
   let scaleValue = new Animated.Value(0)
   const cardScale = scaleValue.interpolate({
     inputRange: [0, 0.25, .5, .75, 1],
@@ -52,7 +60,7 @@ function LandingContainer() {
         </Text>
         <Text style={styles.Jasper_Text}>
           {` JASPER`}
-        </Text>     
+        </Text>
       </View>
       <View style={styles.Welcome_Text_View}>
         <Text style={styles.Welcome_Text}>

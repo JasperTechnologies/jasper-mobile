@@ -8,7 +8,6 @@ import {
   CLEAR_EDITING_MENU_ITEM_STATE
 } from '../constants/graphql-mutation';
 
-import InactiveDetector from '../components/InactiveDetector';
 import MenuItemOptions from '../components/MenuItemOptions';
 import { centsToDollar, calculateTotalPrice } from '../utilities/money';
 
@@ -156,75 +155,73 @@ function MenuItemViewScreen({
 
   return (
     <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
-      <InactiveDetector navigation={navigation}>
-        <Container style={styles.MainItemView_Container}>
-          <Container style={styles.MenuItemNav_Container} elevation={0}>
-            <IconButton
-              style={styles.Touchable_Back}
-              icon="MaterialIcons/arrow-back"
-              size={50}
-              color={theme.colors.primary}
-              onPress={() => {
-                this.handleBack();
-              }}
-            />
-          </Container>
-          <Image style={styles.MenuItem_Image} source={currentMenuItem.pictureURL} resizeMode="cover" />
-          <ScrollView
-            contentContainerStyle={styles.ScrollView_Main}
-            showsVerticalScrollIndicator={false}
-          >
-            <Container style={styles.Invisible_View} />
-            <Container style={{
-              backgroundColor: theme.colors.background,
-              paddingBottom: 200
-            }}>
-              <Container style={styles.MenuItemName_Container}>
+      <Container style={styles.MainItemView_Container}>
+        <Container style={styles.MenuItemNav_Container} elevation={0}>
+          <IconButton
+            style={styles.Touchable_Back}
+            icon="MaterialIcons/arrow-back"
+            size={50}
+            color={theme.colors.primary}
+            onPress={() => {
+              this.handleBack();
+            }}
+          />
+        </Container>
+        <Image style={styles.MenuItem_Image} source={currentMenuItem.pictureURL} resizeMode="cover" />
+        <ScrollView
+          contentContainerStyle={styles.ScrollView_Main}
+          showsVerticalScrollIndicator={false}
+        >
+          <Container style={styles.Invisible_View} />
+          <Container style={{
+            backgroundColor: theme.colors.background,
+            paddingBottom: 200
+          }}>
+            <Container style={styles.MenuItemName_Container}>
+              <Text
+                style={[
+                  theme.typography.headline1,
+                  {
+                    color: theme.colors.strong
+                  }
+                ]}
+              >
+                {currentMenuItem.title}
+              </Text>
+            </Container>
+            <Container style={styles.Description_Container}>
                 <Text
                   style={[
-                    theme.typography.headline1,
+                    theme.typography.headline4,
                     {
-                      color: theme.colors.strong
+                      color: theme.colors.medium
                     }
                   ]}
                 >
-                  {currentMenuItem.title}
+                  {currentMenuItem.description}
                 </Text>
-              </Container>
-              <Container style={styles.Description_Container}>
-                  <Text
-                    style={[
-                      theme.typography.headline4,
-                      {
-                        color: theme.colors.medium
-                      }
-                    ]}
-                  >
-                    {currentMenuItem.description}
-                  </Text>
-                  <Text
-                    style={[
-                      theme.typography.headline4,
-                      {
-                        color: theme.colors.light
-                      }
-                    ]}
-                  >
-                    {currentMenuItem.calories} Cal.
-                  </Text>
-              </Container>
-              {this.renderOptionsView()}
-              <Container style={styles.Stepper_Container}>
-                <Stepper onChange={this.updateQuantity} value={form.quantity} style={styles.Stepper} />
-              </Container>
+                <Text
+                  style={[
+                    theme.typography.headline4,
+                    {
+                      color: theme.colors.light
+                    }
+                  ]}
+                >
+                  {currentMenuItem.calories} Cal.
+                </Text>
             </Container>
-          </ScrollView>
-          <FooterNavButton
-            text={`Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.optionValues))}`}
-            onPress={this.handleSubmit}
-          />
-        </Container>
-      </InactiveDetector>
+            {this.renderOptionsView()}
+            <Container style={styles.Stepper_Container}>
+              <Stepper onChange={this.updateQuantity} value={form.quantity} style={styles.Stepper} />
+            </Container>
+          </Container>
+        </ScrollView>
+        <FooterNavButton
+          text={`Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.optionValues))}`}
+          onPress={this.handleSubmit}
+        />
+      </Container>
     </ScreenContainer>
   );
 }

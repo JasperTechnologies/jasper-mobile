@@ -78,7 +78,7 @@ return <Touchable
 				}
 				<View style={styles.Remove_Button_Container}>
 					<CheckoutRemoveButton
-						removeItemFromCart={onDelete}
+						removeItemFromCart={() => onDelete(index)}
 						item={item}
 					/>
 				</View>

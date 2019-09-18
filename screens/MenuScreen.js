@@ -5,7 +5,6 @@ import {
   GET_CURRENT_MENU_ITEMS,
   GET_CART
 } from '../constants/graphql-query';
-import InactiveDetector from '../components/InactiveDetector';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   withTheme,
@@ -59,20 +58,18 @@ class MenuScreen extends React.Component {
     const { cart = [] } = this.props;
     return (
       <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
-        <InactiveDetector navigation={this.props.navigation}>
-          <Container style={styles.Menu_Page_Container}>
-            <MenuHeader />
-            <ScrollView
-              contentContainerStyle={styles.Menu_Scrollview}
-              bounces={true}
-              showsVerticalScrollIndicator={true}
-              showsHorizontalScrollIndicator={true}
-            >
-              <MenuItems navigation={this.props.navigation} />
-            </ScrollView>
-            <ViewCartButton navigation={this.props.navigation} />
-          </Container>
-        </InactiveDetector>
+        <Container style={styles.Menu_Page_Container}>
+          <MenuHeader />
+          <ScrollView
+            contentContainerStyle={styles.Menu_Scrollview}
+            bounces={true}
+            showsVerticalScrollIndicator={true}
+            showsHorizontalScrollIndicator={true}
+          >
+            <MenuItems navigation={this.props.navigation} />
+          </ScrollView>
+          <ViewCartButton navigation={this.props.navigation} />
+        </Container>
       </ScreenContainer>
     )
   }

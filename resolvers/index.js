@@ -119,6 +119,7 @@ export const resolvers = {
       const newCart = cart.filter((c, i) => {
         return i !== index;
       });
+      console.log(index)
       await cache.writeQuery({
         query: GET_CART,
         data: {

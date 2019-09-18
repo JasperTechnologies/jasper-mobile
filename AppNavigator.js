@@ -1,5 +1,7 @@
 import React from "react"
 import { createAppContainer, createSwitchNavigator } from "react-navigation"
+import InactiveDetector from "./components/InactiveDetector";
+
 import MenuItemViewScreen from "./screens/MenuItemViewScreen"
 import EmailPasswordLoginScreen from "./screens/EmailPasswordLoginScreen"
 import SimpleWelcomeScreen from "./screens/SimpleWelcomeScreen"
@@ -9,8 +11,6 @@ import ForgotPasswordScreen from "./screens/ForgotPasswordScreen"
 import MenuScreen from "./screens/MenuScreen"
 import CheckoutScreen from "./screens/CheckoutScreen"
 import ThankYouScreen from "./screens/ThankYouScreen"
-
-import { Icon, Touchable } from "@draftbit/ui"
 
 function shouldShowBackButton(stackRouteNavigation) {
   let parent = stackRouteNavigation.dangerouslyGetParent()
@@ -59,7 +59,27 @@ const AppNavigator = createSwitchNavigator(
   {
     initialRouteName: "EmailPasswordLoginScreen"
   }
-)
-const AppContainer = createAppContainer(AppNavigator)
+);
+
+class NavigationContainer extends React.Component {
+  static router = {
+    ...AppNavigator.router,
+    getStateForAction: (action, lastState) => {
+      return AppNavigator.router.getStateForAction(action, lastState);
+    },
+  };
+
+  render() {
+    const { navigation } = this.props;
+
+    return (
+      <InactiveDetector navigation={navigation}>
+        <AppNavigator navigation={navigation} />
+      </InactiveDetector>
+    );
+  }
+}
+
+const AppContainer = createAppContainer(NavigationContainer)
 
 export default AppContainer

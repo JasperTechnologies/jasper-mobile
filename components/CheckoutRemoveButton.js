@@ -35,7 +35,7 @@ class CheckoutRemoveButton extends React.Component {
                 this.setState({
                   isConfirming: false
                 });
-                this.props.removeItemFromCart(this.props.item);
+                this.props.removeItemFromCart();
               }}
             >
               Remove

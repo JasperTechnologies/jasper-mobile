@@ -1,61 +1,62 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, PanResponder } from "react-native";
-import { connect } from 'react-redux';
-import { useMutation } from '@apollo/react-hooks';
-import { CLEAR_CART } from '../constants/graphql-mutation';
 
 const TIMEOUT = 120000;
+class InactiveDetector extends React.Component {
+  componentWillMount() {
+    this.panResponder = PanResponder.create({
+      onMoveShouldSetPanResponderCapture: this.onMoveShouldSetPanResponderCapture,
+      onStartShouldSetPanResponderCapture: this.onMoveShouldSetPanResponderCapture,
+      onResponderTerminationRequest: this.handleInactivity
+    });
+    this.handleInactivity();
+  }
 
-function InactiveDetector({
-  children,
-  navigation
-}) {
-  const [clearCart] = useMutation(CLEAR_CART);
-  this.timeout = null;
-  this.panResponder = PanResponder.create({
-    onMoveShouldSetPanResponderCapture: this.onMoveShouldSetPanResponderCapture,
-    onStartShouldSetPanResponderCapture: this.onMoveShouldSetPanResponderCapture,
-    onResponderTerminationRequest: this.handleInactivity
-  });
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
 
-  this.handleInactivity = () => {
+  handleInactivity = () => {
     clearTimeout(this.timeout);
 
     this.resetTimeout();
   }
 
-  this.resetTimeout = () => {
+  resetTimeout = () => {
     this.timeout = setTimeout(this.homecoming, TIMEOUT);
   }
 
-  this.onMoveShouldSetPanResponderCapture = () => {
+  onMoveShouldSetPanResponderCapture = () => {
     this.handleInactivity();
     return false;
   }
 
-  this.homecoming = () => {
-    clearCart();
-    navigation.navigate("LandingScreen");
+  homecoming = () => {
+    const { navigation } = this.props;
+    const currentScreen = navigation.state.routes[navigation.state.index].key;
+    if (
+      currentScreen === 'MenuScreen' ||
+      currentScreen === 'CheckoutScreen' ||
+      currentScreen === 'MenuItemViewScreen'
+    ) {
+      navigation.navigate("LandingScreen");
+    }
   }
 
-  useEffect(() => {
-    return () => {
-      clearTimeout(this.timeout);
-    };
-  });
-
-
-  clearTimeout(this.timeout);
-  this.handleInactivity();
-
-  return (
-    <View
-      collapsable={false}
-      {...this.panResponder.panHandlers}
-    >
-      {children}
-    </View>
-  );
+  render() {
+    return (
+      <View
+        collapsable={false}
+        style={{
+          width: "100%",
+          height: "100%"
+        }}
+        {...this.panResponder.panHandlers}
+      >
+        {this.props.children}
+      </View>
+    );
+  }
 }
 
 export default InactiveDetector;
