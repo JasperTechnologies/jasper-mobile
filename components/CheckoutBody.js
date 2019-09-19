@@ -107,7 +107,15 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 					}
 				</Container>
 				<View style={styles.Tip_Section}>
-					<Text style={[theme.typography.headline1, {marginLeft: 305, marginBottom: 20}]}>Tip Amount</Text>
+					<Text style={[
+            theme.typography.headline1,
+            styles.Tip_section_Title,
+            {
+              color: theme.colors.medium
+            }
+          ]}>
+            {`Tip (${tipPercentages[tipPercentIndex]}%)`}
+          </Text>
 					<View style={styles.Tip_View}>
 						{tipPercentages.map((tip, index) => (
 							<TouchableWithoutFeedback
@@ -129,16 +137,18 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
                   }
                 >
 									<Text
-                    style={
-                      index === tipPercentIndex ? styles.Selected_Tip_Text : styles.Tip_Text
-                    }
+                    style={[
+                      index ? theme.typography.headline3 : theme.typography.subtitle1,
+                      index === tipPercentIndex ? styles.Selected_Tip_Percentage_Text : styles.Tip_Percentage_Text
+                    ]}
                   >
 										{tip}%
 									</Text>
 									<Text
-                    style={
+                    style={[
+                      index ? theme.typography.headline1 : theme.typography.headline3,
                       index === tipPercentIndex ? styles.Selected_Tip_Text : styles.Tip_Text
-                    }
+                    ]}
                   >
 										${centsToDollar(getTipsOfCart(cart, tip))}
 									</Text>
@@ -169,7 +179,7 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 					amount={`$${centsToDollar(getTotalOfCart(cart, tipPercentages[tipPercentIndex]))}`}
 					/>
 			</ScrollView>
-			<FooterNavButton text={'Purchase'} onPress={navigateToPurchase} />
+			<FooterNavButton text={`Checkout $${centsToDollar(getTotalOfCart(cart, tipPercentages[tipPercentIndex]))}`} onPress={navigateToPurchase} />
 		</View>
 	);
 }
@@ -219,8 +229,8 @@ const styles = StyleSheet.create({
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
-		width: 200,
-		height: 250,
+    flex: 1,
+		height: 150,
 		backgroundColor: 'white',
     margin: 12
 	},
@@ -228,23 +238,31 @@ const styles = StyleSheet.create({
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
-		width: 200,
-		height: 250,
+		flex: 1,
+		height: 150,
     margin: 12
 	},
 	Selected_Tip_Text: {
-		color: "#FFFFFF",
-		fontSize: 32
+		color: "#FFFFFF"
 	},
 	Tip_Text: {
-		fontSize: 32
+	},
+  Selected_Tip_Percentage_Text: {
+		color: "#FFFFFF"
+	},
+	Tip_Percentage_Text: {
 	},
 	ScrollView_Main: {
 		paddingBottom: 100
 	},
 	Tip_Section: {
-		marginBottom: 24
-	}
+		marginBottom: 24,
+    paddingHorizontal: 48,
+	},
+  Tip_section_Title: {
+    textAlign: "center",
+    marginBottom: 24
+  }
 })
 
 export default withTheme(CheckoutBody);

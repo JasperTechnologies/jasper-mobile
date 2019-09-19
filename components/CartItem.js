@@ -118,7 +118,8 @@ const styles = StyleSheet.create({
 		marginBottom: 24,
     borderBottomColor: '#DDDDDD',
     borderBottomWidth: 2,
-    minHeight: 150
+    minHeight: 150,
+    paddingRight: 24
   },
   CartItem_Cell_Image_Container: {
     width: 100,
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
   },
   CartItem_Cell_Content: {
     flex: 1,
-    paddingHorizontal: 24
+    paddingLeft: 24
   },
   Remove_Button_Container: {
     display: "flex",

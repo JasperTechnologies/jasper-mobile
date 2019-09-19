@@ -8,7 +8,7 @@ import {
 
 function CheckoutTotalItem({textTheme, title, amount}) {
 	return  (
-		<Container style={styles.Price_Container} useThemeGutterPadding={true}>
+		<Container style={styles.Price_Container}>
 			<View style={styles.Price_Label_Container}>
 				<Text
 					style={[
@@ -35,7 +35,8 @@ function CheckoutTotalItem({textTheme, title, amount}) {
 const styles = StyleSheet.create({
   Price_Container: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    paddingHorizontal: 48
   },
   Price_Label_Container: {
     flex: 1,
@@ -43,8 +44,7 @@ const styles = StyleSheet.create({
   },
   Price_Value_Container: {
     flex: 1,
-    alignItems: 'flex-end',
-    paddingRight: 24
+    alignItems: 'flex-end'
   }
 })
 
