@@ -1,7 +1,7 @@
 import React from "react";
 import { View, PanResponder } from "react-native";
 
-const TIMEOUT = 120000;
+const TIMEOUT = 60000;
 class InactiveDetector extends React.Component {
   componentWillMount() {
     this.panResponder = PanResponder.create({

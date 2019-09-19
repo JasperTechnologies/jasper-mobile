@@ -20,6 +20,7 @@ query MenuItems{
         price
         title
         priority
+        isDefault
       }
     }
     categories{
@@ -83,6 +84,7 @@ query GetCart{
         price
         title
         priority
+        isDefault
       }
     }
     form{
@@ -124,6 +126,7 @@ query GetCurrentMenuItems{
         price
         title
         priority
+        isDefault
       }
     }
   }
@@ -166,6 +169,7 @@ query GetCurrentMenuItem{
         price
         title
         priority
+        isDefault
       }
     }
   }

@@ -30,10 +30,11 @@ const getDefaultOptionValues = (options) => {
     return [];
   }
   return options.reduce((allOptionValues, option) => {
-    return [...allOptionValues, ...option.optionValues];
+    return [...allOptionValues, ...option.optionValues.map(o => ({ ...o, optionId: option.id }))];
   }, []).reduce((list, optionValue) => {
-    if (optionValue.default) {
-      list.push(option);
+
+    if (optionValue.isDefault) {
+      list.push(optionValue);
     }
     return list;
   }, []);
