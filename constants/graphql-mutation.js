@@ -53,3 +53,9 @@ export const SET_CHECKOUT_IN_PROGRESS = gql`
     setCheckoutInProgress @client
   }
 `;
+
+export const PURCHASE = gql`
+  mutation purchase($deviceId: String!, $amountInCents: Int!) {
+    purchase(deviceId: $deviceId, amountInCents: $amountInCents)
+  }
+`;

@@ -9,7 +9,8 @@ import {
   REMOVE_ITEM_FROM_CART,
 	SET_EDITING_MENU_ITEM,
 	SET_TIP_PERCENT_INDEX,
-  SET_CHECKOUT_IN_PROGRESS
+  SET_CHECKOUT_IN_PROGRESS,
+	PURCHASE
 } from '../constants/graphql-mutation';
 import CartItem from './CartItem'
 import CheckoutTotalItem from './CheckoutTotalItem'
@@ -42,7 +43,8 @@ function CheckoutBody({theme, navigateToMenuItem}) {
 	const [ removeItemFromCart ] = useMutation(REMOVE_ITEM_FROM_CART);
 	const [ setEditingMenuItem ] = useMutation(SET_EDITING_MENU_ITEM);
 	const [ setTipPercent ] = useMutation(SET_TIP_PERCENT_INDEX);
-  const [ setCheckoutInProgress ] = useMutation(SET_CHECKOUT_IN_PROGRESS);
+	const [ setCheckoutInProgress ] = useMutation(SET_CHECKOUT_IN_PROGRESS);
+	const [ purchase ] = useMutation(PURCHASE)
 	const { data: cartData, loading, error } = useQuery(GET_CART);
 	const { data: { tipPercentIndex } } = useQuery(GET_TIP_PERCENT_INDEX);
 
@@ -52,7 +54,16 @@ function CheckoutBody({theme, navigateToMenuItem}) {
 	}
 
   const onCheckout = () => {
-    setCheckoutInProgress();
+		setCheckoutInProgress();
+		purchase({ 
+			variables: { 
+				deviceId: '111',
+				amountInCents: 1 
+			} 
+		})
+		.then(data => console.log('data'))
+		.catch(error => console.log(error))
+		;
   };
 
 	const { cart } = cartData;
@@ -144,7 +155,7 @@ function CheckoutBody({theme, navigateToMenuItem}) {
                 >
 									<Text
                     style={[
-                      index ? theme.typography.headline3 : theme.typography.subtitle1,
+                      theme.typography.headline3,
                       index === tipPercentIndex ? styles.Selected_Tip_Percentage_Text : styles.Tip_Percentage_Text
                     ]}
                   >

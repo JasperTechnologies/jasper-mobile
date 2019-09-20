@@ -94,6 +94,7 @@ function SignInForm({ theme, navigation }) {
               navigation.navigate("SimpleWelcomeScreen")
             },
             (error) => {
+              console.log(error)
             },
           )
         }}
@@ -116,7 +117,6 @@ function CheckQuery({navigation}) {
       }
     }
   );
-  console.log(error)
   return null;
 }
 

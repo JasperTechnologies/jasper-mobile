@@ -1,8 +1,9 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, FlatList, ScrollView } from "react-native"
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import CheckoutBody from '../components/CheckoutBody';
 import ModalContainer from '../components/ModalContainer';
+import * as Progress from 'react-native-progress';
 import {
   GET_CHECKOUT_STATE
 } from '../constants/graphql-query';
@@ -14,17 +15,20 @@ import {
   Container,
 } from "@draftbit/ui";
 
-function CheckoutModal() {
-  const { data: { checkout }, loading, error } = useQuery(GET_CHECKOUT_STATE);
-  if (loading || checkout.status === "READY") {
-    return null;
+function CheckoutModal({theme}) {
+  const { data: { checkout }} = useQuery(GET_CHECKOUT_STATE);
+  if (checkout.status === "IN_PROGRESS") {
+    return <ModalContainer>
+    <Container style={[styles.Checkout_Container, styles.Container_MenuItemNav, styles.Modal_Container]}>
+      <Text style={[styles.ModalHeader, theme.typography.headline1]}>
+        Please Complete Payment With Card Reader
+      </Text>
+      <Progress.Circle size={100} indeterminate={true} />
+    </Container>
+  </ModalContainer>
   }
   return (
-    <ModalContainer>
-      <Container>
-        <Text>Hi</Text>
-      </Container>
-    </ModalContainer>
+    null
   );
 }
 
@@ -38,7 +42,7 @@ class CheckoutScreen extends React.Component {
     const { theme } = this.props;
     return (
       <ScreenContainer hasSafeArea={true} scrollable={false} style={styles.Root_n9y}>
-        <CheckoutModal />
+        <CheckoutModal theme={theme}/>
         <Container style={styles.Checkout_Container}>
           <Container style={styles.Container_MenuItemNav} elevation={0}>
             <IconButton
@@ -86,6 +90,19 @@ const styles = StyleSheet.create({
   Root_n9y: {
     justifyContent: "space-between"
   },
+  Modal_Container: {
+    height: "40%", 
+    width: "30%", 
+    backgroundColor: 'white', 
+    borderRadius: 10
+  },
+  ModalHeader: {
+    marginTop: 50,
+    paddingRight: 50,
+    paddingLeft: 50,
+    textAlign: 'center',
+    marginBottom: 50
+  }
 })
 
 

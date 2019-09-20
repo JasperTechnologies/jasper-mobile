@@ -28,6 +28,8 @@ export const typeDefs = gql`
     clearCart: Boolean
     clearEditingMenuItemState: Boolean
     setCheckoutInProgress: Boolean
+    clearCheckoutProgress: Boolean
+    purchase(deviceId: String, amountInCents: Int): String
   }
 `;
 
@@ -124,7 +126,6 @@ export const resolvers = {
       const newCart = cart.filter((c, i) => {
         return i !== index;
       });
-      console.log(index)
       await cache.writeQuery({
         query: GET_CART,
         data: {
@@ -149,6 +150,35 @@ export const resolvers = {
             checkout: {
               ...checkout,
               status: "IN_PROGRESS"
+            }
+          }
+        }
+      );
+      return null;
+    },
+    clearCheckoutInProgress: async (_, __, { cache }) => {
+      const { checkout } = await cache.readQuery({ query: GET_CHECKOUT_STATE });
+      await cache.writeData(
+        {
+          data: {
+            checkout: {
+              ...checkout,
+              status: ""
+            }
+          }
+        }
+      );
+      return null;
+    },
+    purchase: async (_, { deviceId, amountInCents}, { cache }) => {
+      console.log("herasdfasdfase")
+      const { checkout } = await cache.readQuery({ query: GET_CHECKOUT_STATE });
+      await cache.writeData(
+        {
+          data: {
+            checkout: {
+              ...checkout,
+              status: ""
             }
           }
         }
