@@ -39,7 +39,11 @@ cache.writeData({
     currentMenuItem: null,
     isEditingMenuItem: false,
     editingMenuItemForm: null,
-    tipPercentIndex: 0
+    tipPercentIndex: 0,
+    checkout: {
+      __typename: 'CheckoutState',
+      status: 'READY'
+    }
   },
 });
 

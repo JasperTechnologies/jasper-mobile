@@ -47,3 +47,9 @@ export const CLEAR_EDITING_MENU_ITEM_STATE = gql`
     clearEditingMenuItemState @client
   }
 `;
+
+export const SET_CHECKOUT_IN_PROGRESS = gql`
+  mutation SetCheckoutInProgress {
+    setCheckoutInProgress @client
+  }
+`;

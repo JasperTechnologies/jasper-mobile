@@ -8,7 +8,8 @@ import {
 import {
   REMOVE_ITEM_FROM_CART,
 	SET_EDITING_MENU_ITEM,
-	SET_TIP_PERCENT_INDEX
+	SET_TIP_PERCENT_INDEX,
+  SET_CHECKOUT_IN_PROGRESS
 } from '../constants/graphql-mutation';
 import CartItem from './CartItem'
 import CheckoutTotalItem from './CheckoutTotalItem'
@@ -37,10 +38,11 @@ function EmptyView() {
 
 const tipPercentages = [0, 10, 15, 20, 25]
 
-function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
+function CheckoutBody({theme, navigateToMenuItem}) {
 	const [ removeItemFromCart ] = useMutation(REMOVE_ITEM_FROM_CART);
 	const [ setEditingMenuItem ] = useMutation(SET_EDITING_MENU_ITEM);
 	const [ setTipPercent ] = useMutation(SET_TIP_PERCENT_INDEX);
+  const [ setCheckoutInProgress ] = useMutation(SET_CHECKOUT_IN_PROGRESS);
 	const { data: cartData, loading, error } = useQuery(GET_CART);
 	const { data: { tipPercentIndex } } = useQuery(GET_TIP_PERCENT_INDEX);
 
@@ -49,8 +51,12 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 		return null;
 	}
 
+  const onCheckout = () => {
+    setCheckoutInProgress();
+  };
+
 	const { cart } = cartData;
-	return  cart.length === 0?
+	return cart.length === 0 ?
 		<EmptyView /> :(
 		<View style={{ flex: 1 }}>
 			<ScrollView
@@ -179,7 +185,7 @@ function CheckoutBody({theme, navigateToPurchase, navigateToMenuItem}) {
 					amount={`$${centsToDollar(getTotalOfCart(cart, tipPercentages[tipPercentIndex]))}`}
 					/>
 			</ScrollView>
-			<FooterNavButton text={`Checkout $${centsToDollar(getTotalOfCart(cart, tipPercentages[tipPercentIndex]))}`} onPress={navigateToPurchase} />
+			<FooterNavButton text={`Checkout $${centsToDollar(getTotalOfCart(cart, tipPercentages[tipPercentIndex]))}`} onPress={onCheckout} />
 		</View>
 	);
 }

@@ -116,6 +116,7 @@ function CheckQuery({navigation}) {
       }
     }
   );
+  console.log(error)
   return null;
 }
 

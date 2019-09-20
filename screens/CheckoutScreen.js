@@ -1,29 +1,44 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, FlatList, ScrollView } from "react-native"
-import CheckoutBody from '../components/CheckoutBody'
-import { yummy as screenTheme } from "../config/Themes"
+import { useQuery } from '@apollo/react-hooks';
+import CheckoutBody from '../components/CheckoutBody';
+import ModalContainer from '../components/ModalContainer';
+import {
+  GET_CHECKOUT_STATE
+} from '../constants/graphql-query';
 import {
   withTheme,
   ScreenContainer,
   Icon,
   IconButton,
   Container,
-} from "@draftbit/ui"
+} from "@draftbit/ui";
+
+function CheckoutModal() {
+  const { data: { checkout }, loading, error } = useQuery(GET_CHECKOUT_STATE);
+  if (loading || checkout.status === "READY") {
+    return null;
+  }
+  return (
+    <ModalContainer>
+      <Container>
+        <Text>Hi</Text>
+      </Container>
+    </ModalContainer>
+  );
+}
 
 class CheckoutScreen extends React.Component {
   constructor(props) {
     super(props)
-    StatusBar.setBarStyle("dark-content")
-
-    this.state = {
-      theme: Object.assign(props.theme, screenTheme)
-    }
+    StatusBar.setBarStyle("light-content")
   }
 
   render() {
-    const { theme } = this.state;
+    const { theme } = this.props;
     return (
       <ScreenContainer hasSafeArea={true} scrollable={false} style={styles.Root_n9y}>
+        <CheckoutModal />
         <Container style={styles.Checkout_Container}>
           <Container style={styles.Container_MenuItemNav} elevation={0}>
             <IconButton
@@ -38,7 +53,6 @@ class CheckoutScreen extends React.Component {
           </Container>
           <CheckoutBody
             theme={theme}
-            navigateToPurchase={() => this.props.navigation.navigate("ThankYouScreen")}
             navigateToMenuItem={() => this.props.navigation.navigate("MenuItemViewScreen")}
             />
         </Container>

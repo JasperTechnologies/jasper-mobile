@@ -3,7 +3,8 @@ import {
   GET_MENU_ITEMS,
   GET_CURRENT_MENU_ITEMS,
   GET_CART,
-  GET_CURRENT_MENU_ITEM
+  GET_CURRENT_MENU_ITEM,
+  GET_CHECKOUT_STATE
 } from '../constants/graphql-query';
 
 export const typeDefs = gql`
@@ -15,6 +16,7 @@ export const typeDefs = gql`
     editingMenuItemForm: EditingMenuItemForm!
     isEditingMenuItem: Boolean!
     tipPercentIndex: Int!
+    checkout: CheckoutState
   }
 
   extend type Mutation {
@@ -25,6 +27,7 @@ export const typeDefs = gql`
     removeItemFromCart(index: Int): Boolean
     clearCart: Boolean
     clearEditingMenuItemState: Boolean
+    setCheckoutInProgress: Boolean
   }
 `;
 
@@ -136,6 +139,20 @@ export const resolvers = {
           tipPercentIndex: percentIndex
         }
       });
+      return null;
+    },
+    setCheckoutInProgress: async (_, __, { cache }) => {
+      const { checkout } = await cache.readQuery({ query: GET_CHECKOUT_STATE });
+      await cache.writeData(
+        {
+          data: {
+            checkout: {
+              ...checkout,
+              status: "IN_PROGRESS"
+            }
+          }
+        }
+      );
       return null;
     }
   }
