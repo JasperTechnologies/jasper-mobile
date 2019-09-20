@@ -35,7 +35,7 @@ class ThankYouScreen extends React.Component {
               }
             ]}
           >
-            Thank you!
+            Thank you! Please Remember to Take Receipt!
           </Text>
         </Container>
         <Container style={styles.Container_neb} elevation={0} useThemeGutterPadding={true}>
