@@ -156,7 +156,7 @@ export const resolvers = {
       );
       return null;
     },
-    clearCheckoutInProgress: async (_, __, { cache }) => {
+    checkoutComplete: async (_, __, { cache }) => {
       const { checkout } = await cache.readQuery({ query: GET_CHECKOUT_STATE });
       await cache.writeData(
         {
@@ -164,22 +164,8 @@ export const resolvers = {
             checkout: {
               ...checkout,
               status: ""
-            }
-          }
-        }
-      );
-      return null;
-    },
-    purchase: async (_, { deviceId, amountInCents}, { cache }) => {
-      console.log("herasdfasdfase")
-      const { checkout } = await cache.readQuery({ query: GET_CHECKOUT_STATE });
-      await cache.writeData(
-        {
-          data: {
-            checkout: {
-              ...checkout,
-              status: ""
-            }
+            },
+            cart: []
           }
         }
       );

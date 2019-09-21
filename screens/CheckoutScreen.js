@@ -58,6 +58,7 @@ class CheckoutScreen extends React.Component {
           <CheckoutBody
             theme={theme}
             navigateToMenuItem={() => this.props.navigation.navigate("MenuItemViewScreen")}
+            navigateToThankYouScreen={() => this.props.navigation.navigate("ThankYouScreen")}
             />
         </Container>
       </ScreenContainer>
