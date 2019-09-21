@@ -10,7 +10,8 @@ import {
 	SET_EDITING_MENU_ITEM,
 	SET_TIP_PERCENT_INDEX,
   SET_CHECKOUT_IN_PROGRESS,
-	PURCHASE
+	PURCHASE,
+	CHECKOUT_COMPLETE
 } from '../constants/graphql-mutation';
 import CartItem from './CartItem'
 import CheckoutTotalItem from './CheckoutTotalItem'
@@ -28,6 +29,7 @@ import {
   View,
 } from "@draftbit/ui"
 import FooterNavButton from "./FooterNavButton";
+import gql from 'graphql-tag';
 
 function EmptyView() {
   return (
@@ -39,12 +41,13 @@ function EmptyView() {
 
 const tipPercentages = [0, 10, 15, 20, 25]
 
-function CheckoutBody({theme, navigateToMenuItem}) {
+function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 	const [ removeItemFromCart ] = useMutation(REMOVE_ITEM_FROM_CART);
 	const [ setEditingMenuItem ] = useMutation(SET_EDITING_MENU_ITEM);
 	const [ setTipPercent ] = useMutation(SET_TIP_PERCENT_INDEX);
 	const [ setCheckoutInProgress ] = useMutation(SET_CHECKOUT_IN_PROGRESS);
 	const [ purchase ] = useMutation(PURCHASE)
+	const [ checkoutComplete ] = useMutation(CHECKOUT_COMPLETE)
 	const { data: cartData, loading, error } = useQuery(GET_CART);
 	const { data: { tipPercentIndex } } = useQuery(GET_TIP_PERCENT_INDEX);
 
@@ -53,17 +56,16 @@ function CheckoutBody({theme, navigateToMenuItem}) {
 		return null;
 	}
 
-  const onCheckout = () => {
+  async function onCheckout(){
 		setCheckoutInProgress();
-		purchase({ 
+		await purchase({ 
 			variables: { 
 				deviceId: '111',
 				amountInCents: 1 
 			} 
 		})
-		.then(data => console.log('data'))
-		.catch(error => console.log(error))
-		;
+		checkoutComplete()
+		navigateToThankYouScreen()
   };
 
 	const { cart } = cartData;

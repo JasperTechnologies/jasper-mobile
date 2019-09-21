@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   Text_naj: {
     textAlign: "center",
     width: "90%",
-    height: 20,
+    height: 300,
     paddingBottom: 120,
     marginBottom: 0,
     borderBottomWidth: 0
