@@ -1,6 +1,5 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, View } from "react-native"
-import { connect } from 'react-redux';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { yummy as screenTheme } from "../config/Themes"
 import MenuHeaderItem from "./MenuHeaderItem"
@@ -21,7 +20,7 @@ function HeaderItems() {
     GET_MENU_CATEGORIES,
     {
       onCompleted: (res) => {
-        const { user: { menuCategories } } = res;
+        const { location: { menuCategories } } = res;
         if (menuCategories.length) {
           setCurrentMenuCategory({
             variables: {
@@ -31,15 +30,13 @@ function HeaderItems() {
         }
       }
     }
-
   );
   const { data: currentMenuCategoryData } = useQuery(GET_CURRENT_MENU_CATEGORY);
   if (loading || error) {
     return null;
   }
 
-  const currentMenuCategory = 0;
-  const { user: { menuCategories } } = menuCategoriesData;
+  const { location: { menuCategories } } = menuCategoriesData;
   return menuCategories.map((category, index) => <MenuHeaderItem
     key={index}
     name={category.name}

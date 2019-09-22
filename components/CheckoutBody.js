@@ -50,7 +50,6 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 	const [ checkoutComplete ] = useMutation(CHECKOUT_COMPLETE)
 	const { data: cartData, loading, error } = useQuery(GET_CART);
 	const { data: { tipPercentIndex } } = useQuery(GET_TIP_PERCENT_INDEX);
-
   const [ getCart ] = useLazyQuery(GET_CART);
 	if (loading || error) {
 		return null;
@@ -58,11 +57,11 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 
   async function onCheckout(){
 		setCheckoutInProgress();
-		await purchase({ 
-			variables: { 
+		await purchase({
+			variables: {
 				deviceId: '111',
-				amountInCents: 1 
-			} 
+				amountInCents: 1
+			}
 		})
 		checkoutComplete()
 		navigateToThankYouScreen()

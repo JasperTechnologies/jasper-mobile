@@ -1,4 +1,5 @@
 import * as React from "react"
+import globals from "./global";
 import { Provider as DProvider } from "@draftbit/ui"
 import { AppLoading } from "expo"
 import { AppRegistry, AsyncStorage } from 'react-native';

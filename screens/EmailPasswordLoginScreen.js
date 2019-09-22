@@ -27,7 +27,7 @@ mutation login($email: String!, $password: String!) {
 }
 `;
 
-function SignInForm({ theme, navigation }) {
+function SignInForm({ theme, navigation, connection }) {
   const [login, { data, token }] = useMutation(LOGIN);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

@@ -3,7 +3,7 @@ import { StatusBar, StyleSheet, Text, Animated, Easing } from "react-native"
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { yummy as screenTheme } from "../config/Themes"
 import {
-  GET_USER
+  GET_LOCATION
 } from '../constants/graphql-query';
 import {
   withTheme,
@@ -26,17 +26,16 @@ const startAnimation = (scaleValue) => {
 }
 
 function LandingContainer() {
-  const { data: userData, loading, error } = useQuery(GET_USER);
+  const { data: locationData, loading, error } = useQuery(GET_LOCATION);
   if (loading || error) {
     return null;
   }
   const {
-    user: {
-      name,
-      pictureURL
+    location: {
+      pictureURL,
+      name
     }
-  } = userData;
-
+  } = locationData;
   let scaleValue = new Animated.Value(0)
   const cardScale = scaleValue.interpolate({
     inputRange: [0, 0.25, .5, .75, 1],

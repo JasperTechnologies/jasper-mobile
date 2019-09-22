@@ -12,6 +12,8 @@ import MenuScreen from "./screens/MenuScreen"
 import CheckoutScreen from "./screens/CheckoutScreen"
 import ThankYouScreen from "./screens/ThankYouScreen"
 
+import { CloverProvider } from "./components/payment-processors/clover";
+
 function shouldShowBackButton(stackRouteNavigation) {
   let parent = stackRouteNavigation.dangerouslyGetParent()
   return parent.state.routes.indexOf(stackRouteNavigation.state) > 0
@@ -61,7 +63,16 @@ const AppNavigator = createSwitchNavigator(
   }
 );
 
-class NavigationContainer extends React.Component {
+function ProcessorProvider({ children }) {
+  // logic to determine processor Provider
+  return (
+    <CloverProvider>
+      {children}
+    </CloverProvider>
+  );
+}
+
+class AppContainer extends React.Component {
   static router = {
     ...AppNavigator.router,
     getStateForAction: (action, lastState) => {
@@ -73,13 +84,13 @@ class NavigationContainer extends React.Component {
     const { navigation } = this.props;
 
     return (
-      <InactiveDetector navigation={navigation}>
-        <AppNavigator navigation={navigation} />
-      </InactiveDetector>
+      <ProcessorProvider>
+        <InactiveDetector navigation={navigation}>
+          <AppNavigator navigation={navigation} />
+        </InactiveDetector>
+      </ProcessorProvider>
     );
   }
 }
 
-const AppContainer = createAppContainer(NavigationContainer)
-
-export default AppContainer
+export default createAppContainer(AppContainer)

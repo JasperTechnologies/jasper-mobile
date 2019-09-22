@@ -31,9 +31,9 @@ query MenuItems{
 }
 `;
 
-export const GET_USER = gql`
-query GetUser{
-  user{
+export const GET_LOCATION = gql`
+query GetLocation{
+  location{
     name
     pictureURL
   }
@@ -42,7 +42,7 @@ query GetUser{
 
 export const GET_MENU_CATEGORIES = gql`
 query GetUserCategories{
-  user{
+  location{
     menuCategories{
       id
       name

@@ -2159,10 +2159,20 @@ event-target-shim@^1.0.5:
   resolved "https://registry.yarnpkg.com/event-target-shim/-/event-target-shim-1.1.1.tgz#a86e5ee6bdaa16054475da797ccddf0c55698491"
   integrity sha1-qG5e5r2qFgVEddp5fM3fDFVphJE=
 
+eventemitter3@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.0.tgz#090b4d6cdbd645ed10bf750d4b5407942d7ba163"
+  integrity sha512-ivIvhpq/Y0uSjcHDcOIccjmYjGLcP09MFGE7ysAwkAvkXfpZlC985pH2/ui64DKazbTW/4kN3yqozUxlXzI6cA==
+
 eventemitter3@^3.0.0:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.2.tgz#2d3d48f9c346698fce83a85d7d664e98535df6e7"
   integrity sha512-tvtQIeLVHjDkJYnzf2dgVMxfuSGJeM/7UCG17TT4EumTfNtF+0nebF/4zWOIkCreAbtNqhGEboB6BWrwqNaw4Q==
+
+events@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/events/-/events-3.0.0.tgz#9a0a0dfaf62893d92b875b8f2698ca4114973e88"
+  integrity sha512-Dc381HFWJzEOhQ+d8pkNon++bk9h6cdAoAj4iE6Q4y6xgTzySWXlKn05/TVNpjnfRqi/X0EpJEJohPjNI3zpVA==
 
 exec-sh@^0.2.0:
   version "0.2.2"
@@ -4883,6 +4893,19 @@ regjsparser@^0.6.0:
   integrity sha512-RQ7YyokLiQBomUJuUG8iGVvkgOLxwyZM8k6d3q5SAXpg4r5TZJZigKFvC6PpD+qQ98bCDC5YelPeA3EucDoNeQ==
   dependencies:
     jsesc "~0.5.0"
+
+remote-pay-cloud-api@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/remote-pay-cloud-api/-/remote-pay-cloud-api-3.1.0.tgz#4d4a3ddeb5de50028505ed42e76e249be56759b3"
+  integrity sha512-w65ROa+qZJkWdA2Aiwm/IxEvRoLhEKV0NCsIKXqmYLKNQqCovEH4X+USGDyPKC/bd4p+9938XFa65wDV+1JA6g==
+
+remote-pay-cloud@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/remote-pay-cloud/-/remote-pay-cloud-3.1.0.tgz#82fd16d6d2ec1f0146684af3c69af22f648d86cc"
+  integrity sha512-Jen4VQxt00RqYR4L7WyLTD4D8OisywByUJYyTFvj93UORKTKc9hyA75DQa3vm8PKSNl+oM2GwsIQ6WEe3cNCDg==
+  dependencies:
+    eventemitter3 "3.1.0"
+    remote-pay-cloud-api "3.1.0"
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"

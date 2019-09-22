@@ -92,9 +92,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   Modal_Container: {
-    height: "40%", 
-    width: "30%", 
-    backgroundColor: 'white', 
+    height: "40%",
+    width: "30%",
+    backgroundColor: 'white',
     borderRadius: 10
   },
   ModalHeader: {
