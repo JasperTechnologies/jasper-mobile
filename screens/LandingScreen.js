@@ -6,9 +6,6 @@ import {
   GET_USER
 } from '../constants/graphql-query';
 import {
-  CLEAR_CART
-} from '../constants/graphql-mutation';
-import {
   withTheme,
   ScreenContainer,
   Container,
@@ -30,10 +27,6 @@ const startAnimation = (scaleValue) => {
 
 function LandingContainer() {
   const { data: userData, loading, error } = useQuery(GET_USER);
-  const [ clearCart ] = useMutation(CLEAR_CART);
-  useEffect(() => {
-    clearCart();
-  }, []);
   if (loading || error) {
     return null;
   }
@@ -49,7 +42,7 @@ function LandingContainer() {
     inputRange: [0, 0.25, .5, .75, 1],
     outputRange: [1, 1.3, 1.6, 1.3, 1]
   });
-  startAnimation(scaleValue)
+  startAnimation(scaleValue);
   return (
     <Container
       style={styles.Landing_Container}
