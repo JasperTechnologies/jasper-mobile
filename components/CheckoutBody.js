@@ -1,6 +1,7 @@
 import React from "react"
 import { StyleSheet, Text, ScrollView, TouchableWithoutFeedback } from "react-native"
 import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
+// import { useClover } from './payment-processors/clover';
 import {
   GET_CART,
   GET_TIP_PERCENT_INDEX
@@ -31,6 +32,8 @@ import {
 import FooterNavButton from "./FooterNavButton";
 import gql from 'graphql-tag';
 
+// import clove from 'remote-pay-cloud';
+
 function EmptyView() {
   return (
     <View>
@@ -50,6 +53,13 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 	const [ checkoutComplete ] = useMutation(CHECKOUT_COMPLETE)
 	const { data: cartData, loading, error } = useQuery(GET_CART);
 	const { data: { tipPercentIndex } } = useQuery(GET_TIP_PERCENT_INDEX);
+  // const { clover } = useClover();
+  // const displayOrder = new clove.sdk.remotepay.SaleRequest();
+  // displayOrder.setExternalId(clove.CloverID.getNewId());
+	// displayOrder.setAmount(2139);
+	// console.log({message: "Sending sale", request: displayOrder});
+	// clover.cloverConnector.sale(displayOrder);
+
   const [ getCart ] = useLazyQuery(GET_CART);
 	if (loading || error) {
 		return null;

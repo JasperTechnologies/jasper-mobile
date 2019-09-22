@@ -19,13 +19,13 @@ class POSCloverConnectorListener extends clover.sdk.remotepay.ICloverConnectorLi
 
     // called when a Clover device error event is encountered
     onDeviceError(deviceErrorEvent){
-        console.log('onDeviceError', deviceErrorEvent);
+        console.log('onDeviceError');
         //TODO
     }
 
     // called when the Clover device is ready to communicate
     onDeviceReady(merchantInfo){
-        console.log("ready", merchantInfo)
+        console.log("ready")
     }
 
 }
@@ -50,6 +50,7 @@ export class CloverConnection {
             .setFriendlyId('')
             .setForceConnect(false)
             .setHeartbeatInterval(1000)
+            .setHeartbeatDisconnectTimeout(3000)
             .setReconnectDelay(3000)
             .build();
         this.cloverConnector = cloverConnectorFactory.createICloverConnector(cloudConfiguration);
@@ -73,6 +74,10 @@ export const CloverProvider = ({children}) => {
       cloverConnection.connectToDeviceCloud("02f99667-7967-3839-490a-ffb9c842af97", "NHB4X5ZMNBPJ1", "7354c7fb-8de6-07fa-110e-9c34b69d0ead");
       setClover(cloverConnection);
     }
+
+    return () => {
+      clover && clover.cloverConnector.dispose();
+    };
   }, [location]);
   return (
     <CloverContext.Provider value={{clover}}>
