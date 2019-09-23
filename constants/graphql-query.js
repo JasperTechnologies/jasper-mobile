@@ -36,6 +36,11 @@ query GetLocation{
   location{
     name
     pictureURL
+    taxes{
+      paymentProcessorId
+      taxType
+      taxAmount
+    }
   }
 }
 `;

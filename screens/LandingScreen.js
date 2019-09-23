@@ -1,6 +1,6 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { StatusBar, StyleSheet, Text, Animated, Easing } from "react-native"
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   GET_LOCATION
@@ -33,7 +33,8 @@ function LandingContainer() {
   const {
     location: {
       pictureURL,
-      name
+      name, 
+      taxes
     }
   } = locationData;
   let scaleValue = new Animated.Value(0)

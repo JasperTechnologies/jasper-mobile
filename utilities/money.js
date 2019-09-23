@@ -25,14 +25,25 @@ export const getSubtotalOfCart = (items) => {
   }, 0);
 };
 
-export const getSubtotalTaxOfCart = (items) => {
-  return getSubtotalOfCart(items) * 0.07;
+export const getSubtotalTaxOfCart = (items, taxes) => {
+  if(Array.isArray(taxes)){
+    let total = 0
+    taxes.forEach(tax => {
+      if(tax.taxType === 'FLAT'){
+        total += tax.taxAmount
+      } else {
+        total += getSubtotalOfCart(items) * (tax.taxAmount)/10000000
+      }
+    })
+    return total
+  }
+  return 0
 };
 
 export const getTipsOfCart = (items, tipPercent) => {
   return getSubtotalOfCart(items) * (tipPercent/100);
 }
 
-export const getTotalOfCart = (items, tipPercent) => {
-  return getSubtotalTaxOfCart(items) + getSubtotalOfCart(items) + getTipsOfCart(items, tipPercent);
+export const getTotalOfCart = (items, tipPercent, taxes) => {
+  return getSubtotalTaxOfCart(items, taxes) + getSubtotalOfCart(items) + getTipsOfCart(items, tipPercent);
 };

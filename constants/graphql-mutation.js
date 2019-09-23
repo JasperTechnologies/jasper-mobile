@@ -65,3 +65,4 @@ export const PURCHASE = gql`
     purchase(deviceId: $deviceId, amountInCents: $amountInCents)
   }
 `;
+

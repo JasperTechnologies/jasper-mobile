@@ -4,7 +4,8 @@ import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
 // import { useClover } from './payment-processors/clover';
 import {
   GET_CART,
-  GET_TIP_PERCENT_INDEX
+	GET_TIP_PERCENT_INDEX,
+	GET_LOCATION,
 } from '../constants/graphql-query';
 import {
   REMOVE_ITEM_FROM_CART,
@@ -53,6 +54,12 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 	const [ checkoutComplete ] = useMutation(CHECKOUT_COMPLETE)
 	const { data: cartData, loading, error } = useQuery(GET_CART);
 	const { data: { tipPercentIndex } } = useQuery(GET_TIP_PERCENT_INDEX);
+	const { data: locationData } = useQuery(GET_LOCATION);
+	const {
+    location: {
+      taxes
+    }
+  } = locationData;
   // const { clover } = useClover();
   // const displayOrder = new clove.sdk.remotepay.SaleRequest();
   // displayOrder.setExternalId(clove.CloverID.getNewId());
@@ -199,12 +206,12 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline3}
 					title={"Tax"}
-					amount={`$${centsToDollar(getSubtotalTaxOfCart(cart))}`}
+					amount={`$${centsToDollar(getSubtotalTaxOfCart(cart, taxes))}`}
 					/>
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline1}
 					title={"Total"}
-					amount={`$${centsToDollar(getTotalOfCart(cart, tipPercentages[tipPercentIndex]))}`}
+					amount={`$${centsToDollar(getTotalOfCart(cart, tipPercentages[tipPercentIndex], taxes))}`}
 					/>
 			</ScrollView>
 			<FooterNavButton text={`Checkout $${centsToDollar(getTotalOfCart(cart, tipPercentages[tipPercentIndex]))}`} onPress={onCheckout} />
