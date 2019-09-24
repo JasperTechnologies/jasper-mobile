@@ -84,7 +84,7 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 				contentContainerStyle={styles.ScrollView_Main}
 				showsVerticalScrollIndicator={true}
 			>
-        <ProcessorOrderDisplayView cart={cart} taxes={taxes} />
+        <ProcessorOrderDisplayView cart={cart} taxes={taxes} tipPercentage={tipPercentages[tipPercentIndex]} />
 				<Container style={styles.Checkout_Logo_Container}>
 					<Icon
 						style={styles.Icon_nie}

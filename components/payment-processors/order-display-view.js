@@ -5,7 +5,7 @@ import {
   GET_CART
 } from '../../constants/graphql-query';
 
-export default function OrderDisplayView({ cart, taxes }) {
+export default function OrderDisplayView({ cart, taxes, tipPercentage }) {
   // check plaform
-  return <CloverOrderDisplayView cart={cart} taxes={taxes} />;
+  return <CloverOrderDisplayView cart={cart} taxes={taxes} tipPercentage={tipPercentage} />;
 }
