@@ -1,6 +1,6 @@
 import React from "react"
-import { StatusBar, StyleSheet, Text, FlatList, ScrollView } from "react-native"
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { StatusBar, StyleSheet, Text } from "react-native"
+import { useQuery } from '@apollo/react-hooks';
 import CheckoutBody from '../components/CheckoutBody';
 import ModalContainer from '../components/ModalContainer';
 import * as Progress from 'react-native-progress';
@@ -10,7 +10,6 @@ import {
 import {
   withTheme,
   ScreenContainer,
-  Icon,
   IconButton,
   Container,
 } from "@draftbit/ui";
