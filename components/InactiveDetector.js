@@ -55,7 +55,15 @@ function InactiveDetector({
   const [showTimer, setShowTimer] = useState(null);
 
   this.handleInactivity = () => {
-    this.resetTimeout();
+    const currentScreen = navigation.state.routes[navigation.state.index].key;
+    if (
+      (currentScreen === 'MenuScreen' ||
+      (currentScreen === 'CheckoutScreen' && checkoutState !== "IN_PROGRESS") ||
+      currentScreen === 'MenuItemViewScreen'
+      )
+    ) {
+      this.resetTimeout();
+    }
   }
 
   this.resetTimeout = () => {

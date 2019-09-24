@@ -14,6 +14,7 @@ import {
   Button,
   Touchable
 } from "@draftbit/ui"
+import { NO_USER_FOUND } from '../constants/error-messages'
 import Images from "../config/Images.js"
 
 const LOGIN = gql`
@@ -27,10 +28,22 @@ mutation login($email: String!, $password: String!) {
 }
 `;
 
+function ErrorMessage({error, theme}){
+  console.log('error', error)
+  if(error){
+    return <Text style={[styles.Text_ncc, theme.typography.headline5, {color: theme.colors.error}]}>
+        Cannot Log In, Invalid Username or Password
+      </Text>
+  }
+  return null
+}
+
 function SignInForm({ theme, navigation, connection }) {
   const [login, { data, token }] = useMutation(LOGIN);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [signInError, setSignInError] = useState(null);
+
   return (
     <Container style={styles.Container_n4k} elevation={0} useThemeGutterPadding={true}>
       <Text
@@ -91,16 +104,21 @@ function SignInForm({ theme, navigation, connection }) {
               AsyncStorage.setItem('userToken', token)
                 .then((data) => {})
                 .catch((err) => {});
+              setSignInError(false)
               navigation.navigate("SimpleWelcomeScreen")
             },
             (error) => {
-              console.log(error)
+              const authenticationErrorMessage = JSON.stringify(error).includes(NO_USER_FOUND)
+              if(authenticationErrorMessage){
+                setSignInError(true)
+              }
             },
           )
         }}
       >
         SIGN IN
       </Button>
+      <ErrorMessage theme={theme} error={signInError}/>
     </Container>
   );
 }
@@ -142,13 +160,13 @@ class EmailPasswordLoginScreen extends React.Component {
         >
           <CheckQuery navigation={this.props.navigation}/>
           <Container style={styles.Container_n5z} elevation={0} useThemeGutterPadding={true}>
-            <Image style={styles.Image_n71} source={Images.DraftbitMark} resizeMode="contain" />
             <Text
               style={[
                 styles.Text_nj7,
-                theme.typography.headline5,
+                theme.typography.headline1,
                 {
-                  color: theme.colors.primary
+                  fontFamily: "LilitaOne",
+                  fontSize: 30
                 }
               ]}
             >
