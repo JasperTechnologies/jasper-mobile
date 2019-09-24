@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, PanResponder, Text, StyleSheet } from "react-native";
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import CountdownCircle from 'react-native-countdown-circle'
+import CountdownCircle from './CountdownCircle'
 import ModalContainer from './ModalContainer';
 import {
   GET_CHECKOUT_STATE
@@ -21,15 +21,15 @@ function InactivityModal({theme, showTimer, homecoming, setShowTimer}) {
       <Text style={[styles.ModalHeader, theme.typography.headline1]}>
         Are You Still There? Tap To Continue
       </Text>
-      <CountdownCircle         
-        seconds={10}
+      <CountdownCircle
+        seconds={1}
         radius={80}
-        borderWidth={8}
+        borderWidth={16}
         color="#ff003f"
         bgColor="#fff"
         textStyle={{ fontSize: 20 }}
         onTimeElapsed={() => {
-          homecoming()
+          homecoming();
           setShowTimer(false)
         }}
       />
@@ -105,9 +105,9 @@ function InactiveDetector({
       }}
       {...panResponder.panHandlers}
     >
-      <InactivityModal 
-        theme={theme} 
-        showTimer={showTimer} 
+      <InactivityModal
+        theme={theme}
+        showTimer={showTimer}
         homecoming={this.homecoming}
         setShowTimer={setShowTimer}
       />

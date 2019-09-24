@@ -25,12 +25,12 @@ export function menuItemToDisplayLineItem(menuItem) {
   return displayLineItem;
 }
 
-export function cartToDisplayOrder(cart, tipPercent) {
+export function cartToDisplayOrder(cart, taxes) {
   const displayOrder = new clover.sdk.order.DisplayOrder();
   displayOrder.setId(clover.CloverID.getNewId());
   displayOrder.setCurrency('USD');
   displayOrder.setSubtotal(`$${centsToDollar(getSubtotalOfCart(cart))}`);
-  displayOrder.setTax(`$${centsToDollar(getSubtotalTaxOfCart(cart))}`);
+  displayOrder.setTax(`$${centsToDollar(getSubtotalTaxOfCart(cart, taxes))}`);
   displayOrder.setTotal(`$${centsToDollar(getTotalOfCart(cart))}`);
   const displayLineItems = cart.map(menuItemToDisplayLineItem);
   displayOrder.setLineItems(displayLineItems);

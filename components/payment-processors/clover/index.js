@@ -87,12 +87,12 @@ export const CloverProvider = ({children}) => {
 };
 export const useClover = () => useContext(CloverContext);
 
-export function OrderDisplayView({ cart }) {
+export function OrderDisplayView({ cart, taxes }) {
   const { clover } = useClover();
   if (!clover) {
     return null;
   }
-  clover.cloverConnector.showDisplayOrder(cartToDisplayOrder(cart));
+  clover.cloverConnector.showDisplayOrder(cartToDisplayOrder(cart, taxes));
   return null;
 }
 

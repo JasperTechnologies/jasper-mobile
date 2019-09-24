@@ -5,13 +5,7 @@ import {
   GET_CART
 } from '../../constants/graphql-query';
 
-export default function OrderDisplayView() {
-  const { data: cartData, loading, error } = useQuery(GET_CART);
-  if (loading || error) {
-    return null;
-  }
-  const { cart } = cartData;
-
+export default function OrderDisplayView({ cart, taxes }) {
   // check plaform
-  return <CloverOrderDisplayView cart={cart} />;
+  return <CloverOrderDisplayView cart={cart} taxes={taxes} />;
 }
