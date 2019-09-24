@@ -1,7 +1,7 @@
 import React from "react"
 import { createAppContainer, createSwitchNavigator } from "react-navigation"
 import InactiveDetector from "./components/InactiveDetector";
-
+import ProcessorNavigationDetector from "./components/payment-processors/processor-navigation-detector";
 import MenuItemViewScreen from "./screens/MenuItemViewScreen"
 import EmailPasswordLoginScreen from "./screens/EmailPasswordLoginScreen"
 import SimpleWelcomeScreen from "./screens/SimpleWelcomeScreen"
@@ -82,9 +82,9 @@ class AppContainer extends React.Component {
 
   render() {
     const { navigation } = this.props;
-
     return (
       <ProcessorProvider>
+        <ProcessorNavigationDetector navigation={navigation} />
         <InactiveDetector navigation={navigation}>
           <AppNavigator navigation={navigation} />
         </InactiveDetector>

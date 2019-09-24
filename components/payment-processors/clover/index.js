@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import {
   GET_LOCATION
 } from '../../../constants/graphql-query';
+import { cartToDisplayOrder } from './utils';
 
 class POSCloverConnectorListener extends clover.sdk.remotepay.ICloverConnectorListener{
 
@@ -19,8 +20,7 @@ class POSCloverConnectorListener extends clover.sdk.remotepay.ICloverConnectorLi
 
     // called when a Clover device error event is encountered
     onDeviceError(deviceErrorEvent){
-        console.log('onDeviceError');
-        //TODO
+        console.log('onDeviceError', deviceErrorEvent);
     }
 
     // called when the Clover device is ready to communicate
@@ -86,3 +86,21 @@ export const CloverProvider = ({children}) => {
   );
 };
 export const useClover = () => useContext(CloverContext);
+
+export function OrderDisplayView({ cart }) {
+  const { clover } = useClover();
+  if (!clover) {
+    return null;
+  }
+  clover.cloverConnector.showDisplayOrder(cartToDisplayOrder(cart));
+  return null;
+}
+
+export function LandingView() {
+  const { clover } = useClover();
+  if (!clover) {
+    return null;
+  }
+  clover.cloverConnector.showWelcomeScreen();
+  return null;
+}

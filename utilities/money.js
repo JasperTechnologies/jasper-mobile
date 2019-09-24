@@ -44,6 +44,6 @@ export const getTipsOfCart = (items, tipPercent) => {
   return getSubtotalOfCart(items) * (tipPercent/100);
 }
 
-export const getTotalOfCart = (items, tipPercent, taxes) => {
-  return getSubtotalTaxOfCart(items, taxes) + getSubtotalOfCart(items) + getTipsOfCart(items, tipPercent);
+export const getTotalOfCart = (items) => {
+  return getSubtotalTaxOfCart(items) + getSubtotalOfCart(items);
 };

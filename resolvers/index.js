@@ -92,15 +92,15 @@ export const resolvers = {
       );
       return null;
     },
-    addOrReplaceItemToCart: async (_, { menuItemForm }, { cache }) => {
-      const { cart } = await cache.readQuery({ query: GET_CART });
+    addOrReplaceItemToCart: async (_, { menuItemForm }, { client }) => {
+      const { cart } = await client.readQuery({ query: GET_CART });
       const newCart = [
         ...cart.filter((item) => {
           return item.form.formId !== menuItemForm.form.formId;
         }),
         menuItemForm
       ];
-      await cache.writeQuery({
+      await client.writeQuery({
         query: GET_CART,
         data: {
           cart: newCart
@@ -121,7 +121,7 @@ export const resolvers = {
       );
       return null;
     },
-    removeItemFromCart: async (_, { index }, { cache }) => {
+    removeItemFromCart: async (__, { index }, { cache }) => {
       const { cart } = await cache.readQuery({ query: GET_CART });
       const newCart = cart.filter((c, i) => {
         return i !== index;

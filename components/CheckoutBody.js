@@ -1,7 +1,6 @@
 import React from "react"
 import { StyleSheet, Text, ScrollView, TouchableWithoutFeedback } from "react-native"
 import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
-// import { useClover } from './payment-processors/clover';
 import {
   GET_CART,
 	GET_TIP_PERCENT_INDEX,
@@ -32,9 +31,7 @@ import {
 } from "@draftbit/ui"
 import FooterNavButton from "./FooterNavButton";
 import gql from 'graphql-tag';
-
-// import clove from 'remote-pay-cloud';
-
+import ProcessorOrderDisplayView from './payment-processors/order-display-view';
 function EmptyView() {
   return (
     <View>
@@ -54,18 +51,13 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 	const [ checkoutComplete ] = useMutation(CHECKOUT_COMPLETE)
 	const { data: cartData, loading, error } = useQuery(GET_CART);
 	const { data: { tipPercentIndex } } = useQuery(GET_TIP_PERCENT_INDEX);
-	const { data: locationData } = useQuery(GET_LOCATION);
+
+  const { data: locationData } = useQuery(GET_LOCATION);
 	const {
     location: {
       taxes
     }
   } = locationData;
-  // const { clover } = useClover();
-  // const displayOrder = new clove.sdk.remotepay.SaleRequest();
-  // displayOrder.setExternalId(clove.CloverID.getNewId());
-	// displayOrder.setAmount(2139);
-	// console.log({message: "Sending sale", request: displayOrder});
-	// clover.cloverConnector.sale(displayOrder);
 
   const [ getCart ] = useLazyQuery(GET_CART);
 	if (loading || error) {
@@ -92,6 +84,7 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 				contentContainerStyle={styles.ScrollView_Main}
 				showsVerticalScrollIndicator={true}
 			>
+        <ProcessorOrderDisplayView />
 				<Container style={styles.Checkout_Logo_Container}>
 					<Icon
 						style={styles.Icon_nie}
@@ -211,10 +204,10 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline1}
 					title={"Total"}
-					amount={`$${centsToDollar(getTotalOfCart(cart, tipPercentages[tipPercentIndex], taxes))}`}
+					amount={`$${centsToDollar(getTotalOfCart(cart) + getTipsOfCart(cart, tipPercentages[tipPercentIndex]))}`}
 					/>
 			</ScrollView>
-			<FooterNavButton text={`Checkout $${centsToDollar(getTotalOfCart(cart, tipPercentages[tipPercentIndex]))}`} onPress={onCheckout} />
+			<FooterNavButton text={`Checkout $${centsToDollar(getTotalOfCart(cart) + getTipsOfCart(cart, tipPercentages[tipPercentIndex]))}`} onPress={onCheckout} />
 		</View>
 	);
 }
