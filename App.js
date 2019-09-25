@@ -53,10 +53,7 @@ cache.writeData({
     isEditingMenuItem: false,
     editingMenuItemForm: null,
     tipPercentIndex: 0,
-    checkout: {
-      __typename: 'CheckoutState',
-      status: 'READY'
-    }
+    checkoutState: "READY"
   },
 });
 

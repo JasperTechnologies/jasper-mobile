@@ -47,3 +47,13 @@ export function toDisplayOrder(cart, taxes, tipPercentage) {
   displayOrder.setAmountRemaining(`$${centsToDollar(getTotalOfCart(cart) + getSubtotalTaxOfCart(cart, taxes) + getTipsOfCart(cart, tipPercentage))}`)
   return displayOrder;
 }
+
+export function toSaleRequest(cart, taxes, tipPercentage) {
+  const saleRequest = new clover.sdk.remotepay.SaleRequest();
+  saleRequest.setExternalId(clover.CloverID.getNewId());
+  saleRequest.setAmount(getTotalOfCart(cart) + getSubtotalTaxOfCart(cart, taxes));
+  saleRequest.setTaxAmount(getSubtotalTaxOfCart(cart, taxes));
+  saleRequest.setTipAmount(getTipsOfCart(cart, tipPercentage));
+  saleRequest.setTipMode("TIP_PROVIDED");
+  return saleRequest;
+}

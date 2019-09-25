@@ -16,7 +16,7 @@ export const typeDefs = gql`
     editingMenuItemForm: EditingMenuItemForm!
     isEditingMenuItem: Boolean!
     tipPercentIndex: Int!
-    checkout: CheckoutState
+    checkoutState: CheckoutState
   }
 
   extend type Mutation {
@@ -147,10 +147,7 @@ export const resolvers = {
       await cache.writeData(
         {
           data: {
-            checkout: {
-              ...checkout,
-              status: "IN_PROGRESS"
-            }
+            checkoutState: "IN_PROGRESS"
           }
         }
       );

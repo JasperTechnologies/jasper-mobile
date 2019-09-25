@@ -4,7 +4,10 @@ import { useQuery } from '@apollo/react-hooks';
 import {
   GET_LOCATION
 } from '../../../constants/graphql-query';
-import { toDisplayOrder } from './utils';
+import {
+  toDisplayOrder,
+  toSaleRequest
+} from './utils';
 
 class POSCloverConnectorListener extends clover.sdk.remotepay.ICloverConnectorListener{
 
@@ -102,5 +105,15 @@ export function LandingView() {
     return null;
   }
   clover.cloverConnector.showWelcomeScreen();
+  return null;
+}
+
+export function PaymentView({ cart, taxes, tipPercentage }) {
+  const { clover } = useClover();
+  if (!clover) {
+    return null;
+  }
+
+  clover.cloverConnector.sale(toSaleRequest(cart, taxes, tipPercentage));
   return null;
 }

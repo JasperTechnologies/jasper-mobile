@@ -205,8 +205,6 @@ query GetTipPercentIndex{
 
 export const GET_CHECKOUT_STATE = gql`
 query GetCheckoutState{
-  checkout @client{
-    status
-  }
+  checkoutState @client
 }
 `;

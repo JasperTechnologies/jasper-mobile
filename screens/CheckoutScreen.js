@@ -15,8 +15,8 @@ import {
 } from "@draftbit/ui";
 
 function CheckoutModal({theme}) {
-  const { data: { checkout }} = useQuery(GET_CHECKOUT_STATE);
-  if (checkout.status === "IN_PROGRESS") {
+  const { data: { checkoutState }} = useQuery(GET_CHECKOUT_STATE);
+  if (checkoutState === "IN_PROGRESS") {
     return <ModalContainer>
     <Container style={[styles.Checkout_Container, styles.Container_MenuItemNav, styles.Modal_Container]}>
       <Text style={[styles.ModalHeader, theme.typography.headline1]}>

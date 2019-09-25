@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import { StyleSheet, Text, ScrollView, TouchableWithoutFeedback } from "react-native"
 import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
 import {
   GET_CART,
 	GET_TIP_PERCENT_INDEX,
 	GET_LOCATION,
+  GET_CHECKOUT_STATE,
 } from '../constants/graphql-query';
 import {
   REMOVE_ITEM_FROM_CART,
@@ -32,6 +33,7 @@ import {
 import FooterNavButton from "./FooterNavButton";
 import gql from 'graphql-tag';
 import ProcessorOrderDisplayView from './payment-processors/order-display-view';
+import ProcessorPaymentView from './payment-processors/payment-view';
 function EmptyView() {
   return (
     <View>
@@ -51,7 +53,7 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 	const [ checkoutComplete ] = useMutation(CHECKOUT_COMPLETE)
 	const { data: cartData, loading, error } = useQuery(GET_CART);
 	const { data: { tipPercentIndex } } = useQuery(GET_TIP_PERCENT_INDEX);
-
+  const { data: { checkoutState }} = useQuery(GET_CHECKOUT_STATE);
   const { data: locationData } = useQuery(GET_LOCATION);
 	const {
     location: {
@@ -64,19 +66,11 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 		return null;
 	}
 
-  async function onCheckout(){
-		setCheckoutInProgress();
-		await purchase({
-			variables: {
-				deviceId: '111',
-				amountInCents: 1
-			}
-		})
-		checkoutComplete()
-		navigateToThankYouScreen()
-  };
-
 	const { cart } = cartData;
+
+  const onCheckout = () => {
+    setCheckoutInProgress();
+  };
 	return cart.length === 0 ?
 		<EmptyView /> :(
 		<View style={{ flex: 1 }}>
@@ -84,7 +78,8 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 				contentContainerStyle={styles.ScrollView_Main}
 				showsVerticalScrollIndicator={true}
 			>
-        <ProcessorOrderDisplayView cart={cart} taxes={taxes} tipPercentage={tipPercentages[tipPercentIndex]} />
+        { checkoutState !== "IN_PROGRESS" && <ProcessorOrderDisplayView cart={cart} taxes={taxes} tipPercentage={tipPercentages[tipPercentIndex]} /> }
+        { checkoutState === "IN_PROGRESS" && <ProcessorPaymentView cart={cart} taxes={taxes} tipPercentage={tipPercentages[tipPercentIndex]} /> }
 				<Container style={styles.Checkout_Logo_Container}>
 					<Icon
 						style={styles.Icon_nie}
@@ -204,7 +199,7 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline1}
 					title={"Total"}
-					amount={`$${centsToDollar(getTotalOfCart(cart) + getTipsOfCart(cart, tipPercentages[tipPercentIndex]))}`}
+					amount={`$${centsToDollar(getTotalOfCart(cart) + getSubtotalTaxOfCart(cart, taxes) + getTipsOfCart(cart, tipPercentages[tipPercentIndex]))}`}
 					/>
 			</ScrollView>
 			<FooterNavButton text={`Checkout $${centsToDollar(getTotalOfCart(cart) + getTipsOfCart(cart, tipPercentages[tipPercentIndex]))}`} onPress={onCheckout} />

@@ -53,7 +53,6 @@ function InactiveDetector({
   const [clearCart] = useMutation(CLEAR_CART);
   const [timeoutId, setTimeoutId] = useState(null);
   const [showTimer, setShowTimer] = useState(null);
-
   this.handleInactivity = () => {
     const currentScreen = navigation.state.routes[navigation.state.index].key;
     if (
