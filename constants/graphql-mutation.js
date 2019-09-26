@@ -1,5 +1,16 @@
 import gql from 'graphql-tag';
 
+export const LOGIN = gql`
+mutation login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    token
+    user {
+      id
+    }
+  }
+}
+`;
+
 export const UPDATE_ORDER = gql`
   mutation UpdateOrder($orderId: ID!, $lineItems: [LineItemInput]!) {
     updateOrder(orderId: $orderId, lineItems: $lineItems) {

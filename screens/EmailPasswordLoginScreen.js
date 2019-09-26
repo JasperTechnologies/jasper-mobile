@@ -3,7 +3,9 @@ import { StatusBar, StyleSheet, KeyboardAvoidingView, Text } from "react-native"
 import { AsyncStorage } from 'react-native';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import LoadingContainer from '../components/LoadingContainer';
 import { GET_MENU_ITEMS } from '../constants/graphql-query';
+import { LOGIN } from '../constants/graphql-mutation';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   withTheme,
@@ -14,19 +16,8 @@ import {
   Button,
   Touchable
 } from "@draftbit/ui"
-import { NO_USER_FOUND } from '../constants/error-messages'
-import Images from "../config/Images.js"
-
-const LOGIN = gql`
-mutation login($email: String!, $password: String!) {
-  login(email: $email, password: $password) {
-    token
-    user {
-      id
-    }
-  }
-}
-`;
+import { NO_USER_FOUND } from '../constants/error-messages';
+import Images from "../config/Images.js";
 
 function ErrorMessage({error, theme}){
   console.log('error', error)
@@ -45,7 +36,7 @@ function SignInForm({ theme, navigation, connection }) {
   const [signInError, setSignInError] = useState(null);
 
   return (
-    <Container style={styles.Container_n4k} elevation={0} useThemeGutterPadding={true}>
+    <Container style={styles.Signin_Form_Container} elevation={0} useThemeGutterPadding={true}>
       <Text
         style={[
           styles.Text_nsa,
@@ -123,111 +114,102 @@ function SignInForm({ theme, navigation, connection }) {
   );
 }
 
-function CheckQuery({navigation}) {
-  const { data, loading, error } = useQuery(
+function EmailPasswordLoginScreen({ navigation }) {
+  const theme = Object.assign({}, screenTheme);
+  const [loading, setLoading] = useState(true);
+
+  const { data, error } = useQuery(
     GET_MENU_ITEMS,
     {
       onCompleted: (res) => {
         const { menuItems } = res;
         if (menuItems) {
-          navigation.navigate("LandingScreen")
+          navigation.navigate("LandingScreen");
+        } else {
+          setLoading(false);
         }
       }
     }
   );
-  return null;
-}
 
-class EmailPasswordLoginScreen extends React.Component {
-  constructor(props) {
-    super(props)
-    StatusBar.setBarStyle("dark-content")
-
-    this.state = {
-      theme: Object.assign(props.theme, screenTheme)
-    }
+  if (loading) {
+    return <LoadingContainer />
   }
-
-  render() {
-    const { theme } = this.state
-    return (
-      <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_nll}>
-        <KeyboardAvoidingView
-          style={styles.KeyboardAvoidingView_nit}
-          enabled={true}
-          behavior="padding"
-          keyboardVerticalOffset={0}
-        >
-          <CheckQuery navigation={this.props.navigation}/>
-          <Container style={styles.Container_n5z} elevation={0} useThemeGutterPadding={true}>
+  return (
+    <ScreenContainer hasSafeArea={true} style={styles.Root_nll}>
+      <KeyboardAvoidingView
+        style={styles.Signin_Container}
+        enabled={true}
+        behavior="padding"
+        keyboardVerticalOffset={0}
+      >
+        <Container>
+          <Text
+            style={[
+              styles.Text_nj7,
+              {
+                fontFamily: "LilitaOne",
+                fontSize: 84
+              }
+            ]}
+          >
+            Jasper
+          </Text>
+        </Container>
+        <SignInForm theme={theme} navigation={navigation} />
+        <Container style={styles.Container_nul} elevation={0} useThemeGutterPadding={true}>
+          <Touchable
+            style={styles.Touchable_n2m}
+            onPress={() => {
+              navigation.navigate("SignupWithEmailScreen")
+            }}
+          >
             <Text
               style={[
-                styles.Text_nj7,
-                theme.typography.headline1,
+                styles.Text_ncc,
+                theme.typography.button,
                 {
-                  fontFamily: "LilitaOne",
-                  fontSize: 30
+                  color: theme.colors.primary
                 }
               ]}
             >
-              Jasper Technologies
+              Create Account
             </Text>
-          </Container>
-          <SignInForm theme={theme} navigation={this.props.navigation} />
-          <Container style={styles.Container_nul} elevation={0} useThemeGutterPadding={true}>
-            <Touchable
-              style={styles.Touchable_n2m}
-              onPress={() => {
-                this.props.navigation.navigate("SignupWithEmailScreen")
-              }}
-            >
-              <Text
-                style={[
-                  styles.Text_ncc,
-                  theme.typography.button,
-                  {
-                    color: theme.colors.primary
-                  }
-                ]}
-              >
-                Create Account
-              </Text>
-            </Touchable>
-            <Touchable
-              style={styles.Touchable_nbr}
-              onPress={() => {
-                this.props.navigation.navigate("ForgotPasswordScreen")
-              }}
-            >
-              <Text
-                style={[
-                  styles.Text_nwf,
-                  theme.typography.button,
-                  {
-                    color: theme.colors.primary
-                  }
-                ]}
-              >
-                Lost Password?
-              </Text>
-            </Touchable>
+          </Touchable>
+          <Touchable
+            style={styles.Touchable_nbr}
+            onPress={() => {
+              navigation.navigate("ForgotPasswordScreen")
+            }}
+          >
             <Text
               style={[
-                styles.Text_nfs,
-                theme.typography.caption,
+                styles.Text_nwf,
+                theme.typography.button,
                 {
-                  color: theme.colors.light
+                  color: theme.colors.primary
                 }
               ]}
             >
-              By tapping "Sign In", you agree to our Terms of Service, Privacy Policy and Cookie
-              Policy.
+              Lost Password?
             </Text>
-          </Container>
-        </KeyboardAvoidingView>
-      </ScreenContainer>
-    )
-  }
+          </Touchable>
+          <Text
+            style={[
+              styles.Text_nfs,
+              theme.typography.caption,
+              {
+                color: theme.colors.light
+              }
+            ]}
+          >
+            By tapping "Sign In", you agree to our Terms of Service, Privacy Policy and Cookie
+            Policy.
+          </Text>
+        </Container>
+      </KeyboardAvoidingView>
+    </ScreenContainer>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -235,10 +217,11 @@ const styles = StyleSheet.create({
     height: 48,
     marginVertical: 24
   },
-  Container_n4k: {
+  Signin_Form_Container: {
+    width: "30%",
+    marginVertical: 24
   },
-  Container_n5z: {
-    alignItems: "center",
+  Container_n4k: {
   },
   Container_nul: {
     justifyContent: "flex-end",
@@ -247,8 +230,10 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100
   },
-  KeyboardAvoidingView_nit: {
-    justifyContent: "space-around",
+  Signin_Container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     flexGrow: 1
   },
   TextField_n09: {
@@ -286,4 +271,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withTheme(EmailPasswordLoginScreen)
+export default withTheme(EmailPasswordLoginScreen);
