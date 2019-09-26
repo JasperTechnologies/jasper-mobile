@@ -1,5 +1,13 @@
 import gql from 'graphql-tag';
 
+export const UPDATE_ORDER = gql`
+  mutation UpdateOrder($orderId: ID!, $lineItems: [LineItemInput]!) {
+    updateOrder(orderId: $orderId, lineItems: $lineItems) {
+      code
+    }
+  }
+`;
+
 export const SET_CURRENT_MENU_CATEGORY = gql`
   mutation SetCurrentMenuCategory($menuCategory: MenuCategory) {
     setCurrentMenuCategory(menuCategory: $menuCategory) @client
@@ -65,4 +73,3 @@ export const PURCHASE = gql`
     purchase(deviceId: $deviceId, amountInCents: $amountInCents)
   }
 `;
-

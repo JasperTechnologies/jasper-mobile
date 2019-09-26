@@ -55,5 +55,16 @@ export function toSaleRequest(cart, taxes, tipPercentage) {
   saleRequest.setTaxAmount(getSubtotalTaxOfCart(cart, taxes));
   saleRequest.setTipAmount(getTipsOfCart(cart, tipPercentage));
   saleRequest.setTipMode("TIP_PROVIDED");
+  saleRequest.setDisableDuplicateChecking(true);
   return saleRequest;
+}
+
+export function toLineItemsPayload(cart) {
+  return cart.map((item) => {
+    return {
+      name: item.title,
+      price: item.price,
+      itemId: item.paymentProcessorId
+    };
+  });
 }

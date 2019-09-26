@@ -4,6 +4,7 @@ export const GET_MENU_ITEMS = gql`
 query MenuItems{
   menuItems{
     id
+    paymentProcessorId
     title
     description
     calories
@@ -69,6 +70,7 @@ export const GET_CART = gql`
 query GetCart{
   cart @client{
     id
+    paymentProcessorId
     title
     description
     calories
@@ -111,6 +113,7 @@ export const GET_CURRENT_MENU_ITEMS = gql`
 query GetCurrentMenuItems{
   currentMenuItems @client{
     id
+    paymentProcessorId
     title
     description
     calories
@@ -154,6 +157,7 @@ query GetCurrentMenuItem{
   }
   currentMenuItem @client{
     id
+    paymentProcessorId
     title
     description
     calories

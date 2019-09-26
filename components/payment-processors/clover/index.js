@@ -1,34 +1,42 @@
 import clover from 'remote-pay-cloud';
 import React, {createContext, useContext, useState, useEffect} from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import {
   GET_LOCATION
 } from '../../../constants/graphql-query';
 import {
+  UPDATE_ORDER
+} from '../../../constants/graphql-mutation';
+import {
   toDisplayOrder,
-  toSaleRequest
+  toSaleRequest,
+  toLineItemsPayload
 } from './utils';
 
 class POSCloverConnectorListener extends clover.sdk.remotepay.ICloverConnectorListener{
+    constructor({ notifySaleSuccess }) {
+      super();
+      this.notifySaleSuccess = notifySaleSuccess;
+    }
 
-    // called when the Clover device is connected, but not ready to communicate
     onDeviceConnected(){
         console.log('onDeviceConnected');
     }
 
-    // called when the Clover device is disconnected
     onDeviceDisconnected(){
         console.log('onDeviceDisconnected');
     }
 
-    // called when a Clover device error event is encountered
     onDeviceError(deviceErrorEvent){
         console.log('onDeviceError', deviceErrorEvent);
     }
 
-    // called when the Clover device is ready to communicate
     onDeviceReady(merchantInfo){
         console.log("ready")
+    }
+
+    onSaleResponse(response) {
+      this.notifySaleSuccess(response);
     }
 
 }
@@ -36,10 +44,21 @@ class POSCloverConnectorListener extends clover.sdk.remotepay.ICloverConnectorLi
 
 export class CloverConnection {
     constructor(){
-        this.cloverConnector = null;
-        this.connected = false;
-        this.applicationId = '17GTAPT6R62MP';
-        // Object.assign(this, options);
+      this.cloverConnector = null;
+      this.connected = false;
+      this.applicationId = '17GTAPT6R62MP';
+
+      this.onSaleResponse = null;
+    }
+
+    setOnSaleResponse = (onSaleResponse) => {
+      this.onSaleResponse = onSaleResponse;
+    }
+
+    onSaleSuccess = (response) => {
+      if (this.onSaleResponse) {
+        this.onSaleResponse(response);
+      }
     }
 
     async connectToDeviceCloud(accessToken, merchantId, deviceId) {
@@ -58,7 +77,9 @@ export class CloverConnection {
             .build();
         this.cloverConnector = cloverConnectorFactory.createICloverConnector(cloudConfiguration);
 
-        let connectorListener = new POSCloverConnectorListener();
+        let connectorListener = new POSCloverConnectorListener({
+          notifySaleSuccess: this.onSaleSuccess
+        });
 
         this.cloverConnector.addCloverConnectorListener(connectorListener);
         this.cloverConnector.initializeConnection();
@@ -92,28 +113,46 @@ export const useClover = () => useContext(CloverContext);
 
 export function OrderDisplayView({ cart, taxes, tipPercentage }) {
   const { clover } = useClover();
-  if (!clover) {
-    return null;
-  }
-  clover.cloverConnector.showDisplayOrder(toDisplayOrder(cart, taxes, tipPercentage));
+  useEffect(() => {
+    if (clover) {
+      clover.cloverConnector.showDisplayOrder(toDisplayOrder(cart, taxes, tipPercentage));
+    }
+  }, []);
   return null;
 }
 
 export function LandingView() {
   const { clover } = useClover();
-  if (!clover) {
-    return null;
-  }
-  clover.cloverConnector.showWelcomeScreen();
+  useEffect(() => {
+    if (clover) {
+      clover.cloverConnector.showWelcomeScreen();
+    }
+  }, []);
   return null;
 }
 
 export function PaymentView({ cart, taxes, tipPercentage }) {
   const { clover } = useClover();
-  if (!clover) {
-    return null;
+  const [ updateOrder ] = useMutation(UPDATE_ORDER);
+  const onSaleResponse = (response) => {
+    if (response.success) {
+      const orderId = response.payment.order.id;
+      const lineItems = toLineItemsPayload(cart);
+      updateOrder({
+        variables: {
+          orderId,
+          lineItems
+        }
+      });
+    } else {
+      // error
+    }
   }
 
-  clover.cloverConnector.sale(toSaleRequest(cart, taxes, tipPercentage));
+  useEffect(() => {
+    clover.setOnSaleResponse(onSaleResponse);
+    clover.cloverConnector.sale(toSaleRequest(cart, taxes, tipPercentage));
+  }, [])
+
   return null;
 }
