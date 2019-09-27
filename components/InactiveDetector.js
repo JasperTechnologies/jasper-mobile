@@ -7,9 +7,6 @@ import {
   GET_CHECKOUT_STATE
 } from '../constants/graphql-query';
 import {
-  CLEAR_CART
-} from '../constants/graphql-mutation';
-import {
   withTheme,
   Container,
 } from "@draftbit/ui";
@@ -50,7 +47,6 @@ function InactiveDetector({
   theme
 }) {
   const { data: { checkoutState }} = useQuery(GET_CHECKOUT_STATE);
-  const [clearCart] = useMutation(CLEAR_CART);
   const [timeoutId, setTimeoutId] = useState(null);
   const [showTimer, setShowTimer] = useState(null);
 
@@ -92,7 +88,6 @@ function InactiveDetector({
       currentScreen === 'CheckoutScreen' ||
       currentScreen === 'MenuItemViewScreen'
     ) {
-      clearCart();
       navigation.navigate("LandingScreen");
     }
   }

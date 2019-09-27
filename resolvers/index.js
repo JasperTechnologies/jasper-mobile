@@ -30,6 +30,7 @@ export const typeDefs = gql`
     setCheckoutInProgress: Boolean
     setCheckoutReady: Boolean
     setCheckoutCancelling: Boolean
+    setCheckoutSuccess: Boolean
     purchase(deviceId: String, amountInCents: Int): String
   }
 `;
@@ -171,6 +172,17 @@ export const resolvers = {
         {
           data: {
             checkoutState: "CANCELLING"
+          }
+        }
+      );
+      return null;
+    },
+    setCheckoutSuccess: async (_, __, { cache }) => {
+      const { checkout } = await cache.readQuery({ query: GET_CHECKOUT_STATE });
+      await cache.writeData(
+        {
+          data: {
+            checkoutState: "SUCCESS"
           }
         }
       );

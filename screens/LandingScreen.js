@@ -1,10 +1,14 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { StatusBar, StyleSheet, Text, Animated, Easing } from "react-native"
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   GET_LOCATION
 } from '../constants/graphql-query';
+import {
+  CLEAR_CART,
+  SET_TIP_PERCENTAGE
+} from '../constants/graphql-mutation';
 import {
   withTheme,
   ScreenContainer,
@@ -27,13 +31,24 @@ const startAnimation = (scaleValue) => {
 
 function LandingContainer() {
   const { data: locationData, loading, error } = useQuery(GET_LOCATION);
+  const [ clearCart ] = useMutation(CLEAR_CART);
+  const [ setTipPercentage ] = useMutation(SET_TIP_PERCENTAGE);
+  useEffect(() => {
+    // clean up
+    clearCart();
+    setTipPercentage({
+      variables: {
+        tipPercentage: 0
+      }
+    });
+  }, []);
   if (loading || error) {
     return null;
   }
   const {
     location: {
       pictureURL,
-      name, 
+      name,
       taxes
     }
   } = locationData;

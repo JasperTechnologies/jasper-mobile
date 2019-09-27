@@ -8,7 +8,8 @@ import {
   GET_LOCATION
 } from '../../../constants/graphql-query';
 import {
-  UPDATE_ORDER
+  UPDATE_ORDER,
+  SET_CHECKOUT_SUCCESS
 } from '../../../constants/graphql-mutation';
 import LoadingContainer from '../../LoadingContainer';
 import {
@@ -154,6 +155,7 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
   const { clover } = useClover();
   const { data: locationData } = useQuery(GET_LOCATION);
   const [ updateOrder ] = useMutation(UPDATE_ORDER);
+  const [ setCheckoutSuccess ] = useMutation(SET_CHECKOUT_SUCCESS);
   const onSaleResponse = (response) => {
     if (response.success) {
       console.log(response);
@@ -176,6 +178,9 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
         );
         clover.cloverConnector.print(receipt);
         clover.cloverConnector.showWelcomeScreen();
+        setCheckoutSuccess({
+          refetchQueries: ["GetCheckoutState"]
+        });
       });
     } else {
       // error

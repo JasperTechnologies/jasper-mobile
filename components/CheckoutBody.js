@@ -41,7 +41,7 @@ function EmptyView() {
 
 const tipPercentages = [0, 10, 15, 20, 25]
 
-function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
+function CheckoutBody({theme, navigateToMenuItem}) {
 	const [ removeItemFromCart ] = useMutation(REMOVE_ITEM_FROM_CART);
 	const [ setEditingMenuItem ] = useMutation(SET_EDITING_MENU_ITEM);
 	const [ setTipPercentage ] = useMutation(SET_TIP_PERCENTAGE);

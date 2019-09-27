@@ -85,6 +85,12 @@ export const SET_CHECKOUT_CANCELLING = gql`
   }
 `;
 
+export const SET_CHECKOUT_SUCCESS = gql`
+  mutation SetCheckoutSuccess {
+    setCheckoutSuccess @client
+  }
+`;
+
 export const CHECKOUT_COMPLETE = gql`
   mutation checkoutComplete {
     checkoutComplete @client

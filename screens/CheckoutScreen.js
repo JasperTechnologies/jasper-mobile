@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import {
   StatusBar,
   StyleSheet,
@@ -75,6 +75,13 @@ function CheckoutModal({theme}) {
 function CheckoutScreen({ theme, navigation }) {
   StatusBar.setBarStyle("light-content");
   const { data: { checkoutState }} = useQuery(GET_CHECKOUT_STATE);
+  const [ setCheckoutReady ] = useMutation(SET_CHECKOUT_READY);
+  useEffect(() => {
+    if (checkoutState === "SUCCESS") {
+      setCheckoutReady();
+      navigation.navigate("ThankYouScreen");
+    }
+  }, [checkoutState]);
   return (
     <ScreenContainer scrollable={false}>
       <CheckoutModal theme={theme}/>
@@ -96,8 +103,7 @@ function CheckoutScreen({ theme, navigation }) {
         <CheckoutBody
           theme={theme}
           navigateToMenuItem={() => navigation.navigate("MenuItemViewScreen")}
-          navigateToThankYouScreen={() => navigation.navigate("ThankYouScreen")}
-          />
+        />
       </Container>
     </ScreenContainer>
   );
