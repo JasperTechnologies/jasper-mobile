@@ -18,10 +18,8 @@ import CartItem from './CartItem'
 import CheckoutTotalItem from './CheckoutTotalItem';
 import {
   centsToDollar,
-  getSubtotalOfCart,
-  getSubtotalTaxOfCart,
-	getTotalOfCart,
-	getTipsOfCart
+  getTipsOfCart,
+  getPaymentSummary
 } from '../utilities/money';
 import {
   withTheme,
@@ -61,6 +59,14 @@ function CheckoutBody({theme, navigateToMenuItem}) {
       refetchQueries: ["GetCheckoutState"]
     });
   };
+
+  const {
+    subTotal,
+    tax,
+    total,
+    tip,
+    totalPayment
+  } = getPaymentSummary(cart, taxes, tipPercentage);
 	return cart.length === 0 ?
 		<EmptyView /> :(
 		<View style={{ flex: 1 }}>
@@ -172,25 +178,25 @@ function CheckoutBody({theme, navigateToMenuItem}) {
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline3}
 					title={"Subtotal"}
-					amount={`$${centsToDollar(getSubtotalOfCart(cart))}`}
+					amount={`$${centsToDollar(subTotal)}`}
 					/>
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline3}
 					title={"Tip"}
-					amount={`$${centsToDollar(getTipsOfCart(cart, tipPercentage))}`}
+					amount={`$${centsToDollar(tip)}`}
 					/>
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline3}
 					title={"Tax"}
-					amount={`$${centsToDollar(getSubtotalTaxOfCart(cart, taxes))}`}
+					amount={`$${centsToDollar(tax)}`}
 					/>
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline1}
 					title={"Total"}
-					amount={`$${centsToDollar(getTotalOfCart(cart) + getSubtotalTaxOfCart(cart, taxes) + getTipsOfCart(cart, tipPercentage))}`}
+					amount={`$${centsToDollar(totalPayment)}`}
 					/>
 			</ScrollView>
-			<FooterNavButton text={`Checkout $${centsToDollar(getTotalOfCart(cart) + getTipsOfCart(cart, tipPercentage))}`} onPress={onCheckout} />
+			<FooterNavButton text={`Checkout $${centsToDollar(totalPayment)}`} onPress={onCheckout} />
 		</View>
 	);
 }

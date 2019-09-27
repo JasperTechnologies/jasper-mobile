@@ -16,7 +16,7 @@ export const calculateTotalPrice = (basePrice, quantity, optionValues) => {
     }
     return sum + optionValue.price;
   }, 0);
-  return (basePrice + optionPrices) * quantity;
+  return ((basePrice + optionPrices) * quantity);
 };
 
 export const getSubtotalOfCart = (items) => {
@@ -35,15 +35,30 @@ export const getSubtotalTaxOfCart = (items, taxes) => {
         total += getSubtotalOfCart(items) * (tax.taxAmount)/10000000
       }
     })
-    return total
+    return total;
   }
   return 0
 };
 
 export const getTipsOfCart = (items, tipPercent) => {
-  return getSubtotalOfCart(items) * (tipPercent/100);
+  return (getSubtotalOfCart(items) * (tipPercent/100));
 }
 
 export const getTotalOfCart = (items) => {
-  return getSubtotalTaxOfCart(items) + getSubtotalOfCart(items);
+  return (getSubtotalTaxOfCart(items) + getSubtotalOfCart(items));
 };
+
+export const getPaymentSummary = (items, taxes, tipPercent) => {
+  const subTotal = Math.floor(getSubtotalOfCart(items));
+  const tax = Math.floor(getSubtotalTaxOfCart(items, taxes));
+  const total = subTotal + tax;
+  const tip = Math.floor(getTipsOfCart(items, tipPercent));
+  const totalPayment = total + tip;
+  return {
+    subTotal,
+    tax,
+    total,
+    tip,
+    totalPayment
+  };
+}

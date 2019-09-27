@@ -1,10 +1,7 @@
 import clover from 'remote-pay-cloud';
 import {
   calculateTotalPrice,
-  getSubtotalOfCart,
-  getSubtotalTaxOfCart,
-  getTotalOfCart,
-  getTipsOfCart,
+  getPaymentSummary,
   centsToDollar
 } from '../../../utilities/money';
 
@@ -36,24 +33,36 @@ export function toDisplayTip(tip) {
 
 export function toDisplayOrder(cart, taxes, tipPercentage) {
   const displayOrder = new clover.sdk.order.DisplayOrder();
+  const {
+    subTotal,
+    tax,
+    total,
+    tip,
+    totalPayment
+  } = getPaymentSummary(cart, taxes, tipPercentage);
   displayOrder.setId(clover.CloverID.getNewId());
   displayOrder.setCurrency('USD');
-  displayOrder.setSubtotal(`$${centsToDollar(getSubtotalOfCart(cart))}`);
-  displayOrder.setTax(`$${centsToDollar(getSubtotalTaxOfCart(cart, taxes))}`);
-  displayOrder.setTotal(`$${centsToDollar(getTotalOfCart(cart) + getSubtotalTaxOfCart(cart, taxes))} + Tip`);
+  displayOrder.setSubtotal(`$${centsToDollar(subTotal)}`);
+  displayOrder.setTax(`$${centsToDollar(tax)}`);
+  displayOrder.setTotal(`$${centsToDollar(total)} + Tip`);
   const displayLineItems = cart.map(toDisplayLineItem);
   displayOrder.setLineItems(displayLineItems);
-  displayOrder.setPayments([toDisplayTip(getTipsOfCart(cart, tipPercentage))]);
-  displayOrder.setAmountRemaining(`$${centsToDollar(getTotalOfCart(cart) + getSubtotalTaxOfCart(cart, taxes) + getTipsOfCart(cart, tipPercentage))}`)
+  displayOrder.setPayments([toDisplayTip(tip)]);
+  displayOrder.setAmountRemaining(`$${centsToDollar(totalPayment)}`)
   return displayOrder;
 }
 
 export function toSaleRequest(cart, taxes, tipPercentage) {
   const saleRequest = new clover.sdk.remotepay.SaleRequest();
+  const {
+    tax,
+    total,
+    tip
+  } = getPaymentSummary(cart, taxes, tipPercentage);
   saleRequest.setExternalId(clover.CloverID.getNewId());
-  saleRequest.setAmount(getTotalOfCart(cart) + getSubtotalTaxOfCart(cart, taxes));
-  saleRequest.setTaxAmount(getSubtotalTaxOfCart(cart, taxes));
-  saleRequest.setTipAmount(getTipsOfCart(cart, tipPercentage));
+  saleRequest.setAmount(total);
+  saleRequest.setTaxAmount(tax);
+  saleRequest.setTipAmount(tip);
   saleRequest.setTipMode("TIP_PROVIDED");
   saleRequest.setDisableDuplicateChecking(true);
   saleRequest.setDisableReceiptSelection(true);
@@ -80,8 +89,8 @@ export function toCustomerReceipt(cart, taxes, tipPercentage, payment, location)
   if (payment && payment.cardTransaction && payment.cardTransaction.vaultedCard) {
     text.push(`XXXXXXXXXXX${payment.cardTransaction.vaultedCard.last4}`);
   }
-  text.push(`Subtotal & Tax $${centsToDollar(getTotalOfCart(cart) + getSubtotalTaxOfCart(cart, taxes))}`);
-  text.push(`Tip $${centsToDollar(getTipsOfCart(cart, tipPercentage))}`);
+  text.push(`Subtotal & Tax $${centsToDollar(payment.amount)}`);
+  text.push(`Tip $${centsToDollar(payment.tipAmount)}`);
   if (payment) {
     text.push(`Total $${centsToDollar(payment.amount + payment.tipAmount)}`);
   }
