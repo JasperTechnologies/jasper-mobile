@@ -73,9 +73,10 @@ function CheckoutModal({theme}) {
 }
 
 function CheckoutScreen({ theme, navigation }) {
+  StatusBar.setBarStyle("light-content");
   const { data: { checkoutState }} = useQuery(GET_CHECKOUT_STATE);
   return (
-    <ScreenContainer hasSafeArea={true} scrollable={false} style={styles.Root_n9y}>
+    <ScreenContainer scrollable={false}>
       <CheckoutModal theme={theme}/>
       { checkoutState === "CANCELLING" && <CancellingSaleView /> }
       { checkoutState === "READY" && <ProcessorOrderDisplayView /> }
@@ -123,9 +124,6 @@ const styles = StyleSheet.create({
     borderBottomColor: '#DDDDDD',
     borderBottomWidth: 2,
     minHeight: 150
-  },
-  Root_n9y: {
-    justifyContent: "space-between"
   },
   Checkout_Modal_Container: {
     height: "40%",

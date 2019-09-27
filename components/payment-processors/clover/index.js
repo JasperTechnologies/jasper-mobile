@@ -143,9 +143,6 @@ export function CancellingSaleView() {
 export function LandingView() {
   const { clover } = useClover();
   if (clover) {
-    // escaping from sales view
-    clover.cloverConnector.invokeInputOption(toEnterInputOption());
-    clover.cloverConnector.invokeInputOption(toEscInputOption());
     // show welcome view
     clover.cloverConnector.showWelcomeScreen();
   }

@@ -159,7 +159,7 @@ function MenuItemViewScreen({
 
 
   return (
-    <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
+    <ScreenContainer scrollable={false}>
       <Container style={styles.MainItemView_Container}>
         <Container style={styles.MenuItemNav_Container} elevation={0}>
           <IconButton
