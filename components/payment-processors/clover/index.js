@@ -1,16 +1,23 @@
 import clover from 'remote-pay-cloud';
 import React, {createContext, useContext, useState, useEffect} from 'react';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import {
+  useQuery,
+  useMutation
+} from '@apollo/react-hooks';
 import {
   GET_LOCATION
 } from '../../../constants/graphql-query';
 import {
   UPDATE_ORDER
 } from '../../../constants/graphql-mutation';
+import LoadingContainer from '../../LoadingContainer';
 import {
   toDisplayOrder,
   toSaleRequest,
-  toLineItemsPayload
+  toEnterInputOption,
+  toEscInputOption,
+  toLineItemsPayload,
+  toCustomerReceipt
 } from './utils';
 
 class POSCloverConnectorListener extends clover.sdk.remotepay.ICloverConnectorListener{
@@ -113,29 +120,46 @@ export const useClover = () => useContext(CloverContext);
 
 export function OrderDisplayView({ cart, taxes, tipPercentage }) {
   const { clover } = useClover();
+  if (clover) {
+    clover.cloverConnector.showDisplayOrder(toDisplayOrder(cart, taxes, tipPercentage));
+  }
+  return null;
+}
+
+export function CancellingSaleView() {
+  const { clover } = useClover();
   useEffect(() => {
     if (clover) {
-      clover.cloverConnector.showDisplayOrder(toDisplayOrder(cart, taxes, tipPercentage));
+      // escaping from sales view
+      clover.cloverConnector.invokeInputOption(toEnterInputOption());
+      setTimeout(() => {
+        clover.cloverConnector.invokeInputOption(toEscInputOption());
+      }, 1000);
     }
-  }, []);
-  return null;
+  }, [])
+  return <LoadingContainer />;
 }
 
 export function LandingView() {
   const { clover } = useClover();
-  useEffect(() => {
-    if (clover) {
-      clover.cloverConnector.showWelcomeScreen();
-    }
-  }, []);
+  if (clover) {
+    // escaping from sales view
+    clover.cloverConnector.invokeInputOption(toEnterInputOption());
+    clover.cloverConnector.invokeInputOption(toEscInputOption());
+    // show welcome view
+    clover.cloverConnector.showWelcomeScreen();
+  }
+
   return null;
 }
 
 export function PaymentView({ cart, taxes, tipPercentage }) {
   const { clover } = useClover();
+  const { data: locationData } = useQuery(GET_LOCATION);
   const [ updateOrder ] = useMutation(UPDATE_ORDER);
   const onSaleResponse = (response) => {
     if (response.success) {
+      console.log(response);
       const orderId = response.payment.order.id;
       const lineItems = toLineItemsPayload(cart);
       updateOrder({
@@ -143,6 +167,18 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
           orderId,
           lineItems
         }
+      }).then(({
+        code
+      }) => {
+        const receipt = toCustomerReceipt(
+          cart,
+          taxes,
+          tipPercentage,
+          response.payment,
+          locationData ? locationData.location : null
+        );
+        clover.cloverConnector.print(receipt);
+        clover.cloverConnector.showWelcomeScreen();
       });
     } else {
       // error

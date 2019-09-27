@@ -56,7 +56,51 @@ export function toSaleRequest(cart, taxes, tipPercentage) {
   saleRequest.setTipAmount(getTipsOfCart(cart, tipPercentage));
   saleRequest.setTipMode("TIP_PROVIDED");
   saleRequest.setDisableDuplicateChecking(true);
+  saleRequest.setDisableReceiptSelection(true);
   return saleRequest;
+}
+
+export function toCustomerReceipt(cart, taxes, tipPercentage, payment, location) {
+  const printRequest = new clover.sdk.remotepay.PrintRequest();
+  const text = [];
+  if (location) {
+    text.push(location.name);
+  }
+  if (payment && payment.cardTransaction) {
+    text.push(`Order Number: ${payment.cardTransaction.transactionNo}`);
+  }
+  text.push("=========================");
+  cart.forEach((item) => {
+    text.push(`$${centsToDollar(calculateTotalPrice(item.price, item.form.quantity, item.form.optionValues))} ${item.title} [${item.form.quantity}]`);
+    item.form.optionValues.forEach((ov) => {
+      text.push(`  ${ov.title}`)
+    });
+  });
+  text.push("");
+  if (payment && payment.cardTransaction && payment.cardTransaction.vaultedCard) {
+    text.push(`XXXXXXXXXXX${payment.cardTransaction.vaultedCard.last4}`);
+  }
+  text.push(`Subtotal & Tax $${centsToDollar(getTotalOfCart(cart) + getSubtotalTaxOfCart(cart, taxes))}`);
+  text.push(`Tip $${centsToDollar(getTipsOfCart(cart, tipPercentage))}`);
+  if (payment) {
+    text.push(`Total $${centsToDollar(payment.amount + payment.tipAmount)}`);
+  }
+  text.push("");
+  text.push("");
+  printRequest.setText(text)
+  return printRequest;
+}
+
+export function toEnterInputOption(cart) {
+  const inputOption = new clover.sdk.remotepay.InputOption();
+  inputOption.setKeyPress("ENTER");
+  return inputOption;
+}
+
+export function toEscInputOption(cart) {
+  const inputOption = new clover.sdk.remotepay.InputOption();
+  inputOption.setKeyPress("ESC");
+  return inputOption;
 }
 
 export function toLineItemsPayload(cart) {

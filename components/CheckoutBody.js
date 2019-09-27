@@ -3,20 +3,19 @@ import { StyleSheet, Text, ScrollView, TouchableWithoutFeedback } from "react-na
 import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
 import {
   GET_CART,
-	GET_TIP_PERCENT_INDEX,
+	GET_TIP_PERCENTAGE,
 	GET_LOCATION,
   GET_CHECKOUT_STATE,
 } from '../constants/graphql-query';
 import {
   REMOVE_ITEM_FROM_CART,
 	SET_EDITING_MENU_ITEM,
-	SET_TIP_PERCENT_INDEX,
+	SET_TIP_PERCENTAGE,
   SET_CHECKOUT_IN_PROGRESS,
-	PURCHASE,
 	CHECKOUT_COMPLETE
 } from '../constants/graphql-mutation';
 import CartItem from './CartItem'
-import CheckoutTotalItem from './CheckoutTotalItem'
+import CheckoutTotalItem from './CheckoutTotalItem';
 import {
   centsToDollar,
   getSubtotalOfCart,
@@ -32,8 +31,6 @@ import {
 } from "@draftbit/ui"
 import FooterNavButton from "./FooterNavButton";
 import gql from 'graphql-tag';
-import ProcessorOrderDisplayView from './payment-processors/order-display-view';
-import ProcessorPaymentView from './payment-processors/payment-view';
 function EmptyView() {
   return (
     <View>
@@ -47,21 +44,12 @@ const tipPercentages = [0, 10, 15, 20, 25]
 function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 	const [ removeItemFromCart ] = useMutation(REMOVE_ITEM_FROM_CART);
 	const [ setEditingMenuItem ] = useMutation(SET_EDITING_MENU_ITEM);
-	const [ setTipPercent ] = useMutation(SET_TIP_PERCENT_INDEX);
+	const [ setTipPercentage ] = useMutation(SET_TIP_PERCENTAGE);
 	const [ setCheckoutInProgress ] = useMutation(SET_CHECKOUT_IN_PROGRESS);
-	const [ purchase ] = useMutation(PURCHASE)
 	const [ checkoutComplete ] = useMutation(CHECKOUT_COMPLETE)
 	const { data: cartData, loading, error } = useQuery(GET_CART);
-	const { data: { tipPercentIndex } } = useQuery(GET_TIP_PERCENT_INDEX);
-  const { data: { checkoutState }} = useQuery(GET_CHECKOUT_STATE);
-  const { data: locationData } = useQuery(GET_LOCATION);
-	const {
-    location: {
-      taxes
-    }
-  } = locationData;
-
-  const [ getCart ] = useLazyQuery(GET_CART);
+	const { data: { tipPercentage } } = useQuery(GET_TIP_PERCENTAGE);
+  const { data: { location: { taxes } } } = useQuery(GET_LOCATION);
 	if (loading || error) {
 		return null;
 	}
@@ -69,7 +57,9 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 	const { cart } = cartData;
 
   const onCheckout = () => {
-    setCheckoutInProgress();
+    setCheckoutInProgress({
+      refetchQueries: ["GetCheckoutState"]
+    });
   };
 	return cart.length === 0 ?
 		<EmptyView /> :(
@@ -78,8 +68,6 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 				contentContainerStyle={styles.ScrollView_Main}
 				showsVerticalScrollIndicator={true}
 			>
-        { checkoutState !== "IN_PROGRESS" && <ProcessorOrderDisplayView cart={cart} taxes={taxes} tipPercentage={tipPercentages[tipPercentIndex]} /> }
-        { checkoutState === "IN_PROGRESS" && <ProcessorPaymentView cart={cart} taxes={taxes} tipPercentage={tipPercentages[tipPercentIndex]} /> }
 				<Container style={styles.Checkout_Logo_Container}>
 					<Icon
 						style={styles.Icon_nie}
@@ -111,9 +99,9 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
                     removeItemFromCart({
                       variables: {
 												index
-											}
+											},
+                      refetchQueries: ["GetCart"]
                     });
-                    getCart();
                   }}
 									onEdit={() => {
 										setEditingMenuItem({
@@ -137,22 +125,22 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
               color: theme.colors.medium
             }
           ]}>
-            {`Tip (${tipPercentages[tipPercentIndex]}%)`}
+            {`Tip (${tipPercentage}%)`}
           </Text>
 					<View style={styles.Tip_View}>
 						{tipPercentages.map((tip, index) => (
 							<TouchableWithoutFeedback
                 key={index}
                 onPress={() => {
-                  setTipPercent({
+                  setTipPercentage({
                     variables: {
-                      percentIndex: index
+                      tipPercentage: tip
                     }
                   })
                 }}>
 								<View
                   style={
-                    index === tipPercentIndex ?
+                    tip === tipPercentage ?
                     {
                       ...styles.Selected_Tip_Box,
                       backgroundColor: theme.colors.primary
@@ -162,7 +150,7 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 									<Text
                     style={[
                       theme.typography.headline3,
-                      index === tipPercentIndex ? styles.Selected_Tip_Percentage_Text : styles.Tip_Percentage_Text
+                      tip === tipPercentage ? styles.Selected_Tip_Percentage_Text : styles.Tip_Percentage_Text
                     ]}
                   >
 										{tip}%
@@ -170,7 +158,7 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 									<Text
                     style={[
                       index ? theme.typography.headline1 : theme.typography.headline3,
-                      index === tipPercentIndex ? styles.Selected_Tip_Text : styles.Tip_Text
+                      tip === tipPercentage ? styles.Selected_Tip_Text : styles.Tip_Text
                     ]}
                   >
 										${centsToDollar(getTipsOfCart(cart, tip))}
@@ -189,7 +177,7 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline3}
 					title={"Tip"}
-					amount={`$${centsToDollar(getTipsOfCart(cart, tipPercentages[tipPercentIndex]))}`}
+					amount={`$${centsToDollar(getTipsOfCart(cart, tipPercentage))}`}
 					/>
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline3}
@@ -199,10 +187,10 @@ function CheckoutBody({theme, navigateToMenuItem, navigateToThankYouScreen}) {
 				<CheckoutTotalItem
 					textTheme={theme.typography.headline1}
 					title={"Total"}
-					amount={`$${centsToDollar(getTotalOfCart(cart) + getSubtotalTaxOfCart(cart, taxes) + getTipsOfCart(cart, tipPercentages[tipPercentIndex]))}`}
+					amount={`$${centsToDollar(getTotalOfCart(cart) + getSubtotalTaxOfCart(cart, taxes) + getTipsOfCart(cart, tipPercentage))}`}
 					/>
 			</ScrollView>
-			<FooterNavButton text={`Checkout $${centsToDollar(getTotalOfCart(cart) + getTipsOfCart(cart, tipPercentages[tipPercentIndex]))}`} onPress={onCheckout} />
+			<FooterNavButton text={`Checkout $${centsToDollar(getTotalOfCart(cart) + getTipsOfCart(cart, tipPercentage))}`} onPress={onCheckout} />
 		</View>
 	);
 }

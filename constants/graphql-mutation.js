@@ -31,9 +31,9 @@ export const SET_CURRENT_MENU_ITEM = gql`
   }
 `;
 
-export const SET_TIP_PERCENT_INDEX = gql`
-  mutation SetTipPercentIndex($percentIndex: Int) {
-    setTipPercentIndex(percentIndex: $percentIndex) @client
+export const SET_TIP_PERCENTAGE = gql`
+  mutation SetTipPercentage($tipPercentage: Int) {
+    setTipPercentage(tipPercentage: $tipPercentage) @client
   }
 `;
 
@@ -70,6 +70,18 @@ export const CLEAR_EDITING_MENU_ITEM_STATE = gql`
 export const SET_CHECKOUT_IN_PROGRESS = gql`
   mutation SetCheckoutInProgress {
     setCheckoutInProgress @client
+  }
+`;
+
+export const SET_CHECKOUT_READY = gql`
+  mutation SetCheckoutReady {
+    setCheckoutReady @client
+  }
+`;
+
+export const SET_CHECKOUT_CANCELLING = gql`
+  mutation SetCheckoutCancelling {
+    setCheckoutCancelling @client
   }
 `;
 

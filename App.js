@@ -52,7 +52,7 @@ cache.writeData({
     currentMenuItem: null,
     isEditingMenuItem: false,
     editingMenuItemForm: null,
-    tipPercentIndex: 0,
+    tipPercentage: 0,
     checkoutState: "READY"
   },
 });

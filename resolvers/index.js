@@ -15,20 +15,21 @@ export const typeDefs = gql`
     currentMenuItem: MenuItem!
     editingMenuItemForm: EditingMenuItemForm!
     isEditingMenuItem: Boolean!
-    tipPercentIndex: Int!
+    tipPercentage: Int!
     checkoutState: CheckoutState
   }
 
   extend type Mutation {
     setCurrentMenuCategory(menuCategory: MenuCategory): Boolean
     setCurrentMenuItem(menuItem: MenuItem): Boolean
-    setTipPercentIndex(percentIndex: Int): Int
+    setTipPercentage(percentIndex: Int): Int
     addOrReplaceItemToCart(menuItemForm: MenuItemForm): Boolean
     removeItemFromCart(index: Int): Boolean
     clearCart: Boolean
     clearEditingMenuItemState: Boolean
     setCheckoutInProgress: Boolean
-    clearCheckoutProgress: Boolean
+    setCheckoutReady: Boolean
+    setCheckoutCancelling: Boolean
     purchase(deviceId: String, amountInCents: Int): String
   }
 `;
@@ -134,10 +135,10 @@ export const resolvers = {
       });
       return null;
     },
-    setTipPercentIndex: async (_, { percentIndex }, { cache }) => {
+    setTipPercentage: async (_, { tipPercentage }, { cache }) => {
       await cache.writeData({
         data: {
-          tipPercentIndex: percentIndex
+          tipPercentage: tipPercentage
         }
       });
       return null;
@@ -148,6 +149,28 @@ export const resolvers = {
         {
           data: {
             checkoutState: "IN_PROGRESS"
+          }
+        }
+      );
+      return null;
+    },
+    setCheckoutReady: async (_, __, { cache }) => {
+      const { checkout } = await cache.readQuery({ query: GET_CHECKOUT_STATE });
+      await cache.writeData(
+        {
+          data: {
+            checkoutState: "READY"
+          }
+        }
+      );
+      return null;
+    },
+    setCheckoutCancelling: async (_, __, { cache }) => {
+      const { checkout } = await cache.readQuery({ query: GET_CHECKOUT_STATE });
+      await cache.writeData(
+        {
+          data: {
+            checkoutState: "CANCELLING"
           }
         }
       );

@@ -1,12 +1,24 @@
 import React from "react"
-import { StatusBar, StyleSheet, Text } from "react-native"
-import { useQuery } from '@apollo/react-hooks';
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity
+} from "react-native"
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import CheckoutBody from '../components/CheckoutBody';
 import ModalContainer from '../components/ModalContainer';
+import CancellingSaleView from '../components/payment-processors/cancelling-sale-view';
+import ProcessorOrderDisplayView from '../components/payment-processors/order-display-view';
+import ProcessorPaymentView from '../components/payment-processors/payment-view';
 import * as Progress from 'react-native-progress';
 import {
   GET_CHECKOUT_STATE
 } from '../constants/graphql-query';
+import {
+  SET_CHECKOUT_READY,
+  SET_CHECKOUT_CANCELLING
+} from '../constants/graphql-mutation';
 import {
   withTheme,
   ScreenContainer,
@@ -16,53 +28,78 @@ import {
 
 function CheckoutModal({theme}) {
   const { data: { checkoutState }} = useQuery(GET_CHECKOUT_STATE);
+  const [ setCheckoutReady ] = useMutation(SET_CHECKOUT_READY);
+  const [ setCheckoutCancelling ] = useMutation(SET_CHECKOUT_CANCELLING);
   if (checkoutState === "IN_PROGRESS") {
-    return <ModalContainer>
-    <Container style={[styles.Checkout_Container, styles.Container_MenuItemNav, styles.Modal_Container]}>
-      <Text style={[styles.ModalHeader, theme.typography.headline1]}>
-        Please Complete Payment With Card Reader
-      </Text>
-      <Progress.Circle size={100} indeterminate={true} />
-    </Container>
-  </ModalContainer>
+    return (
+      <ModalContainer>
+        <TouchableOpacity
+          style={styles.Cancel_Button}
+          onPress={() => {
+            setCheckoutCancelling({
+              refetchQueries: ["GetCheckoutState"]
+            }).then(() => {
+              setTimeout(() => {
+                setCheckoutReady({
+                  refetchQueries: ["GetCheckoutState"]
+                });
+              }, 2000);
+            });
+          }}
+        >
+          <Text
+            style={[
+              theme.typography.headline1,
+              {
+                color: "#FFFFFF"
+              }
+            ]}
+          >
+            Cancel
+          </Text>
+        </TouchableOpacity>
+        <Container style={[styles.Checkout_Modal_Container]}>
+          <Text style={[styles.ModalHeader, theme.typography.headline1]}>
+            Please Complete Payment With Card Reader
+          </Text>
+          <Progress.Circle size={100} indeterminate={true} />
+        </Container>
+      </ModalContainer>
+    );
   }
   return (
     null
   );
 }
 
-class CheckoutScreen extends React.Component {
-  constructor(props) {
-    super(props)
-    StatusBar.setBarStyle("light-content")
-  }
-
-  render() {
-    const { theme } = this.props;
-    return (
-      <ScreenContainer hasSafeArea={true} scrollable={false} style={styles.Root_n9y}>
-        <CheckoutModal theme={theme}/>
-        <Container style={styles.Checkout_Container}>
-          <Container style={styles.Container_MenuItemNav} elevation={0}>
-            <IconButton
-              style={styles.Touchable_Back}
-              icon="MaterialIcons/arrow-back"
-              size={50}
-              color={theme.colors.primary}
-              onPress={() => {
-                this.props.navigation.navigate("MenuScreen")
-              }}
-            />
-          </Container>
-          <CheckoutBody
-            theme={theme}
-            navigateToMenuItem={() => this.props.navigation.navigate("MenuItemViewScreen")}
-            navigateToThankYouScreen={() => this.props.navigation.navigate("ThankYouScreen")}
-            />
+function CheckoutScreen({ theme, navigation }) {
+  const { data: { checkoutState }} = useQuery(GET_CHECKOUT_STATE);
+  return (
+    <ScreenContainer hasSafeArea={true} scrollable={false} style={styles.Root_n9y}>
+      <CheckoutModal theme={theme}/>
+      { checkoutState === "CANCELLING" && <CancellingSaleView /> }
+      { checkoutState === "READY" && <ProcessorOrderDisplayView /> }
+      { checkoutState === "IN_PROGRESS" && <ProcessorPaymentView /> }
+      <Container style={styles.Checkout_Container}>
+        <Container style={styles.Container_MenuItemNav}>
+          <IconButton
+            style={styles.Touchable_Back}
+            icon="MaterialIcons/arrow-back"
+            size={50}
+            color={theme.colors.primary}
+            onPress={() => {
+              navigation.navigate("MenuScreen")
+            }}
+          />
         </Container>
-      </ScreenContainer>
-    )
-  }
+        <CheckoutBody
+          theme={theme}
+          navigateToMenuItem={() => navigation.navigate("MenuItemViewScreen")}
+          navigateToThankYouScreen={() => navigation.navigate("ThankYouScreen")}
+          />
+      </Container>
+    </ScreenContainer>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -90,10 +127,13 @@ const styles = StyleSheet.create({
   Root_n9y: {
     justifyContent: "space-between"
   },
-  Modal_Container: {
+  Checkout_Modal_Container: {
     height: "40%",
     width: "30%",
     backgroundColor: 'white',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 10
   },
   ModalHeader: {
@@ -102,6 +142,13 @@ const styles = StyleSheet.create({
     paddingLeft: 50,
     textAlign: 'center',
     marginBottom: 50
+  },
+  Cancel_Button: {
+    position: "absolute",
+    top: 24,
+    right: 24,
+    padding: 24,
+    backgroundColor: "#cf502d"
   }
 })
 

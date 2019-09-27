@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, PanResponder, Text, StyleSheet } from "react-native";
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import CountdownCircle from './CountdownCircle'
@@ -53,13 +53,18 @@ function InactiveDetector({
   const [clearCart] = useMutation(CLEAR_CART);
   const [timeoutId, setTimeoutId] = useState(null);
   const [showTimer, setShowTimer] = useState(null);
+
+  useEffect(() => {
+    if (checkoutState === "IN_PROGRESS") {
+      clearTimeout(timeoutId);
+    }
+  }, [checkoutState]);
   this.handleInactivity = () => {
     const currentScreen = navigation.state.routes[navigation.state.index].key;
     if (
-      (currentScreen === 'MenuScreen' ||
+      currentScreen === 'MenuScreen' ||
       (currentScreen === 'CheckoutScreen' && checkoutState !== "IN_PROGRESS") ||
       currentScreen === 'MenuItemViewScreen'
-      )
     ) {
       this.resetTimeout();
     }
@@ -68,7 +73,11 @@ function InactiveDetector({
   this.resetTimeout = () => {
     clearTimeout(timeoutId);
     setShowTimer(false)
-    setTimeoutId(setTimeout(() => setShowTimer(true), TIMEOUT));
+    setTimeoutId(
+      setTimeout(() => {
+        setShowTimer(true);
+      }, TIMEOUT)
+    );
   }
 
   this.onMoveShouldSetPanResponderCapture = () => {
@@ -79,10 +88,9 @@ function InactiveDetector({
   this.homecoming = () => {
     const currentScreen = navigation.state.routes[navigation.state.index].key;
     if (
-      (currentScreen === 'MenuScreen' ||
-      (currentScreen === 'CheckoutScreen' && checkoutState !== "IN_PROGRESS") ||
+      currentScreen === 'MenuScreen' ||
+      currentScreen === 'CheckoutScreen' ||
       currentScreen === 'MenuItemViewScreen'
-      )
     ) {
       clearCart();
       navigation.navigate("LandingScreen");

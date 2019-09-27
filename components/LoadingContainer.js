@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FFFFFF"
+    backgroundColor: "#FFFFFF",
+    zIndex: 5
   },
   Jasper_Text: {
     fontFamily: "LilitaOne",
