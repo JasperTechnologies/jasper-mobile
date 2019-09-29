@@ -204,6 +204,7 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
     if (response.success) {
       const orderId = response.payment.order.id;
       const lineItems = toLineItemsPayload(cart);
+      console.log(lineItems);
       updateOrder({
         variables: {
           orderId,

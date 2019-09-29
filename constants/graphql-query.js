@@ -22,6 +22,7 @@ query MenuItems{
         title
         priority
         isDefault
+        paymentProcessorId
       }
     }
     categories{
@@ -92,6 +93,7 @@ query GetCart{
         title
         priority
         isDefault
+        paymentProcessorId
       }
     }
     form{
@@ -103,6 +105,7 @@ query GetCart{
         price
         title
         priority
+        paymentProcessorId
       }
     }
   }
@@ -135,6 +138,7 @@ query GetCurrentMenuItems{
         title
         priority
         isDefault
+        paymentProcessorId
       }
     }
   }
@@ -153,6 +157,7 @@ query GetCurrentMenuItem{
       price
       title
       priority
+      paymentProcessorId
     }
   }
   currentMenuItem @client{
@@ -179,6 +184,7 @@ query GetCurrentMenuItem{
         title
         priority
         isDefault
+        paymentProcessorId
       }
     }
   }
@@ -196,6 +202,7 @@ query GetEditingMenuItem{
       price
       title
       priority
+      paymentProcessorId
     }
   }
 }

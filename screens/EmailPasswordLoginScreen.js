@@ -114,6 +114,13 @@ function SignInForm({ theme, navigation, connection }) {
   );
 }
 
+function LoadingView({loading}) {
+  if (loading) {
+    return <LoadingContainer />;
+  }
+  return null;
+}
+
 function EmailPasswordLoginScreen({ navigation }) {
   const theme = Object.assign({}, screenTheme);
   const [loading, setLoading] = useState(true);
@@ -135,11 +142,9 @@ function EmailPasswordLoginScreen({ navigation }) {
     }
   );
 
-  if (loading) {
-    return <LoadingContainer />
-  }
   return (
     <ScreenContainer hasSafeArea={true} style={styles.Root_nll}>
+      <LoadingView loading={loading} />
       <KeyboardAvoidingView
         style={styles.Signin_Container}
         enabled={true}

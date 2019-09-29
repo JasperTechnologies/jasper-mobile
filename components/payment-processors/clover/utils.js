@@ -118,11 +118,14 @@ export function toLineItemsPayload(cart) {
       name: item.title,
       price: item.price,
       itemId: item.paymentProcessorId,
-      modifications: item.form.optionValues.map((optionValue) => {
-        return {
-          modificationId: item.paymentProcessorId
+      modifications: item.form.optionValues.reduce((list, mod) => {
+        if (mod.paymentProcessorId) {
+          list.push({
+            modificationId: mod.paymentProcessorId
+          });
         }
-      })
+        return list;
+      }, [])
     };
   });
 }
