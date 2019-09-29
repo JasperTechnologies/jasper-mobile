@@ -18,29 +18,38 @@ import {
   toEnterInputOption,
   toEscInputOption,
   toLineItemsPayload,
-  toCustomerReceipt
+  toCustomerReceipt,
+  delay
 } from './utils';
 
 class POSCloverConnectorListener extends clover.sdk.remotepay.ICloverConnectorListener{
-    constructor({ notifySaleSuccess }) {
+    constructor({
+      notifySaleSuccess,
+      notifyConnected,
+      notifyDisconnected
+    }) {
       super();
       this.notifySaleSuccess = notifySaleSuccess;
+      this.notifyConnected = notifyConnected;
+      this.notifyDisconnected = notifyDisconnected;
     }
 
     onDeviceConnected(){
-        console.log('onDeviceConnected');
+      console.log('onDeviceConnected');
     }
 
     onDeviceDisconnected(){
-        console.log('onDeviceDisconnected');
+      console.log('onDeviceDisconnected');
+      this.notifyDisconnected();
     }
 
     onDeviceError(deviceErrorEvent){
-        console.log('onDeviceError', deviceErrorEvent);
+      console.log('onDeviceError', deviceErrorEvent);
     }
 
     onDeviceReady(merchantInfo){
-        console.log("ready")
+      console.log("ready")
+      this.notifyConnected();
     }
 
     onSaleResponse(response) {
@@ -69,6 +78,14 @@ export class CloverConnection {
       }
     }
 
+    onDeviceConnected = () => {
+      this.connected = true;
+    }
+
+    onDeviceDisconnected = () => {
+      this.connected = false;
+    }
+
     async connectToDeviceCloud(accessToken, merchantId, deviceId) {
         console.log('connecting.....', accessToken, merchantId, deviceId);
         let factoryConfig = {};
@@ -86,7 +103,9 @@ export class CloverConnection {
         this.cloverConnector = cloverConnectorFactory.createICloverConnector(cloudConfiguration);
 
         let connectorListener = new POSCloverConnectorListener({
-          notifySaleSuccess: this.onSaleSuccess
+          notifySaleSuccess: this.onSaleSuccess,
+          notifyConnected: this.onDeviceConnected,
+          notifyDisconnected: this.onDeviceDisconnected
         });
 
         this.cloverConnector.addCloverConnectorListener(connectorListener);
@@ -106,10 +125,6 @@ export const CloverProvider = ({children}) => {
       cloverConnection.connectToDeviceCloud("02f99667-7967-3839-490a-ffb9c842af97", "NHB4X5ZMNBPJ1", "7354c7fb-8de6-07fa-110e-9c34b69d0ead");
       setClover(cloverConnection);
     }
-
-    return () => {
-      clover && clover.cloverConnector.dispose();
-    };
   }, [location]);
   return (
     <CloverContext.Provider value={{clover}}>
@@ -156,9 +171,37 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
   const { data: locationData } = useQuery(GET_LOCATION);
   const [ updateOrder ] = useMutation(UPDATE_ORDER);
   const [ setCheckoutSuccess ] = useMutation(SET_CHECKOUT_SUCCESS);
+  const printCloverReceipt = async (payment) => {
+    // print clover receipt
+    const receipt = toCustomerReceipt(
+      cart,
+      taxes,
+      tipPercentage,
+      payment,
+      locationData ? locationData.location : null
+    );
+    for (i = 0; i < 3; i++) {
+      if (clover.connected) {
+        clover.cloverConnector.print(receipt);
+        break;
+      }
+      await delay(2000);
+    }
+  }
+  const showThankyouScreen = async () => {
+    for (i = 0; i < 3; i++) {
+      if (clover.connected) {
+        clover.cloverConnector.showWelcomeScreen();
+        setCheckoutSuccess({
+          refetchQueries: ["GetCheckoutState"]
+        });
+        break;
+      }
+      await delay(2000);
+    }
+  }
   const onSaleResponse = (response) => {
     if (response.success) {
-      console.log(response);
       const orderId = response.payment.order.id;
       const lineItems = toLineItemsPayload(cart);
       updateOrder({
@@ -169,19 +212,12 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
       }).then(({
         code
       }) => {
-        const receipt = toCustomerReceipt(
-          cart,
-          taxes,
-          tipPercentage,
-          response.payment,
-          locationData ? locationData.location : null
-        );
-        clover.cloverConnector.print(receipt);
-        clover.cloverConnector.showWelcomeScreen();
-        setCheckoutSuccess({
-          refetchQueries: ["GetCheckoutState"]
-        });
+      }).catch((e) => {
       });
+
+      printCloverReceipt(response.payment);
+      showThankyouScreen();
+
     } else {
       // error
     }

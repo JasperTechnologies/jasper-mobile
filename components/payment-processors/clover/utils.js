@@ -120,11 +120,17 @@ export function toLineItemsPayload(cart) {
       itemId: item.paymentProcessorId,
       modifications: item.form.optionValues.map((optionValue) => {
         return {
-          name: optionValue.title,
-          price: optionValue.price,
           modificationId: item.paymentProcessorId
         }
       })
     };
+  });
+}
+
+export function delay(time) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, time);
   });
 }
