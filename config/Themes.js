@@ -38,6 +38,12 @@ export const yummy = {
       lineHeight: 20,
       fontFamily: "PoppinsBold"
     },
+    bigfont: {
+      fontWeight: null,
+      fontSize: 60,
+      lineHeight: 80,
+      fontFamily: "PoppinsBold"
+    },
     headline1: {
       fontWeight: null,
       fontSize: 28,

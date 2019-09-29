@@ -128,6 +128,9 @@ function EmailPasswordLoginScreen({ navigation }) {
         } else {
           setLoading(false);
         }
+      },
+      onError: () => {
+        setLoading(false);
       }
     }
   );

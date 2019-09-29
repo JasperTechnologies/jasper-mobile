@@ -1,15 +1,19 @@
 import React from "react";
 import { StyleSheet, Text } from "react-native";
+import { yummy as screenTheme } from "../config/Themes"
+import * as Progress from 'react-native-progress';
 import {
   View
 } from "@draftbit/ui";
 
 export default function LoadingContainer() {
+  const theme = Object.assign({}, screenTheme);
   return (
     <View style={styles.Loading_Container}>
-      <Text style={styles.Jasper_Text}>
-        {`JASPER`}
+      <Text style={theme.typography.bigfont}>
+        {`Loading`}
       </Text>
+      <Progress.Circle size={100} indeterminate={true} />
     </View>
   )
 }
