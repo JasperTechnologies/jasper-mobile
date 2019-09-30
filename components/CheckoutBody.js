@@ -155,7 +155,7 @@ function CheckoutBody({theme, navigateToMenuItem}) {
                 >
 									<Text
                     style={[
-                      theme.typography.headline3,
+                      index ? theme.typography.headline1 : theme.typography.headline3,
                       tip === tipPercentage ? styles.Selected_Tip_Percentage_Text : styles.Tip_Percentage_Text
                     ]}
                   >
@@ -163,7 +163,7 @@ function CheckoutBody({theme, navigateToMenuItem}) {
 									</Text>
 									<Text
                     style={[
-                      index ? theme.typography.headline1 : theme.typography.headline3,
+                      theme.typography.headline3,
                       tip === tipPercentage ? styles.Selected_Tip_Text : styles.Tip_Text
                     ]}
                   >
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
 	Tip_Percentage_Text: {
 	},
 	ScrollView_Main: {
-		paddingBottom: 100
+		paddingBottom: 200
 	},
 	Tip_Section: {
 		marginBottom: 24,
