@@ -39,7 +39,7 @@ function InactivityModal({theme, showTimer, homecoming, setShowTimer}) {
 }
 
 
-const TIMEOUT = 20000;
+const TIMEOUT = 30000;
 
 function InactiveDetector({
   children,
