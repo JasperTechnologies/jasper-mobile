@@ -228,8 +228,10 @@ const styles = StyleSheet.create({
 		width: "100%",
 		display: "flex",
 		flexDirection: "row",
-		borderBottomWidth: 4,
-		borderBottomColor: "#eee"
+		borderBottomWidth: 2,
+		borderBottomColor: "#eee",
+		borderTopWidth: 2,
+		borderTopColor: "#eee"
 	},
 	Option_Info_View: {
 		flex: 5,

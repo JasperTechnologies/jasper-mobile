@@ -295,6 +295,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   Stepper_Container: {
+    paddingTop: 48,
     alignItems: "center"
   }
 })
