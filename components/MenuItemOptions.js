@@ -26,32 +26,17 @@ function MenuItemOptions({options, theme, form}) {
 			>
 				<View style={styles.Option_Value_Row_View}>
 					<View style={styles.Option_Info_View}>
-						<View style={styles.Option_Value_Value_View}>
-							<TouchableOpacity
-								style={[
-									styles.Radio_Button,
-									{
-										borderColor: theme.colors.primary
-									}
-								]}
-								onPress={() => {
-									this.handleRadioButton(item.optionValueForm, isSelected);
-								}}
-							>
-								{ isSelected ?
-									<View style={[
-										styles.Checked_Radio_Button,
-										{
-											backgroundColor: theme.colors.primary
-										}
-									]} /> : null
-								}
-							</TouchableOpacity>
-						</View>
+						{
+							item.hasPicture &&
+							<View style={styles.Option_Value_Image_View}>
+								<Image style={styles.Option_Value_Image} source={item.pictureURL} resizeMode="cover" />
+							</View>
+						}
 						<View style={styles.Option_Value_Title_View}>
 							<Text
 								style={[
 									styles.Option_Value_Title_Text,
+									theme.typography.headline1,
 									isSelected && { color: theme.colors.primary }
 								]}
 							>
@@ -59,8 +44,27 @@ function MenuItemOptions({options, theme, form}) {
 							</Text>
 						</View>
 					</View>
-					<View style={styles.Option_Value_Image_View}>
-						<Image style={styles.Option_Value_Image} source={item.pictureURL} resizeMode="cover" />
+					<View style={styles.Option_Value_Value_View}>
+						<TouchableOpacity
+							style={[
+								styles.Radio_Button,
+								{
+									borderColor: theme.colors.primary
+								}
+							]}
+							onPress={() => {
+								this.handleRadioButton(item.optionValueForm, isSelected);
+							}}
+						>
+							{ isSelected ?
+								<View style={[
+									styles.Checked_Radio_Button,
+									{
+										backgroundColor: theme.colors.primary
+									}
+								]} /> : null
+							}
+						</TouchableOpacity>
 					</View>
 				</View>
 			</TouchableOpacity>
@@ -77,32 +81,17 @@ function MenuItemOptions({options, theme, form}) {
 			>
 				<View style={styles.Option_Value_Row_View}>
 					<View style={styles.Option_Info_View}>
-						<View style={styles.Option_Value_Value_View}>
-							<TouchableOpacity
-								style={[
-									styles.Checkbox_Button,
-									{
-										borderColor: theme.colors.primary
-									}
-								]}
-								onPress={() => {
-									this.handleCheckBoxButton(item.optionValueForm, isSelected)
-								}}
-							>
-								{ isSelected ?
-									<View style={[
-										styles.Checked_Checkbox_Button,
-										{
-											backgroundColor: theme.colors.primary
-										}
-									]} /> : null
-								}
-							</TouchableOpacity>
-						</View>
+						{
+							item.hasPicture &&
+							<View style={styles.Option_Value_Image_View}>
+								<Image style={styles.Option_Value_Image} source={item.pictureURL} resizeMode="cover" />
+							</View>
+						}
 						<View style={styles.Option_Value_Title_View}>
 							<Text
 								style={[
 									styles.Option_Value_Title_Text,
+									theme.typography.headline1,
 									isSelected && { color: theme.colors.primary }
 								]}
 							>
@@ -110,8 +99,27 @@ function MenuItemOptions({options, theme, form}) {
 							</Text>
 						</View>
 					</View>
-					<View style={styles.Option_Value_Image_View}>
-						<Image style={styles.Option_Value_Image} source={item.pictureURL} resizeMode="cover" />
+					<View style={styles.Option_Value_Value_View}>
+						<TouchableOpacity
+							style={[
+								styles.Checkbox_Button,
+								{
+									borderColor: theme.colors.primary
+								}
+							]}
+							onPress={() => {
+								this.handleCheckBoxButton(item.optionValueForm, isSelected)
+							}}
+						>
+							{ isSelected ?
+								<View style={[
+									styles.Checked_Checkbox_Button,
+									{
+										backgroundColor: theme.colors.primary
+									}
+								]} /> : null
+							}
+						</TouchableOpacity>
 					</View>
 				</View>
 			</TouchableOpacity>
@@ -119,6 +127,7 @@ function MenuItemOptions({options, theme, form}) {
 	}
 
 	return options.map((option, index) => {
+		const hasPicture = option.optionValues.find((ov) => ov.pictureURL);
 		return (
 			<View key={`${option.title}-${index}`} style={styles.Option_Type_Container}>
 				<View style={styles.Option_Type_Header}>
@@ -170,6 +179,7 @@ function MenuItemOptions({options, theme, form}) {
 								...optionValue,
 								optionId: option.id,
 							},
+							hasPicture,
 							color: "medium",
 							pictureURL: optionValue.pictureURL,
 							title: `${optionValue.title} ${optionValue.price ? `($${centsToDollar(optionValue.price)})` : ''}`
@@ -227,11 +237,7 @@ const styles = StyleSheet.create({
 	Option_Value_Row_View: {
 		width: "100%",
 		display: "flex",
-		flexDirection: "row",
-		borderBottomWidth: 2,
-		borderBottomColor: "#eee",
-		borderTopWidth: 2,
-		borderTopColor: "#eee"
+		flexDirection: "row"
 	},
 	Option_Info_View: {
 		flex: 5,
@@ -240,20 +246,22 @@ const styles = StyleSheet.create({
 		paddingLeft: 48
 	},
 	Option_Value_Title_View: {
-		height: 270,
-		justifyContent: "center"
+		height: 170,
+		paddingTop: 28,
 	},
 	Option_Value_Value_View: {
-		width: 56,
-		height: 270,
-		justifyContent: "center"
+		height: 170,
+		paddingTop: 28,
+		paddingRight: 88
 	},
 	Option_Value_Image_View: {
-		flex: 4
+		paddingVertical: 15,
+		marginRight: 28,
+		display: "flex"
 	},
 	Option_Value_Image: {
-		height: 270,
-		width: "100%"
+		height: 140,
+		width: 140
 	},
 	Radio_Button: {
 		height: 32,
@@ -280,8 +288,6 @@ const styles = StyleSheet.create({
     height: 22,
 	},
 	Option_Value_Title_Text: {
-		fontSize: 18,
-		fontWeight: "500"
 	}
 })
 
