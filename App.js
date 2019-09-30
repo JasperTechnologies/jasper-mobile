@@ -27,6 +27,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 const authLink = setContext(async (_, { headers }) => {
   const userToken = await AsyncStorage.getItem('userToken');
+
   return {
     headers: {
       ...headers,

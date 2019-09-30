@@ -18,6 +18,7 @@ query MenuItems{
       maxSelections
       optionValues{
         id
+        pictureURL
         price
         title
         priority
@@ -89,6 +90,7 @@ query GetCart{
       maxSelections
       optionValues{
         id
+        pictureURL
         price
         title
         priority
@@ -101,6 +103,7 @@ query GetCart{
       quantity
       optionValues{
         id
+        pictureURL
         optionId
         price
         title
@@ -134,6 +137,7 @@ query GetCurrentMenuItems{
       maxSelections
       optionValues{
         id
+        pictureURL
         price
         title
         priority
@@ -153,6 +157,7 @@ query GetCurrentMenuItem{
     quantity
     optionValues{
       id
+      pictureURL
       optionId
       price
       title
@@ -180,6 +185,7 @@ query GetCurrentMenuItem{
       maxSelections
       optionValues{
         id
+        pictureURL
         price
         title
         priority
@@ -198,6 +204,7 @@ query GetEditingMenuItem{
     quantity
     optionValues{
       id
+      pictureURL
       formId
       price
       title

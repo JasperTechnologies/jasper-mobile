@@ -136,12 +136,11 @@ function EmailPasswordLoginScreen({ navigation }) {
           setLoading(false);
         }
       },
-      onError: () => {
+      onError: (e) => {
         setLoading(false);
       }
     }
   );
-
   return (
     <ScreenContainer hasSafeArea={true} style={styles.Root_nll}>
       <LoadingView loading={loading} />

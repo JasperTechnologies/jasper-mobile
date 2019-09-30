@@ -7,7 +7,12 @@ import {
 	TouchableOpacity
 } from "react-native"
 import { centsToDollar } from '../utilities/money';
-import { withTheme, RowBodySwitch, RowBodyCheckbox } from "@draftbit/ui"
+import {
+	withTheme,
+	RowBodySwitch,
+	RowBodyCheckbox,
+	Image
+} from "@draftbit/ui"
 
 function MenuItemOptions({options, theme, form}) {
 
@@ -20,37 +25,42 @@ function MenuItemOptions({options, theme, form}) {
 				}}
 			>
 				<View style={styles.Option_Value_Row_View}>
-					<View style={styles.Option_Value_Value_View}>
-						<TouchableOpacity
-							style={[
-								styles.Radio_Button,
-								{
-									borderColor: theme.colors.primary
-								}
-							]}
-							onPress={() => {
-								this.handleRadioButton(item.optionValueForm, isSelected);
-							}}
-						>
-							{ isSelected ?
-								<View style={[
-									styles.Checked_Radio_Button,
+					<View style={styles.Option_Info_View}>
+						<View style={styles.Option_Value_Value_View}>
+							<TouchableOpacity
+								style={[
+									styles.Radio_Button,
 									{
-										backgroundColor: theme.colors.primary
+										borderColor: theme.colors.primary
 									}
-								]} /> : null
-							}
-						</TouchableOpacity>
+								]}
+								onPress={() => {
+									this.handleRadioButton(item.optionValueForm, isSelected);
+								}}
+							>
+								{ isSelected ?
+									<View style={[
+										styles.Checked_Radio_Button,
+										{
+											backgroundColor: theme.colors.primary
+										}
+									]} /> : null
+								}
+							</TouchableOpacity>
+						</View>
+						<View style={styles.Option_Value_Title_View}>
+							<Text
+								style={[
+									styles.Option_Value_Title_Text,
+									isSelected && { color: theme.colors.primary }
+								]}
+							>
+								{item.title}
+							</Text>
+						</View>
 					</View>
-					<View style={styles.Option_Value_Title_View}>
-						<Text
-							style={[
-								styles.Option_Value_Title_Text,
-								isSelected && { color: theme.colors.primary }
-							]}
-						>
-							{item.title}
-						</Text>
+					<View style={styles.Option_Value_Image_View}>
+						<Image style={styles.Option_Value_Image} source={item.pictureURL} resizeMode="cover" />
 					</View>
 				</View>
 			</TouchableOpacity>
@@ -66,37 +76,42 @@ function MenuItemOptions({options, theme, form}) {
 				}}
 			>
 				<View style={styles.Option_Value_Row_View}>
-					<View style={styles.Option_Value_Value_View}>
-						<TouchableOpacity
-							style={[
-								styles.Checkbox_Button,
-								{
-									borderColor: theme.colors.primary
-								}
-							]}
-							onPress={() => {
-								this.handleCheckBoxButton(item.optionValueForm, isSelected)
-							}}
-						>
-							{ isSelected ?
-								<View style={[
-									styles.Checked_Checkbox_Button,
+					<View style={styles.Option_Info_View}>
+						<View style={styles.Option_Value_Value_View}>
+							<TouchableOpacity
+								style={[
+									styles.Checkbox_Button,
 									{
-										backgroundColor: theme.colors.primary
+										borderColor: theme.colors.primary
 									}
-								]} /> : null
-							}
-						</TouchableOpacity>
+								]}
+								onPress={() => {
+									this.handleCheckBoxButton(item.optionValueForm, isSelected)
+								}}
+							>
+								{ isSelected ?
+									<View style={[
+										styles.Checked_Checkbox_Button,
+										{
+											backgroundColor: theme.colors.primary
+										}
+									]} /> : null
+								}
+							</TouchableOpacity>
+						</View>
+						<View style={styles.Option_Value_Title_View}>
+							<Text
+								style={[
+									styles.Option_Value_Title_Text,
+									isSelected && { color: theme.colors.primary }
+								]}
+							>
+								{item.title}
+							</Text>
+						</View>
 					</View>
-					<View style={styles.Option_Value_Title_View}>
-						<Text
-							style={[
-								styles.Option_Value_Title_Text,
-								isSelected && { color: theme.colors.primary }
-							]}
-						>
-							{item.title}
-						</Text>
+					<View style={styles.Option_Value_Image_View}>
+						<Image style={styles.Option_Value_Image} source={item.pictureURL} resizeMode="cover" />
 					</View>
 				</View>
 			</TouchableOpacity>
@@ -156,6 +171,7 @@ function MenuItemOptions({options, theme, form}) {
 								optionId: option.id,
 							},
 							color: "medium",
+							pictureURL: optionValue.pictureURL,
 							title: `${optionValue.title} ${optionValue.price ? `($${centsToDollar(optionValue.price)})` : ''}`
 						})
 					) : []}
@@ -212,16 +228,30 @@ const styles = StyleSheet.create({
 		width: "100%",
 		display: "flex",
 		flexDirection: "row",
-		paddingHorizontal: 48
+		borderBottomWidth: 4,
+		borderBottomColor: "#eee"
+	},
+	Option_Info_View: {
+		flex: 5,
+		display: "flex",
+		flexDirection: "row",
+		paddingLeft: 48
 	},
 	Option_Value_Title_View: {
-		height: 100,
+		height: 270,
 		justifyContent: "center"
 	},
 	Option_Value_Value_View: {
 		width: 56,
-		height: 100,
+		height: 270,
 		justifyContent: "center"
+	},
+	Option_Value_Image_View: {
+		flex: 4
+	},
+	Option_Value_Image: {
+		height: 270,
+		width: "100%"
 	},
 	Radio_Button: {
 		height: 32,

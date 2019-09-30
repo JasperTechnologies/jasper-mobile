@@ -8,12 +8,12 @@ import {
 
 export default function LoadingContainer() {
   const theme = Object.assign({}, screenTheme);
+  // <Progress.Circle size={100} indeterminate={true} />
   return (
     <View style={styles.Loading_Container}>
       <Text style={theme.typography.bigfont}>
         {`Loading`}
       </Text>
-      <Progress.Circle size={100} indeterminate={true} />
     </View>
   )
 }
