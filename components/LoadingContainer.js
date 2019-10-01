@@ -6,13 +6,15 @@ import {
   View
 } from "@draftbit/ui";
 
-export default function LoadingContainer() {
+export default function LoadingContainer({ message }) {
   const theme = Object.assign({}, screenTheme);
-  // <Progress.Circle size={100} indeterminate={true} />
   return (
     <View style={styles.Loading_Container}>
+      <Text style={styles.Jasper_Text}>
+        {`JASPER`}
+      </Text>
       <Text style={theme.typography.bigfont}>
-        {`Loading`}
+        {message}
       </Text>
     </View>
   )
@@ -27,6 +29,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
     zIndex: 5
+  },
+  Jasper_Text: {
+    fontFamily: "LilitaOne",
+    fontSize: 30
   },
   Jasper_Text: {
     fontFamily: "LilitaOne",

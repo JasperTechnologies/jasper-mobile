@@ -96,7 +96,7 @@ export class CloverConnection {
         const cloudConfiguration = cloudConfigurationBuilder.setCloverServer("https://sandbox.dev.clover.com/")
             .setFriendlyId('')
             .setForceConnect(false)
-            .setHeartbeatInterval(1000)
+            .setHeartbeatInterval(600)
             .setHeartbeatDisconnectTimeout(3000)
             .setReconnectDelay(3000)
             .build();
@@ -142,7 +142,7 @@ export function OrderDisplayView({ cart, taxes, tipPercentage }) {
   return null;
 }
 
-export function CancellingSaleView() {
+export function CancelingSaleView() {
   const { clover } = useClover();
   useEffect(() => {
     if (clover) {
@@ -153,7 +153,7 @@ export function CancellingSaleView() {
       }, 1000);
     }
   }, [])
-  return <LoadingContainer />;
+  return <LoadingContainer message={'Canceling Order...'} />;
 }
 
 export function LandingView() {
@@ -204,7 +204,6 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
     if (response.success) {
       const orderId = response.payment.order.id;
       const lineItems = toLineItemsPayload(cart);
-      console.log(lineItems);
       updateOrder({
         variables: {
           orderId,
@@ -223,11 +222,20 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
       // error
     }
   }
+  const showSaleView = async () => {
+    for (i = 0; i < 3; i++) {
+      if (clover.connected) {
+        clover.cloverConnector.sale(toSaleRequest(cart, taxes, tipPercentage));
+        break;
+      }
+      await delay(1000);
+    }
+  }
 
   useEffect(() => {
     clover.setOnSaleResponse(onSaleResponse);
-    clover.cloverConnector.sale(toSaleRequest(cart, taxes, tipPercentage));
-  }, [])
+    showSaleView();
+  }, []);
 
   return null;
 }

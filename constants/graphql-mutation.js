@@ -79,9 +79,9 @@ export const SET_CHECKOUT_READY = gql`
   }
 `;
 
-export const SET_CHECKOUT_CANCELLING = gql`
-  mutation SetCheckoutCancelling {
-    setCheckoutCancelling @client
+export const SET_CHECKOUT_CANCELING = gql`
+  mutation SetCheckoutCanceling {
+    setCheckoutCanceling @client
   }
 `;
 

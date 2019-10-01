@@ -8,7 +8,7 @@ import {
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import CheckoutBody from '../components/CheckoutBody';
 import ModalContainer from '../components/ModalContainer';
-import CancellingSaleView from '../components/payment-processors/cancelling-sale-view';
+import CancelingSaleView from '../components/payment-processors/canceling-sale-view';
 import ProcessorOrderDisplayView from '../components/payment-processors/order-display-view';
 import ProcessorPaymentView from '../components/payment-processors/payment-view';
 import * as Progress from 'react-native-progress';
@@ -17,7 +17,7 @@ import {
 } from '../constants/graphql-query';
 import {
   SET_CHECKOUT_READY,
-  SET_CHECKOUT_CANCELLING
+  SET_CHECKOUT_CANCELING
 } from '../constants/graphql-mutation';
 import {
   withTheme,
@@ -29,14 +29,14 @@ import {
 function CheckoutModal({theme}) {
   const { data: { checkoutState }} = useQuery(GET_CHECKOUT_STATE);
   const [ setCheckoutReady ] = useMutation(SET_CHECKOUT_READY);
-  const [ setCheckoutCancelling ] = useMutation(SET_CHECKOUT_CANCELLING);
+  const [ setCheckoutCanceling ] = useMutation(SET_CHECKOUT_CANCELING);
   if (checkoutState === "IN_PROGRESS") {
     return (
       <ModalContainer>
         <TouchableOpacity
           style={styles.Cancel_Button}
           onPress={() => {
-            setCheckoutCancelling({
+            setCheckoutCanceling({
               refetchQueries: ["GetCheckoutState"]
             }).then(() => {
               setTimeout(() => {
@@ -85,7 +85,7 @@ function CheckoutScreen({ theme, navigation }) {
   return (
     <ScreenContainer scrollable={false}>
       <CheckoutModal theme={theme}/>
-      { checkoutState === "CANCELLING" && <CancellingSaleView /> }
+      { checkoutState === "CANCELING" && <CancelingSaleView /> }
       { checkoutState === "READY" && <ProcessorOrderDisplayView /> }
       { checkoutState === "IN_PROGRESS" && <ProcessorPaymentView /> }
       <Container style={styles.Checkout_Container}>

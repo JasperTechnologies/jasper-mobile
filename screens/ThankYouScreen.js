@@ -1,69 +1,59 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { StatusBar, StyleSheet, Text } from "react-native"
 import { draftbit as theme } from "../config/Themes"
-import { ScreenContainer, Container, Icon, Button } from "@draftbit/ui"
+import { ScreenContainer, Container, Button } from "@draftbit/ui"
+import FooterNavButton from "../components/FooterNavButton";
 
 function ThankYouScreen({ navigation }) {
+  useEffect(() => {
+    setTimeout(() => {
+      navigation.navigate("LandingScreen");
+    }, 30000);
+  }, []);
   return (
     <ScreenContainer scrollable={false}>
-      <Container style={styles.Container_ns6} elevation={0} useThemeGutterPadding={true}>
-        <Icon
-          style={styles.Icon_nkx}
-          name="MaterialIcons/sentiment-very-satisfied"
-          size={300}
-          color={theme.colors.strong}
-        />
+      <Container style={styles.ThankYouScreen_Container} elevation={0} useThemeGutterPadding={true}>
         <Text
           style={[
-            styles.Text_naj,
             theme.typography.headline1,
             {
               color: theme.colors.strong
             }
           ]}
         >
-          Thank you! Please Remember to Take Receipt!
+          Thank you!
+        </Text>
+        <Text
+          style={[
+            theme.typography.headline3,
+            {
+              color: theme.colors.strong
+            }
+          ]}
+        >
+          Please Take Your Receipt
         </Text>
       </Container>
-      <Container style={styles.Container_neb} elevation={0} useThemeGutterPadding={true}>
-        <Button
-          style={styles.Button_nyv}
-          type="solid"
-          onPress={() => {
-            navigation.navigate("LandingScreen");
-          }}
-        >
-          Finish
-        </Button>
-      </Container>
+      <FooterNavButton
+        text={'Finish'}
+        onPress={() => {
+          navigation.navigate("LandingScreen");
+        }}
+      />
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  Button_nyv: {
-    width: "100%",
-    height: 48
-  },
-  Container_neb: {
-    marginBottom: 24
-  },
-  Container_ns6: {
-    minHeight: 0,
-    alignItems: "center",
-    paddingBottom: 0
+  ThankYouScreen_Container: {
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
   },
   Icon_nkx: {
     width: 300,
     height: 300
-  },
-  Text_naj: {
-    textAlign: "center",
-    width: "90%",
-    height: 300,
-    paddingBottom: 120,
-    marginBottom: 0,
-    borderBottomWidth: 0
   }
 })
 

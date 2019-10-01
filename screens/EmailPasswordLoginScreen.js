@@ -116,7 +116,7 @@ function SignInForm({ theme, navigation, connection }) {
 
 function LoadingView({loading}) {
   if (loading) {
-    return <LoadingContainer />;
+    return <LoadingContainer message={'Logging in...'} />;
   }
   return null;
 }

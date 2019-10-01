@@ -29,7 +29,7 @@ export const typeDefs = gql`
     clearEditingMenuItemState: Boolean
     setCheckoutInProgress: Boolean
     setCheckoutReady: Boolean
-    setCheckoutCancelling: Boolean
+    setCheckoutCanceling: Boolean
     setCheckoutSuccess: Boolean
     purchase(deviceId: String, amountInCents: Int): String
   }
@@ -166,12 +166,12 @@ export const resolvers = {
       );
       return null;
     },
-    setCheckoutCancelling: async (_, __, { cache }) => {
+    setCheckoutCanceling: async (_, __, { cache }) => {
       const { checkout } = await cache.readQuery({ query: GET_CHECKOUT_STATE });
       await cache.writeData(
         {
           data: {
-            checkoutState: "CANCELLING"
+            checkoutState: "CANCELING"
           }
         }
       );
