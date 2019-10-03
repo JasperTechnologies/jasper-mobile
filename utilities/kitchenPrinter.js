@@ -1,6 +1,6 @@
 const ThermalPrinter = require("node-thermal-printer").printer;
  
-async function example(orderNumber, menuItems){
+export async function printKitchenReceipt(orderNumber, menuItems, type, ipAddress){
 
 	const printer = getPrinterInterface('EPSON', "tcp://192.168.42.6/")
 	
@@ -48,7 +48,7 @@ export function getPrinterInterface(type, ipAddress){
 	return printer
 }
 
-export async function print(orderNumber, menuItems, printer) {
+export async function print(orderNumber, cart, printer) {
 	printer.alignCenter();    
 	printer.setTextDoubleHeight(); 
 	printer.setTextDoubleWidth();                              
@@ -59,10 +59,10 @@ export async function print(orderNumber, menuItems, printer) {
 	printer.println(""); 
 	printer.setTextNormal();
 	printer.alignLeft(); 
-	menuItems.forEach(item => {
-		printer.println(`${item.title} x${item.quantity}`);
-		item.lineItems.forEach(lineItem => {
-			printer.println(`-- ${lineItem.title}`);
+	cart.forEach(item => {
+		printer.println(`${item.title} x${item.form.quantity}`);
+		item.form.optionValues.forEach(optionValue => {
+			printer.println(`-- ${optionValue.title}`);
 		})
 		printer.println(""); 
 	})
@@ -72,4 +72,4 @@ export async function print(orderNumber, menuItems, printer) {
 	let execute = await printer.execute(); 
 	return execute
 }
-// example(100, [{title: 'boba tea', quantity: 2, lineItems: [{title: 'mango gel',}, { title: 'coco butter'}]}, {title: 'crab beet', quantity: 1, lineItems: []}])
+// example(100, [{title: 'boba tea', quantity: 2, optionValues: [{title: 'mango gel',}, { title: 'coco butter'}]}, {title: 'crab beet', quantity: 1, optionValues: []}])
