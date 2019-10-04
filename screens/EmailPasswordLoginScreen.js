@@ -1,30 +1,75 @@
 import React, { useState } from "react"
-import { StatusBar, StyleSheet, KeyboardAvoidingView, Text } from "react-native"
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, StyleSheet, KeyboardAvoidingView, Text, WebView, View } from "react-native"
+import { CLOVER_REDIRECT_URI, CLOVER_CLIENT_ID } from 'react-native-dotenv';
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 import LoadingContainer from '../components/LoadingContainer';
 import { GET_MENU_ITEMS } from '../constants/graphql-query';
-import { LOGIN } from '../constants/graphql-mutation';
+import { LOGIN, ADD_ACCESS_TOKEN_TO_LOCATION } from '../constants/graphql-mutation';
 import { yummy as screenTheme } from "../config/Themes"
 import {
   withTheme,
   ScreenContainer,
   Container,
-  Image,
   TextField,
   Button,
   Touchable
 } from "@draftbit/ui"
 import { NO_USER_FOUND } from '../constants/error-messages';
-import Images from "../config/Images.js";
 
 function ErrorMessage({error, theme}){
-  console.log('error', error)
   if(error){
     return <Text style={[styles.Text_ncc, theme.typography.headline5, {color: theme.colors.error}]}>
         Cannot Log In, Invalid Username or Password
       </Text>
+  }
+  return null
+}
+
+function CloverWebview({shouldUseWebView, setShouldUseWebView, navigation}){
+  const [addAccessTokenToLocation, { data, token }] = useMutation(ADD_ACCESS_TOKEN_TO_LOCATION);
+
+  this.handleWebViewNavigationStateChange = newNavState => {
+    const { url } = newNavState
+    const isJasperRedirectURL = url.includes('jasper') && !url.includes('clover')
+    if(isJasperRedirectURL) {
+      this.webview.stopLoading();
+
+      const merchantIdIndex = url.indexOf("?merchant_id=") + 13
+      const codeIndex = url.indexOf("&code=") + 6
+      const employeeIdIndex = url.indexOf("&employee_id=")
+  
+      const merchantId = url.slice(merchantIdIndex, employeeIdIndex)
+      const accessToken = url.slice(codeIndex)
+
+      addAccessTokenToLocation({
+        variables: {
+          merchantId,
+          accessToken
+        }
+      })
+      setShouldUseWebView(false)
+      navigation.navigate('SimpleWelcomeScreen')
+    }
+  }
+
+  if(shouldUseWebView){
+    return <View style={{position: 'absolute', zIndex:1000}}>
+      <Text style={{fontSize: 35, marginTop: -200, marginLeft: -30}}>Please Enable Clover Permissions</Text>
+      <WebView
+          ref={ref => (this.webview = ref)}
+          style={{width: 1100, height: 700, marginLeft: -360, shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 10,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 3.00,
+          borderRadius: 30
+        }}
+          source={{uri:`https://clover.com/oauth/authorize?client_id=${CLOVER_CLIENT_ID}&redirect_uri=${CLOVER_REDIRECT_URI}`}}
+          onNavigationStateChange={this.handleWebViewNavigationStateChange}
+        />
+    </View>
   }
   return null
 }
@@ -34,9 +79,15 @@ function SignInForm({ theme, navigation, connection }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [signInError, setSignInError] = useState(null);
+  const [ shouldUseWebView, setShouldUseWebView ] = useState(false)
 
   return (
     <Container style={styles.Signin_Form_Container} elevation={0} useThemeGutterPadding={true}>
+      <CloverWebview 
+        shouldUseWebView={shouldUseWebView} 
+        setShouldUseWebView={setShouldUseWebView}
+        navigation={navigation}
+        />
       <Text
         style={[
           styles.Text_nsa,
@@ -88,15 +139,25 @@ function SignInForm({ theme, navigation, connection }) {
             ({
               data: {
                 login: {
-                  token
+                  token,
+                  user
                 }
               }
             }) => {
-              AsyncStorage.setItem('userToken', token)
-                .then((data) => {})
-                .catch((err) => {});
-              setSignInError(false)
-              navigation.navigate("SimpleWelcomeScreen")
+              const merchantId = user.locations[0].paymentProcessorMerchantId
+              if (merchantId){              
+                AsyncStorage.setItem('userToken', token)
+                  .then((data) => {})
+                  .catch((err) => {});
+                setSignInError(false)
+                navigation.navigate("SimpleWelcomeScreen")
+              } else {
+                AsyncStorage.setItem('userToken', token)
+                  .then((data) => {})
+                  .catch((err) => {});
+                setSignInError(false)
+                setShouldUseWebView(true)
+              }
             },
             (error) => {
               const authenticationErrorMessage = JSON.stringify(error).includes(NO_USER_FOUND)
@@ -125,22 +186,27 @@ function EmailPasswordLoginScreen({ navigation }) {
   const theme = Object.assign({}, screenTheme);
   const [loading, setLoading] = useState(true);
 
-  const { data, error } = useQuery(
-    GET_MENU_ITEMS,
-    {
-      onCompleted: (res) => {
-        const { menuItems } = res;
-        if (menuItems) {
-          navigation.navigate("LandingScreen");
-        } else {
+  this.skipToMenu = () => {
+    const { data, error } = useQuery(
+      GET_MENU_ITEMS,
+      {
+        onCompleted: (res) => {
+          const { menuItems } = res;
+          if (menuItems.length > 0) {
+            navigation.navigate("LandingScreen");
+          } else {
+            setLoading(false);
+            navigation.navigate("SimpleWelcomeScreen");
+          }
+        },
+        onError: (e) => {
           setLoading(false);
         }
-      },
-      onError: (e) => {
-        setLoading(false);
       }
-    }
-  );
+    );
+  }
+
+  this.skipToMenu()
   return (
     <ScreenContainer hasSafeArea={true} style={styles.Root_nll}>
       <LoadingView loading={loading} />

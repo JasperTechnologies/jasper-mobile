@@ -1,4 +1,4 @@
-const ThermalPrinter = require("node-thermal-printer").printer;
+// const ThermalPrinter = require("node-thermal-printer").printer;
  
 export async function printKitchenReceipt(orderNumber, menuItems, type, ipAddress){
 

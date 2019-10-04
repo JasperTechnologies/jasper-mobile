@@ -21,7 +21,7 @@ import {
   toCustomerReceipt,
   delay
 } from './utils';
-import { printKitchenReceipt } from '../../../utilities/kitchenPrinter'
+// import { printKitchenReceipt } from '../../../utilities/kitchenPrinter'
 
 class POSCloverConnectorListener extends clover.sdk.remotepay.ICloverConnectorListener{
     constructor({
@@ -217,7 +217,7 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
       });
 
       printCloverReceipt(response.payment);
-      printKitchenReceipt(200, cart)
+      // printKitchenReceipt(200, cart)
       showThankyouScreen();
 
     } else {

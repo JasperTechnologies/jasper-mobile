@@ -6,10 +6,22 @@ mutation login($email: String!, $password: String!) {
     token
     user {
       id
+      locations {
+        paymentProcessorMerchantId
+      }
     }
   }
 }
 `;
+
+export const ADD_ACCESS_TOKEN_TO_LOCATION = gql`
+mutation addAccessTokenToLocation($merchantId: String!, $accessToken: String!) {
+  addAccessTokenToLocation(merchantId: $merchantId, code: $accessToken) {
+    id
+    paymentProcessorMerchantId
+  }
+}
+`
 
 export const UPDATE_ORDER = gql`
   mutation UpdateOrder($orderId: ID!, $lineItems: [LineItemInput]!) {

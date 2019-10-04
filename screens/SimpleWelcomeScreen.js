@@ -21,7 +21,6 @@ class SimpleWelcomeScreen extends React.Component {
         <Container
           style={styles.Container_n6j}
           elevation={0}
-          backgroundImage="https://apps-draftbit-com.s3.amazonaws.com/nnVD1nJp/assets/a7c432db-7d90-4506-9e09-15bc773ad9bc"
           useThemeGutterPadding={true}
           backgroundImageResizeMode="cover"
         >
@@ -29,9 +28,9 @@ class SimpleWelcomeScreen extends React.Component {
             <Text
               style={[
                 styles.Text_nml,
-                theme.typography.headline2,
+                theme.typography.bigfont,
                 {
-                  color: theme.colors.strongInverse
+                  color: 'black'
                 }
               ]}
             >
@@ -40,13 +39,13 @@ class SimpleWelcomeScreen extends React.Component {
             <Text
               style={[
                 styles.Text_nmh,
-                theme.typography.headline6,
+                theme.typography.headline3,
                 {
-                  color: theme.colors.strongInverse
+                  color: 'black'
                 }
               ]}
             >
-              Lets get started.
+              If you have NOT set up your menu or order management with Jasper, please contact Jasper. 
             </Text>
           </Container>
           <Container style={styles.Container_np9} elevation={0}>
@@ -60,7 +59,7 @@ class SimpleWelcomeScreen extends React.Component {
             >
               Menu App
             </Button>
-            <Button style={styles.Button_nxi} type="outline" color={theme.colors.background}>
+            <Button style={styles.Button_nxi} type="outline" color={theme.colors.primary}>
               Order Management App
             </Button>
           </Container>
