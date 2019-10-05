@@ -9,7 +9,6 @@ function shouldShowLandingView(screenName) {
 }
 export default function NavigationDetector({ navigation }) {
   const screenName = navigation.state.routes[navigation.state.index].key;
-
   if (shouldShowLandingView(screenName)) {
     return <ProessorLandingView />;
   }

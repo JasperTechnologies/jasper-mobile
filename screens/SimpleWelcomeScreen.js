@@ -45,7 +45,7 @@ class SimpleWelcomeScreen extends React.Component {
                 }
               ]}
             >
-              If you have NOT set up your menu or order management with Jasper, please contact Jasper. 
+              If you have NOT set up your menu or order management with Jasper, please contact Jasper.
             </Text>
           </Container>
           <Container style={styles.Container_np9} elevation={0}>

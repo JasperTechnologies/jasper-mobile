@@ -48,6 +48,23 @@ query GetLocation{
 }
 `;
 
+export const GET_PAYMENT_PROCESSOR = gql`
+query GetPaymentProcessor{
+  location{
+    paymentProcessorMerchantId
+    paymentProcessorAccessToken
+    tabletDevices{
+      id
+      headerId
+      paymentProcessingDevice{
+        deviceId
+        paymentProcessor
+      }
+    }
+  }
+}
+`;
+
 export const GET_MENU_CATEGORIES = gql`
 query GetUserCategories{
   location{
