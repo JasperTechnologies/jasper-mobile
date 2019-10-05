@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { AsyncStorage, StyleSheet, KeyboardAvoidingView, Text, WebView, View } from "react-native"
+import { AsyncStorage, StyleSheet, KeyboardAvoidingView, Text, View } from "react-native"
+import { WebView } from "react-native-webview"
 import { CLOVER_REDIRECT_URI, CLOVER_CLIENT_ID } from 'react-native-dotenv';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import LoadingContainer from '../components/LoadingContainer';
@@ -196,7 +197,7 @@ function EmailPasswordLoginScreen({ navigation }) {
             navigation.navigate("LandingScreen");
           } else {
             setLoading(false);
-            navigation.navigate("SimpleWelcomeScreen");
+            // navigation.navigate("SimpleWelcomeScreen");
           }
         },
         onError: (e) => {
