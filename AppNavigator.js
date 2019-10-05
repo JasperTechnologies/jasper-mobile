@@ -1,4 +1,8 @@
 import React from "react"
+import { useQuery } from '@apollo/react-hooks';
+import {
+  GET_PAYMENT_PROCESSOR
+} from './constants/graphql-query';
 import { createAppContainer, createSwitchNavigator } from "react-navigation"
 import InactiveDetector from "./components/InactiveDetector";
 import ProcessorNavigationDetector from "./components/payment-processors/processor-navigation-detector";
@@ -65,6 +69,14 @@ const AppNavigator = createSwitchNavigator(
 
 function ProcessorProvider({ children }) {
   // logic to determine processor Provider
+  const { data: paymentProcessorData, loading } = useQuery(GET_PAYMENT_PROCESSOR);
+  if (loading) {
+    return [
+      children
+    ];
+  }
+
+  console.log(paymentProcessorData)
   return (
     <CloverProvider>
       {children}
