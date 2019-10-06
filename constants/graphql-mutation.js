@@ -7,7 +7,9 @@ mutation login($email: String!, $password: String!) {
     user {
       id
       locations {
-        paymentProcessorMerchantId
+        cloverMetaData{
+          merchantId
+        }
       }
     }
   }
@@ -18,7 +20,9 @@ export const ADD_ACCESS_TOKEN_TO_LOCATION = gql`
 mutation addAccessTokenToLocation($merchantId: String!, $accessToken: String!) {
   addAccessTokenToLocation(merchantId: $merchantId, code: $accessToken) {
     id
-    paymentProcessorMerchantId
+    cloverMetaData {
+      merchantId
+    }
   }
 }
 `

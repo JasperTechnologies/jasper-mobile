@@ -54,7 +54,7 @@ function CloverWebview({shouldUseWebView, setShouldUseWebView, navigation}){
   }
 
   if(shouldUseWebView){
-    return <View style={{position: 'absolute', zIndex:1000}}>
+    return <View style={{position: 'absolute', zIndex:1000, top: 0, left: 0}}>
       <Text style={{fontSize: 35, marginTop: -200, marginLeft: -30}}>Please Enable Clover Permissions</Text>
       <WebView
           ref={ref => (this.webview = ref)}
@@ -145,8 +145,8 @@ function SignInForm({ theme, navigation, connection }) {
                 }
               }
             }) => {
-              const merchantId = user.locations[0].paymentProcessorMerchantId
-              if (merchantId){              
+              const cloverMetaData = user.locations[0].cloverMetaData
+              if (cloverMetaData !== null){              
                 AsyncStorage.setItem('userToken', token)
                   .then((data) => {})
                   .catch((err) => {});

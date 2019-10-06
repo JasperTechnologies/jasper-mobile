@@ -51,8 +51,9 @@ query GetLocation{
 export const GET_PAYMENT_PROCESSOR = gql`
 query GetPaymentProcessor{
   location{
-    paymentProcessorMerchantId
-    paymentProcessorAccessToken
+    cloverMetaData{
+      merchantId
+    }
     tabletDevices{
       id
       headerId

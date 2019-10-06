@@ -76,7 +76,6 @@ function ProcessorProvider({ children }) {
     ];
   }
 
-  console.log(paymentProcessorData)
   return (
     <CloverProvider>
       {children}
