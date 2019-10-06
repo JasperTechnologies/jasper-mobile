@@ -7,6 +7,7 @@ import LoadingContainer from '../components/LoadingContainer';
 import { GET_MENU_ITEMS } from '../constants/graphql-query';
 import { LOGIN, ADD_ACCESS_TOKEN_TO_LOCATION } from '../constants/graphql-mutation';
 import { yummy as screenTheme } from "../config/Themes"
+import ModalContainer from '../components/ModalContainer';
 import {
   withTheme,
   ScreenContainer,
@@ -54,41 +55,35 @@ function CloverWebview({shouldUseWebView, setShouldUseWebView, navigation}){
   }
 
   if(shouldUseWebView){
-    return <View style={{position: 'absolute', zIndex:1000, top: 0, left: 0}}>
-      <Text style={{fontSize: 35, marginTop: -200, marginLeft: -30}}>Please Enable Clover Permissions</Text>
-      <WebView
-          ref={ref => (this.webview = ref)}
-          style={{width: 1100, height: 700, marginLeft: -360, shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 10,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 3.00,
-          borderRadius: 30
-        }}
-          source={{uri:`https://clover.com/oauth/authorize?client_id=${CLOVER_CLIENT_ID}&redirect_uri=${CLOVER_REDIRECT_URI}`}}
-          onNavigationStateChange={this.handleWebViewNavigationStateChange}
-        />
-    </View>
+    return(
+      <View style={styles.WebViewContainer}>
+        <Text style={styles.WebViewText}>Please Enable Clover Permissions</Text>
+        <WebView
+            ref={ref => (this.webview = ref)}
+            style={{width: "70%", shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 10,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 3.00,
+            borderRadius: 30
+          }}
+            source={{uri:`https://clover.com/oauth/authorize?client_id=${CLOVER_CLIENT_ID}&redirect_uri=${CLOVER_REDIRECT_URI}`}}
+            onNavigationStateChange={this.handleWebViewNavigationStateChange}
+          />
+      </View>)
   }
   return null
 }
 
-function SignInForm({ theme, navigation, connection }) {
+function SignInForm({ theme, navigation, connection, setShouldUseWebView }) {
   const [login, { data, token }] = useMutation(LOGIN);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [signInError, setSignInError] = useState(null);
-  const [ shouldUseWebView, setShouldUseWebView ] = useState(false)
-
   return (
     <Container style={styles.Signin_Form_Container} elevation={0} useThemeGutterPadding={true}>
-      <CloverWebview 
-        shouldUseWebView={shouldUseWebView} 
-        setShouldUseWebView={setShouldUseWebView}
-        navigation={navigation}
-        />
       <Text
         style={[
           styles.Text_nsa,
@@ -186,6 +181,7 @@ function LoadingView({loading}) {
 function EmailPasswordLoginScreen({ navigation }) {
   const theme = Object.assign({}, screenTheme);
   const [loading, setLoading] = useState(true);
+  const [ shouldUseWebView, setShouldUseWebView ] = useState(false)
 
   this.skipToMenu = () => {
     const { data, error } = useQuery(
@@ -194,11 +190,12 @@ function EmailPasswordLoginScreen({ navigation }) {
         onCompleted: (res) => {
           const { menuItems } = res;
           if (menuItems.length > 0) {
-            navigation.navigate("LandingScreen");
+            // navigation.navigate("LandingScreen");
           } else {
-            setLoading(false);
             // navigation.navigate("SimpleWelcomeScreen");
           }
+          setLoading(false);
+
         },
         onError: (e) => {
           setLoading(false);
@@ -210,6 +207,11 @@ function EmailPasswordLoginScreen({ navigation }) {
   this.skipToMenu()
   return (
     <ScreenContainer hasSafeArea={true} style={styles.Root_nll}>
+      <CloverWebview 
+        shouldUseWebView={shouldUseWebView} 
+        setShouldUseWebView={setShouldUseWebView}
+        navigation={navigation}
+        />
       <LoadingView loading={loading} />
       <KeyboardAvoidingView
         style={styles.Signin_Container}
@@ -230,7 +232,7 @@ function EmailPasswordLoginScreen({ navigation }) {
             Jasper
           </Text>
         </Container>
-        <SignInForm theme={theme} navigation={navigation} />
+        <SignInForm theme={theme} navigation={navigation} setShouldUseWebView={setShouldUseWebView}/>
         <Container style={styles.Container_nul} elevation={0} useThemeGutterPadding={true}>
           <Touchable
             style={styles.Touchable_n2m}
@@ -290,6 +292,21 @@ const styles = StyleSheet.create({
   Button_nnl: {
     height: 48,
     marginVertical: 24
+  },
+  WebViewContainer: {
+    position: 'absolute',
+    zIndex:1000,
+    left: "15%", 
+    top: "0%",
+    height: "80%",
+    width: "100%",
+    backgroundColor: 'white'
+  },
+  WebViewText: {
+    fontSize: 35, 
+    textAlign: 'left', 
+    fontWeight: 'bold', 
+    marginTop: "5%"
   },
   Signin_Form_Container: {
     width: "30%",
