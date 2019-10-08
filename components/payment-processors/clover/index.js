@@ -9,7 +9,8 @@ import {
 } from '../../../constants/graphql-query';
 import {
   UPDATE_ORDER,
-  SET_CHECKOUT_SUCCESS
+  SET_CHECKOUT_SUCCESS,
+  CREATE_ORDER
 } from '../../../constants/graphql-mutation';
 import LoadingContainer from '../../LoadingContainer';
 import {
@@ -170,6 +171,7 @@ export function LandingView() {
 export function PaymentView({ cart, taxes, tipPercentage }) {
   const { clover } = useClover();
   const { data: locationData } = useQuery(GET_LOCATION);
+  const [ createOrder ] = useMutation(CREATE_ORDER);
   const [ updateOrder ] = useMutation(UPDATE_ORDER);
   const [ setCheckoutSuccess ] = useMutation(SET_CHECKOUT_SUCCESS);
   const printCloverReceipt = async (payment) => {
@@ -216,6 +218,9 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
       }).catch((e) => {
       });
 
+      // logging
+      createOrder();
+
       printCloverReceipt(response.payment);
       // printKitchenReceipt(200, cart)
       showThankyouScreen();
@@ -241,4 +246,3 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
 
   return null;
 }
-
