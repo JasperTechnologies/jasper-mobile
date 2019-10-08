@@ -39,7 +39,7 @@ function CloverWebview({shouldUseWebView, setShouldUseWebView, navigation}){
       const merchantIdIndex = url.indexOf("?merchant_id=") + 13
       const codeIndex = url.indexOf("&code=") + 6
       const employeeIdIndex = url.indexOf("&employee_id=")
-  
+
       const merchantId = url.slice(merchantIdIndex, employeeIdIndex)
       const accessToken = url.slice(codeIndex)
 
@@ -141,7 +141,7 @@ function SignInForm({ theme, navigation, connection, setShouldUseWebView }) {
               }
             }) => {
               const cloverMetaData = user.locations[0].cloverMetaData
-              if (cloverMetaData !== null){              
+              if (cloverMetaData !== null){
                 AsyncStorage.setItem('userToken', token)
                   .then((data) => {})
                   .catch((err) => {});
@@ -190,7 +190,7 @@ function EmailPasswordLoginScreen({ navigation }) {
         onCompleted: (res) => {
           const { menuItems } = res;
           if (menuItems.length > 0) {
-            // navigation.navigate("LandingScreen");
+            navigation.navigate("LandingScreen");
           } else {
             // navigation.navigate("SimpleWelcomeScreen");
           }
@@ -207,8 +207,8 @@ function EmailPasswordLoginScreen({ navigation }) {
   this.skipToMenu()
   return (
     <ScreenContainer hasSafeArea={true} style={styles.Root_nll}>
-      <CloverWebview 
-        shouldUseWebView={shouldUseWebView} 
+      <CloverWebview
+        shouldUseWebView={shouldUseWebView}
         setShouldUseWebView={setShouldUseWebView}
         navigation={navigation}
         />
@@ -296,16 +296,16 @@ const styles = StyleSheet.create({
   WebViewContainer: {
     position: 'absolute',
     zIndex:1000,
-    left: "15%", 
+    left: "15%",
     top: "0%",
     height: "80%",
     width: "100%",
     backgroundColor: 'white'
   },
   WebViewText: {
-    fontSize: 35, 
-    textAlign: 'left', 
-    fontWeight: 'bold', 
+    fontSize: 35,
+    textAlign: 'left',
+    fontWeight: 'bold',
     marginTop: "5%"
   },
   Signin_Form_Container: {

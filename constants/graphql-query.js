@@ -54,14 +54,6 @@ query GetPaymentProcessor{
     cloverMetaData{
       merchantId
     }
-    tabletDevices{
-      id
-      headerId
-      paymentProcessingDevice{
-        deviceId
-        paymentProcessor
-      }
-    }
   }
 }
 `;
