@@ -1,0 +1,1 @@
+../../../../../node_modules/react-native-star-prnt/ios/Communication.h

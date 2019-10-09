@@ -188,8 +188,7 @@ function EmailPasswordLoginScreen({ navigation }) {
       GET_MENU_ITEMS,
       {
         onCompleted: (res) => {
-          const { menuItems } = res;
-          if (menuItems.length > 0) {
+          if (res && res.menuItems && res.menuItems.length > 0) {
             navigation.navigate("LandingScreen");
           } else {
             // navigation.navigate("SimpleWelcomeScreen");
@@ -203,7 +202,6 @@ function EmailPasswordLoginScreen({ navigation }) {
       }
     );
   }
-
   this.skipToMenu()
   return (
     <ScreenContainer hasSafeArea={true} style={styles.Root_nll}>

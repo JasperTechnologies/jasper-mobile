@@ -1,0 +1,33 @@
+{
+  "name": "RNStarPrnt",
+  "version": "1.0.0",
+  "summary": "RNStarPrnt",
+  "description": "RNStarPrnt",
+  "homepage": "https://github.com/infoxicator/react-native-star-prnt",
+  "license": "MIT",
+  "authors": {
+    "author": "author@domain.cn"
+  },
+  "platforms": {
+    "ios": "7.0"
+  },
+  "source": {
+    "git": "https://github.com/author/RNStarPrnt.git",
+    "tag": "master"
+  },
+  "source_files": "ios/**/*.{h,m}",
+  "requires_arc": true,
+  "dependencies": {
+    "React": [
+
+    ]
+  },
+  "frameworks": [
+    "CoreBluetooth",
+    "ExternalAccessory"
+  ],
+  "vendored_frameworks": [
+    "ios/Frameworks/StarIO.framework",
+    "ios/Frameworks/StarIO_Extension.framework"
+  ]
+}

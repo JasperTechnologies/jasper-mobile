@@ -22,7 +22,21 @@ import {
   toCustomerReceipt,
   delay
 } from './utils';
-// import { printKitchenReceipt } from '../../../utilities/kitchenPrinter'
+import { StarPRNT } from 'react-native-star-prnt';
+async function portDiscovery() {
+    try {
+      let printers = await StarPRNT.portDiscovery('All');
+      console.log(printers);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  let commands = [];
+  commands.push({
+    appendBitmapText: "hello1 \n\n\n\n\n"
+  });
+  commands.push({appendCutPaper:StarPRNT.CutPaperAction.PartialCutWithFeed});
+
 
 class POSCloverConnectorListener extends clover.sdk.remotepay.ICloverConnectorListener{
     constructor({
@@ -222,7 +236,7 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
       createOrder();
 
       printCloverReceipt(response.payment);
-      // printKitchenReceipt(200, cart)
+      StarPRNT.print("StarGraphic", commands, "TCP:10.0.0.194");
       showThankyouScreen();
 
     } else {
