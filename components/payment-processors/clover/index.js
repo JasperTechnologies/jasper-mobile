@@ -12,6 +12,9 @@ import {
   SET_CHECKOUT_SUCCESS,
   CREATE_ORDER
 } from '../../../constants/graphql-mutation';
+import {
+  toOrderReceipt
+} from '../../../utilities/printer';
 import LoadingContainer from '../../LoadingContainer';
 import {
   toDisplayOrder,
@@ -188,6 +191,9 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
   const [ createOrder ] = useMutation(CREATE_ORDER);
   const [ updateOrder ] = useMutation(UPDATE_ORDER);
   const [ setCheckoutSuccess ] = useMutation(SET_CHECKOUT_SUCCESS);
+  StarPRNT.print("StarGraphic", toOrderReceipt(cart, "0001"), "TCP:10.0.0.194").then((what) => {
+    console.log(what);
+  }).catch((error) => console.log(error));
   const printCloverReceipt = async (payment) => {
     // print clover receipt
     const receipt = toCustomerReceipt(
@@ -235,8 +241,8 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
       // logging
       createOrder();
 
-      printCloverReceipt(response.payment);
-      StarPRNT.print("StarGraphic", commands, "TCP:10.0.0.194");
+      // printCloverReceipt(response.payment);
+
       showThankyouScreen();
 
     } else {

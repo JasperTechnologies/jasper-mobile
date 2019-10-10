@@ -2,7 +2,11 @@ import React, { useState } from "react"
 import { AsyncStorage, StyleSheet, KeyboardAvoidingView, Text, View } from "react-native"
 import { WebView } from "react-native-webview"
 import { CLOVER_REDIRECT_URI, CLOVER_CLIENT_ID } from 'react-native-dotenv';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import {
+  useMutation,
+  useQuery,
+  useLazyQuery
+} from '@apollo/react-hooks';
 import LoadingContainer from '../components/LoadingContainer';
 import { GET_MENU_ITEMS } from '../constants/graphql-query';
 import { LOGIN, ADD_ACCESS_TOKEN_TO_LOCATION } from '../constants/graphql-mutation';
@@ -82,6 +86,7 @@ function SignInForm({ theme, navigation, connection, setShouldUseWebView }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [signInError, setSignInError] = useState(null);
+  const [ getMenuItems ] = useLazyQuery(GET_MENU_ITEMS);
   return (
     <Container style={styles.Signin_Form_Container} elevation={0} useThemeGutterPadding={true}>
       <Text
@@ -143,8 +148,9 @@ function SignInForm({ theme, navigation, connection, setShouldUseWebView }) {
               const cloverMetaData = user.locations[0].cloverMetaData
               if (cloverMetaData !== null){
                 AsyncStorage.setItem('userToken', token)
-                  .then((data) => {})
-                  .catch((err) => {});
+                  .then((data) => {
+                    getMenuItems();
+                  });
                 setSignInError(false)
                 navigation.navigate("SimpleWelcomeScreen")
               } else {
