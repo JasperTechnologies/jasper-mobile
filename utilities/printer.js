@@ -32,3 +32,13 @@ export function toOrderReceipt(cart, orderId) {
 
   return commands;
 }
+
+export async function printKitchenReceipt(cart, orderId, portName) {
+  for (i = 0; i < 3; i++) {
+    const kitchenPrintResult = await StarPRNT.print("StarGraphic", toOrderReceipt(cart, orderId), portName);
+    if (kitchenPrintResult.result || kitchenPrintResult.message === "Success") {
+      break;
+    }
+    await delay(2000);
+  }
+}

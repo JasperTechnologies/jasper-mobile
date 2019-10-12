@@ -1,5 +1,6 @@
 import clover from 'remote-pay-cloud';
 import React, {createContext, useContext, useState, useEffect} from 'react';
+import _get from 'lodash/get';
 import {
   useQuery,
   useMutation
@@ -13,7 +14,7 @@ import {
   CREATE_ORDER
 } from '../../../constants/graphql-mutation';
 import {
-  toOrderReceipt
+  printKitchenReceipt
 } from '../../../utilities/printer';
 import LoadingContainer from '../../LoadingContainer';
 import {
@@ -25,21 +26,6 @@ import {
   toCustomerReceipt,
   delay
 } from './utils';
-import { StarPRNT } from 'react-native-star-prnt';
-async function portDiscovery() {
-    try {
-      let printers = await StarPRNT.portDiscovery('All');
-      console.log(printers);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-  let commands = [];
-  commands.push({
-    appendBitmapText: "hello1 \n\n\n\n\n"
-  });
-  commands.push({appendCutPaper:StarPRNT.CutPaperAction.PartialCutWithFeed});
-
 
 class POSCloverConnectorListener extends clover.sdk.remotepay.ICloverConnectorListener{
     constructor({
@@ -191,9 +177,6 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
   const [ createOrder ] = useMutation(CREATE_ORDER);
   const [ updateOrder ] = useMutation(UPDATE_ORDER);
   const [ setCheckoutSuccess ] = useMutation(SET_CHECKOUT_SUCCESS);
-  StarPRNT.print("StarGraphic", toOrderReceipt(cart, "0001"), "TCP:10.0.0.194").then((what) => {
-    console.log(what);
-  }).catch((error) => console.log(error));
   const printCloverReceipt = async (payment) => {
     // print clover receipt
     const receipt = toCustomerReceipt(
@@ -220,10 +203,10 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
         });
         break;
       }
-      await delay(2000);
+      await delay(2000);printKitchenReceipt
     }
   }
-  const onSaleResponse = (response) => {
+  const onSaleResponse = async (response) => {
     if (response.success) {
       const orderId = response.payment.order.id;
       const lineItems = toLineItemsPayload(cart);
@@ -242,7 +225,7 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
       createOrder();
 
       // printCloverReceipt(response.payment);
-
+      printKitchenReceipt(cart, _get(response, 'payment.cardTransaction.transactionNo'), "TCP:10.0.0.194");
       showThankyouScreen();
 
     } else {
