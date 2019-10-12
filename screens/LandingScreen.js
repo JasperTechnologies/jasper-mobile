@@ -64,7 +64,7 @@ function LandingContainer() {
     >
       <View style={styles.Jasper_Powered_Container}>
         <Text style={styles.Jasper_Powered_Text}>
-          {`Powered By `}
+          {`Experience By `}
         </Text>
         <Text style={styles.Jasper_Text}>
           {` JASPER`}
