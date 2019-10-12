@@ -14,114 +14,75 @@ import {
 	Image
 } from "@draftbit/ui"
 
+function OptionValueCell({optionValueForm, theme, isSelected}) {
+	return (
+		<View style={styles.OptionValue_Cell}>
+			{optionValueForm.pictureURL && <Image style={styles.OptionValue_Image} source={optionValueForm.pictureURL} />}
+			<View style={styles.OptionValue_Text_View}>
+				<Text
+					style={[
+						isSelected ? theme.typography.headline1 : theme.typography.headline2,
+						{
+							color: isSelected ? "#fff" : theme.colors.strong
+						}
+					]}
+				>
+					{optionValueForm.title}
+				</Text>
+				{
+					optionValueForm.price ?
+					<Text
+						style={[
+							isSelected ? theme.typography.headline2 : theme.typography.headline5,
+							{
+								color: isSelected ? "#fff" : theme.colors.strong
+							}
+						]}
+					>
+						{`(+$${centsToDollar(optionValueForm.price)})`}
+					</Text> : null
+				}
+			</View>
+		</View>
+	)
+}
+
+const ThemedOptionValueCell = withTheme(OptionValueCell);
+
 function MenuItemOptions({options, theme, form}) {
 
-	this.renderRadioButton = (item, option) => {
-		const isSelected = Boolean(form.optionValues.find(o => o.id === item.optionValueForm.id && option.id === item.optionValueForm.optionId));
+	this.renderRadioButton = (optionValueForm, option) => {
+		const isSelected = Boolean(form.optionValues.find(o => o.id === optionValueForm.id && option.id === optionValueForm.optionId));
 		return (
 			<TouchableOpacity
 				onPress={() => {
-					this.handleRadioButton(item.optionValueForm, isSelected);
+					this.handleRadioButton(optionValueForm, isSelected);
 				}}
+				key={`${optionValueForm.id}-${optionValueForm.optionId}`}
+				style={[
+					styles.OptionValue_Touchable,
+					isSelected ? { backgroundColor: theme.colors.primary } : { backgroundColor: "#fff" }
+				]}
 			>
-				<View style={styles.Option_Value_Row_View}>
-					<View style={styles.Option_Info_View}>
-						{
-							item.hasPicture &&
-							<View style={styles.Option_Value_Image_View}>
-								<Image style={styles.Option_Value_Image} source={item.pictureURL} resizeMode="cover" />
-							</View>
-						}
-						<View style={styles.Option_Value_Title_View}>
-							<Text
-								style={[
-									styles.Option_Value_Title_Text,
-									theme.typography.headline1,
-									isSelected && { color: theme.colors.primary }
-								]}
-							>
-								{item.title}
-							</Text>
-						</View>
-					</View>
-					<View style={styles.Option_Value_Value_View}>
-						<TouchableOpacity
-							style={[
-								styles.Radio_Button,
-								{
-									borderColor: theme.colors.primary
-								}
-							]}
-							onPress={() => {
-								this.handleRadioButton(item.optionValueForm, isSelected);
-							}}
-						>
-							{ isSelected ?
-								<View style={[
-									styles.Checked_Radio_Button,
-									{
-										backgroundColor: theme.colors.primary
-									}
-								]} /> : null
-							}
-						</TouchableOpacity>
-					</View>
-				</View>
+				<ThemedOptionValueCell optionValueForm={optionValueForm} isSelected={isSelected} />
 			</TouchableOpacity>
 		);
 	}
 
-	this.renderCheckBoxButton = (item, option) => {
-		const isSelected = Boolean(form.optionValues.find(o => o.id === item.optionValueForm.id && option.id === item.optionValueForm.optionId));
+	this.renderCheckBoxButton = (optionValueForm, option) => {
+		const isSelected = Boolean(form.optionValues.find(o => o.id === optionValueForm.id && option.id === optionValueForm.optionId));
 		return (
 			<TouchableOpacity
 				onPress={() => {
-					this.handleCheckBoxButton(item.optionValueForm, isSelected)
+					this.handleCheckBoxButton(optionValueForm, isSelected)
 				}}
+				key={`${optionValueForm.id}-${optionValueForm.optionId}`}
+				style={[
+					styles.OptionValue_Touchable,
+					isSelected ? { backgroundColor: theme.colors.primary } : { backgroundColor: "#fff" }
+				]}
 			>
-				<View style={styles.Option_Value_Row_View}>
-					<View style={styles.Option_Info_View}>
-						{
-							item.hasPicture &&
-							<View style={styles.Option_Value_Image_View}>
-								<Image style={styles.Option_Value_Image} source={item.pictureURL} resizeMode="cover" />
-							</View>
-						}
-						<View style={styles.Option_Value_Title_View}>
-							<Text
-								style={[
-									styles.Option_Value_Title_Text,
-									theme.typography.headline1,
-									isSelected && { color: theme.colors.primary }
-								]}
-							>
-								{item.title}
-							</Text>
-						</View>
-					</View>
-					<View style={styles.Option_Value_Value_View}>
-						<TouchableOpacity
-							style={[
-								styles.Checkbox_Button,
-								{
-									borderColor: theme.colors.primary
-								}
-							]}
-							onPress={() => {
-								this.handleCheckBoxButton(item.optionValueForm, isSelected)
-							}}
-						>
-							{ isSelected ?
-								<View style={[
-									styles.Checked_Checkbox_Button,
-									{
-										backgroundColor: theme.colors.primary
-									}
-								]} /> : null
-							}
-						</TouchableOpacity>
-					</View>
-				</View>
+				<ThemedOptionValueCell optionValueForm={optionValueForm} isSelected={isSelected} />
 			</TouchableOpacity>
 		);
 	}
@@ -170,31 +131,42 @@ function MenuItemOptions({options, theme, form}) {
 							</Text>
 						</View>
 					}
+					{
+						option.maxSelections > 1 ?
+						<View style={styles.Option_Optional_Text_Container}>
+							<Text
+								style={[
+									styles.Option_Optional_Text,
+									theme.typography.headline4,
+									{
+										color: theme.colors.light
+									}
+								]}
+							>
+								{`Choose up to ${option.maxSelections > option.optionValues.length ? option.optionValues.length : option.maxSelections}`}
+							</Text>
+						</View> : null
+					}
 				</View>
-				<FlatList
+				<View
 					style={styles.Option_List}
-					data={option.optionValues ? option.optionValues.map(
-						(optionValue) => ({
-							optionValueForm: {
-								...optionValue,
-								optionId: option.id,
-							},
-							hasPicture,
-							color: "medium",
-							pictureURL: optionValue.pictureURL,
-							title: `${optionValue.title} ${optionValue.price ? `($${centsToDollar(optionValue.price)})` : ''}`
-						})
-					) : []}
-					renderItem={({item}) => {
-						// render radio button
-						if(option.maxSelections === 1) {
-							return this.renderRadioButton(item, option)
-						}
-						// render checkbox
-						return this.renderCheckBoxButton(item, option)
-					}}
-					keyExtractor={(_item, idx) => idx.toString()}
-				/>
+				>
+					{
+						option.optionValues ? option.optionValues.map(
+							(optionValue) => {
+								const optionValueForm = {
+									...optionValue,
+									optionId: option.id
+								};
+								if(option.maxSelections === 1) {
+									return this.renderRadioButton(optionValueForm, option)
+								}
+
+								return this.renderCheckBoxButton(optionValueForm, option);
+							}
+						) : []
+					}
+				</View>
 			</View>
 		);
 	});
@@ -232,7 +204,11 @@ const styles = StyleSheet.create({
 	},
 	Option_Optional_Text: {},
   Option_List: {
-    width: "100%"
+    width: "100%",
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "space-around",
+		paddingVertical: 48
   },
 	Option_Value_Row_View: {
 		width: "100%",
@@ -288,6 +264,37 @@ const styles = StyleSheet.create({
     height: 22,
 	},
 	Option_Value_Title_Text: {
+	},
+	OptionValue_Image: {
+		width: 200,
+		height: 200
+	},
+	OptionValue_Text_View: {
+		display: "flex",
+		alignItems: "center",
+		paddingVertical: 16
+	},
+	OptionValue_Touchable: {
+		flexBasis: 350,
+		display: "flex",
+		height: 350,
+		justifyContent: "center",
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 4,
+		},
+		shadowOpacity: 0.1,
+		shadowRadius: 1.00,
+		marginBottom: 100,
+		borderRadius: 10
+	},
+	OptionValue_Touchable_Selected: {
+		backgroundColor: "#DDD"
+	},
+	OptionValue_Cell: {
+		width: 200
 	}
 })
 
