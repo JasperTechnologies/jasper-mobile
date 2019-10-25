@@ -188,27 +188,25 @@ function EmailPasswordLoginScreen({ navigation }) {
   const theme = Object.assign({}, screenTheme);
   const [loading, setLoading] = useState(true);
   const [ shouldUseWebView, setShouldUseWebView ] = useState(false)
-
-  this.skipToMenu = () => {
-    const { data, error } = useQuery(
-      GET_MENU_ITEMS,
-      {
-        onCompleted: (res) => {
-          if (res && res.menuItems && res.menuItems.length > 0) {
-            navigation.navigate("LandingScreen");
-          } else {
-            // navigation.navigate("SimpleWelcomeScreen");
-          }
-          setLoading(false);
-
-        },
-        onError: (e) => {
-          setLoading(false);
+  const { data, loading: menuitemloading, error } = useQuery(
+    GET_MENU_ITEMS,
+    {
+      onCompleted: (res) => {
+        if (res && res.menuItems && res.menuItems.length > 0) {
+          navigation.navigate("LandingScreen");
+        } else {
+          // navigation.navigate("SimpleWelcomeScreen");
         }
+        setLoading(false);
+
+      },
+      onError: (e) => {
+        console.log(e)
+        setLoading(false);
       }
-    );
-  }
-  this.skipToMenu()
+    }
+  );
+
   return (
     <ScreenContainer hasSafeArea={true} style={styles.Root_nll}>
       <CloverWebview

@@ -179,7 +179,9 @@ const styles = StyleSheet.create({
 	},
   Option_Title_Text: {},
   Option_Type_Container: {
-    width: "100%"
+    width: "100%",
+		display: "flex",
+		alignItems: "center"
   },
   Option_Type_Header: {
     width: "100%",
@@ -204,71 +206,13 @@ const styles = StyleSheet.create({
 	},
 	Option_Optional_Text: {},
   Option_List: {
-    width: "100%",
+    width: 1170,
 		display: "flex",
 		flexDirection: "row",
-		justifyContent: "space-around",
+		flexWrap: "wrap",
+		justifyContent: "flex-start",
 		paddingVertical: 48
   },
-	Option_Value_Row_View: {
-		width: "100%",
-		display: "flex",
-		flexDirection: "row"
-	},
-	Option_Info_View: {
-		flex: 5,
-		display: "flex",
-		flexDirection: "row",
-		paddingLeft: 48
-	},
-	Option_Value_Title_View: {
-		height: 170,
-		paddingTop: 28,
-	},
-	Option_Value_Value_View: {
-		height: 170,
-		paddingTop: 28,
-		paddingRight: 88
-	},
-	Option_Value_Image_View: {
-		paddingVertical: 15,
-		marginRight: 28,
-		display: "flex"
-	},
-	Option_Value_Image: {
-		height: 140,
-		width: 140
-	},
-	Radio_Button: {
-		height: 32,
-    width: 32,
-    borderRadius: 50,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-	},
-	Checked_Radio_Button: {
-		width: 22,
-    height: 22,
-    borderRadius: 50,
-	},
-	Checkbox_Button: {
-		height: 32,
-    width: 32,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-	},
-	Checked_Checkbox_Button: {
-		width: 22,
-    height: 22,
-	},
-	Option_Value_Title_Text: {
-	},
-	OptionValue_Image: {
-		width: 200,
-		height: 200
-	},
 	OptionValue_Text_View: {
 		display: "flex",
 		alignItems: "center",
@@ -287,14 +231,19 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.1,
 		shadowRadius: 1.00,
-		marginBottom: 100,
-		borderRadius: 10
+		marginBottom: 40,
+		borderRadius: 10,
+		marginHorizontal: 20
 	},
 	OptionValue_Touchable_Selected: {
 		backgroundColor: "#DDD"
 	},
+	OptionValue_Image: {
+		width: 250,
+		height: 250
+	},
 	OptionValue_Cell: {
-		width: 200
+		width: 250
 	}
 })
 

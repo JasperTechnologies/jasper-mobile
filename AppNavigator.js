@@ -69,12 +69,13 @@ const AppNavigator = createSwitchNavigator(
 
 function ProcessorProvider({ children }) {
   // logic to determine processor Provider
-  const { data: paymentProcessorData, loading } = useQuery(GET_PAYMENT_PROCESSOR);
-  if (loading) {
-    return [
-      children
-    ];
-  }
+  // const { data: paymentProcessorData, loading, error } = useQuery(GET_PAYMENT_PROCESSOR);
+  // console.log(paymentProcessorData, loading, error)
+  // if (loading) {
+  //   return [
+  //     children
+  //   ];
+  // }
 
   return (
     <CloverProvider>

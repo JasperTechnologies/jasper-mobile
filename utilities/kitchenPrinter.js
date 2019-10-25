@@ -1,13 +1,13 @@
 // const ThermalPrinter = require("node-thermal-printer").printer;
- 
+
 export async function printKitchenReceipt(orderNumber, menuItems, type, ipAddress){
 
 	const printer = getPrinterInterface('EPSON', "tcp://192.168.42.6/")
-	
+
 	let isConnected = await testPrinterConnection(printer);       // Check if printer is connected, return bool of status
 	if(isConnected){
 		return await print(orderNumber, menuItems, printer)
-	} 
+	}
 	return false
 }
 
@@ -49,27 +49,27 @@ export function getPrinterInterface(type, ipAddress){
 }
 
 export async function print(orderNumber, cart, printer) {
-	printer.alignCenter();    
-	printer.setTextDoubleHeight(); 
-	printer.setTextDoubleWidth();                              
-	printer.println(`Order #${orderNumber}`);         
-	printer.println(""); 
-	printer.println(""); 
-	printer.println(""); 
-	printer.println(""); 
+	printer.alignCenter();
+	printer.setTextDoubleHeight();
+	printer.setTextDoubleWidth();
+	printer.println(`Order #${orderNumber}`);
+	printer.println("");
+	printer.println("");
+	printer.println("");
+	printer.println("");
 	printer.setTextNormal();
-	printer.alignLeft(); 
+	printer.alignLeft();
 	cart.forEach(item => {
 		printer.println(`${item.title} x${item.form.quantity}`);
 		item.form.optionValues.forEach(optionValue => {
 			printer.println(`-- ${optionValue.title}`);
 		})
-		printer.println(""); 
+		printer.println("");
 	})
 
-	printer.cut();  
-														
-	let execute = await printer.execute(); 
+	printer.cut();
+
+	let execute = await printer.execute();
 	return execute
 }
 // example(100, [{title: 'boba tea', quantity: 2, optionValues: [{title: 'mango gel',}, { title: 'coco butter'}]}, {title: 'crab beet', quantity: 1, optionValues: []}])
