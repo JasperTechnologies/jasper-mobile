@@ -8,10 +8,8 @@ import InactiveDetector from "./components/InactiveDetector";
 import ProcessorNavigationDetector from "./components/payment-processors/processor-navigation-detector";
 import MenuItemViewScreen from "./screens/MenuItemViewScreen"
 import EmailPasswordLoginScreen from "./screens/EmailPasswordLoginScreen"
-import SimpleWelcomeScreen from "./screens/SimpleWelcomeScreen"
+import ConsoleScreen from "./screens/ConsoleScreen"
 import LandingScreen from "./screens/LandingScreen"
-import SignupWithEmailScreen from "./screens/SignupWithEmailScreen"
-import ForgotPasswordScreen from "./screens/ForgotPasswordScreen"
 import MenuScreen from "./screens/MenuScreen"
 import CheckoutScreen from "./screens/CheckoutScreen"
 import ThankYouScreen from "./screens/ThankYouScreen"
@@ -33,17 +31,9 @@ const AppNavigator = createSwitchNavigator(
       screen: EmailPasswordLoginScreen,
       navigationOptions: ({ navigation }) => ({ title: "Email & Password Login" })
     },
-    SimpleWelcomeScreen: {
-      screen: SimpleWelcomeScreen,
-      navigationOptions: ({ navigation }) => ({ title: "Simple Welcome" })
-    },
-    SignupWithEmailScreen: {
-      screen: SignupWithEmailScreen,
-      navigationOptions: ({ navigation }) => ({ title: "Signup With Email" })
-    },
-    ForgotPasswordScreen: {
-      screen: ForgotPasswordScreen,
-      navigationOptions: ({ navigation }) => ({ title: "Forgot Password" })
+    ConsoleScreen: {
+      screen: ConsoleScreen,
+      navigationOptions: ({ navigation }) => ({ title: "Console" })
     },
     LandingScreen: {
       screen: LandingScreen,

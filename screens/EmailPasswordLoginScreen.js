@@ -54,7 +54,7 @@ function CloverWebview({shouldUseWebView, setShouldUseWebView, navigation}){
         }
       })
       setShouldUseWebView(false)
-      navigation.navigate('SimpleWelcomeScreen')
+      navigation.navigate('ConsoleScreen')
     }
   }
 
@@ -146,19 +146,22 @@ function SignInForm({ theme, navigation, connection, setShouldUseWebView }) {
               }
             }) => {
               const cloverMetaData = user.locations[0].cloverMetaData
-              if (cloverMetaData !== null){
+              if (cloverMetaData !== null || true){
                 AsyncStorage.setItem('userToken', token)
-                  .then((data) => {
-                    getMenuItems();
+                  .then(() => {
+                    getMenuItems({
+                      onCompleted: (res) => {
+                        setSignInError(false);
+                        navigation.navigate("ConsoleScreen");
+                      },
+                    });
                   });
-                setSignInError(false)
-                navigation.navigate("SimpleWelcomeScreen")
               } else {
                 AsyncStorage.setItem('userToken', token)
-                  .then((data) => {})
-                  .catch((err) => {});
-                setSignInError(false)
-                setShouldUseWebView(true)
+                  .then((data) => {
+                    setSignInError(false);
+                    setShouldUseWebView(true);
+                  });
               }
             },
             (error) => {
@@ -193,9 +196,7 @@ function EmailPasswordLoginScreen({ navigation }) {
     {
       onCompleted: (res) => {
         if (res && res.menuItems && res.menuItems.length > 0) {
-          navigation.navigate("LandingScreen");
-        } else {
-          // navigation.navigate("SimpleWelcomeScreen");
+          navigation.navigate("ConsoleScreen");
         }
         setLoading(false);
 
@@ -236,42 +237,6 @@ function EmailPasswordLoginScreen({ navigation }) {
         </Container>
         <SignInForm theme={theme} navigation={navigation} setShouldUseWebView={setShouldUseWebView}/>
         <Container style={styles.Container_nul} elevation={0} useThemeGutterPadding={true}>
-          <Touchable
-            style={styles.Touchable_n2m}
-            onPress={() => {
-              navigation.navigate("SignupWithEmailScreen")
-            }}
-          >
-            <Text
-              style={[
-                styles.Text_ncc,
-                theme.typography.button,
-                {
-                  color: theme.colors.primary
-                }
-              ]}
-            >
-              Create Account
-            </Text>
-          </Touchable>
-          <Touchable
-            style={styles.Touchable_nbr}
-            onPress={() => {
-              navigation.navigate("ForgotPasswordScreen")
-            }}
-          >
-            <Text
-              style={[
-                styles.Text_nwf,
-                theme.typography.button,
-                {
-                  color: theme.colors.primary
-                }
-              ]}
-            >
-              Lost Password?
-            </Text>
-          </Touchable>
           <Text
             style={[
               styles.Text_nfs,
