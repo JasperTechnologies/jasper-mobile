@@ -23,7 +23,6 @@ import {
 } from '../utilities/money';
 import {
   withTheme,
-  Icon,
   Container,
   View,
 } from "@draftbit/ui"
@@ -74,17 +73,14 @@ function CheckoutBody({theme, navigateToMenuItem}) {
 				contentContainerStyle={styles.ScrollView_Main}
 				showsVerticalScrollIndicator={true}
 			>
-				<Container style={styles.Checkout_Logo_Container}>
-					<Icon
-						style={styles.Icon_nie}
-						name="MaterialCommunityIcons/food-fork-drink"
-						size={100}
-						color={theme.colors.primary}
-					/>
+				<Container
+          style={[
+            styles.Checkout_Title_Container
+          ]}
+        >
 					<Text
 						style={[
-							styles.Text_nxj,
-							theme.typography.headline1,
+							styles.Checkout_Title,
 							{
 								color: theme.colors.medium
 							}
@@ -125,8 +121,7 @@ function CheckoutBody({theme, navigateToMenuItem}) {
 				</Container>
 				<View style={styles.Tip_Section}>
 					<Text style={[
-            theme.typography.headline1,
-            styles.Tip_section_Title,
+            styles.Checkout_Title,
             {
               color: theme.colors.medium
             }
@@ -203,8 +198,15 @@ function CheckoutBody({theme, navigateToMenuItem}) {
 
 
 const styles = StyleSheet.create({
-  Checkout_Logo_Container: {
-    paddingBottom: 50
+  Checkout_Title_Container: {
+    paddingVertical: 50
+  },
+  Checkout_Title: {
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    fontSize: 40,
+    fontWeight: "800"
   },
   CartItem_Cell_Container: {
     borderTopColor: '#DDDDDD',
@@ -226,21 +228,11 @@ const styles = StyleSheet.create({
   Footer_Container: {
     marginBottom: 24
   },
-  Icon_nie: {
-    width: 100,
-    height: 100,
-    alignSelf: "center",
-    marginTop: 25
-  },
-  Text_nxj: {
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center"
-	},
 	Tip_View: {
 		flex: 1,
 		flexDirection: 'row',
-		justifyContent: 'center'
+		justifyContent: 'center',
+    paddingVertical: 50,
 	},
 	Tip_Box: {
 		display: 'flex',

@@ -174,14 +174,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     margin: 24
   },
-  CartItem_Cell: {
-    display: "flex",
-    flexDirection: "row",
-		marginBottom: 24,
-    borderBottomColor: '#DDDDDD',
-    borderBottomWidth: 2,
-    minHeight: 150
-  },
   Checkout_Modal_Container: {
     position: "absolute",
     zIndex: 10,

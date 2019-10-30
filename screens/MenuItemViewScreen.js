@@ -40,6 +40,17 @@ const getDefaultOptionValues = (options) => {
   }, []);
 };
 
+const insertSelectedOptionValue = (options, selectedOptionValues, newOptionValue) => {
+  // insert newOptionValue in correct order
+  return options.reduce((list, option) => {
+    const newList = [...list, ...selectedOptionValues.filter((ov => ov.optionId === option.id))];
+    if (newOptionValue.optionId === option.id) {
+      newList.push(newOptionValue);
+    }
+    return newList;
+  }, []);
+}
+
 function MenuItemViewScreen({
   theme,
   navigation
@@ -101,9 +112,10 @@ function MenuItemViewScreen({
         optionValues: filteredOptions
       });
     } else {
+      const { options } = currentMenuItem;
       setForm({
         ...form,
-        optionValues: [...form.optionValues, optionValue]
+        optionValues: insertSelectedOptionValue(options, form.optionValues, optionValue)
       });
     }
   }
@@ -113,9 +125,10 @@ function MenuItemViewScreen({
       const filteredOptions = form.optionValues.filter(o =>
         o.optionId !== optionValue.optionId
       );
+      const { options } = currentMenuItem;
       setForm({
         ...form,
-        optionValues: [...filteredOptions, optionValue]
+        optionValues: insertSelectedOptionValue(options, filteredOptions, optionValue)
       });
     }
   }
@@ -141,14 +154,16 @@ function MenuItemViewScreen({
             formId: form.formId ? form.formId : v4()
           }
         }
+      },
+      refetchQueries: ["GetCart"]
+    }).then(() => {
+      if (isEditingMenuItem) {
+        navigation.navigate("CheckoutScreen");
+      } else {
+        navigation.navigate("MenuScreen");
       }
+      clearEditingMenuItemState();
     });
-    clearEditingMenuItemState();
-    if (isEditingMenuItem) {
-      navigation.navigate("CheckoutScreen");
-    } else {
-      navigation.navigate("MenuScreen");
-    }
   }
 
   this.renderOptionsView = () => {
