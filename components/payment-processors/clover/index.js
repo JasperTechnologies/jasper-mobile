@@ -221,19 +221,19 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
     if (response.success) {
       const orderId = response.payment.order.id;
       const lineItems = toLineItemsPayload(cart);
-      updateOrder({
-        variables: {
-          orderId,
-          lineItems
-        }
-      }).then(({
-        code
-      }) => {
-      }).catch((e) => {
-      });
+      // updateOrder({
+      //   variables: {
+      //     orderId,
+      //     lineItems
+      //   }
+      // }).then(({
+      //   code
+      // }) => {
+      // }).catch((e) => {
+      // });
 
       // logging
-      createOrder();
+      // createOrder();
 
       // printCloverReceipt(response.payment);
       printKitchenReceipt(cart, _get(response, 'payment.cardTransaction.transactionNo'), "TCP:10.0.0.194");
