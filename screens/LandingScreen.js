@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { StatusBar, StyleSheet, Text, Animated, Easing } from "react-native"
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { yummy as screenTheme } from "../config/Themes"
+import { yummy as screenTheme } from "../config/Themes";
 import {
   GET_LOCATION
 } from '../constants/graphql-query';
@@ -62,13 +62,11 @@ function LandingContainer() {
     <Container
       style={styles.Landing_Container}
     >
-      <View style={styles.Jasper_Powered_Container}>
-        <Text style={styles.Jasper_Powered_Text}>
-          {`Experience By `}
-        </Text>
-        <Text style={styles.Jasper_Text}>
-          {` JASPER`}
-        </Text>
+      <View style={styles.Jasper_Experience_Container}>
+        <Image
+          style={styles.Jasper_Experience}
+          source={require('../assets/images/experience-by-jasper.png')}
+        />
       </View>
       <View style={styles.Welcome_Text_View}>
         <Text style={styles.Welcome_Text}>
@@ -139,7 +137,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 100
   },
-  Jasper_Powered_Container: {
+  Jasper_Experience_Container: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -148,9 +146,9 @@ const styles = StyleSheet.create({
     right: "3%",
     position: 'absolute'
   },
-  Jasper_Powered_Text: {
-    fontWeight: 'bold',
-    fontSize: 20
+  Jasper_Experience: {
+    width: 300,
+    height: 100
   },
   Jasper_Text: {
     fontFamily: "LilitaOne",

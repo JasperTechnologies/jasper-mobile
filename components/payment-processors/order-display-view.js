@@ -4,18 +4,22 @@ import {
   GET_CART,
 	GET_TIP_PERCENTAGE,
 	GET_LOCATION,
-  GET_PAYMENT_PROCESSOR,
 } from '../../constants/graphql-query';
 import { OrderDisplayView as CloverOrderDisplayView } from './clover';
+import { getProvider } from '../../utilities/payment-processor';
 
 export default function OrderDisplayView() {
   const { data: { cart } } = useQuery(GET_CART);
   const { data: { tipPercentage } } = useQuery(GET_TIP_PERCENTAGE);
-  const { data: { location: { taxes } } } = useQuery(GET_LOCATION);
-  // check plaform
-  const { data: paymentProcessorData, loading } = useQuery(GET_PAYMENT_PROCESSOR);
-  if (loading) {
+  const { data: locationData, loading, error } = useQuery(GET_LOCATION);
+  const provider = getProvider(locationData ? locationData.location : null);
+  if (loading || !provider || !locationData) {
     return null;
   }
-  return <CloverOrderDisplayView cart={cart} taxes={taxes} tipPercentage={tipPercentage} />;
+
+  const { location } = locationData;
+  if (provider === 'CLOVER') {
+    return <CloverOrderDisplayView cart={cart} taxes={location && location.taxes} tipPercentage={tipPercentage} />;
+  }
+  return null;
 }

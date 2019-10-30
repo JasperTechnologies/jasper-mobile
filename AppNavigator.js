@@ -1,7 +1,7 @@
 import React from "react"
 import { useQuery } from '@apollo/react-hooks';
 import {
-  GET_PAYMENT_PROCESSOR
+  GET_LOCATION
 } from './constants/graphql-query';
 import { createAppContainer, createSwitchNavigator } from "react-navigation"
 import InactiveDetector from "./components/InactiveDetector";
@@ -15,6 +15,7 @@ import CheckoutScreen from "./screens/CheckoutScreen"
 import ThankYouScreen from "./screens/ThankYouScreen"
 
 import { CloverProvider } from "./components/payment-processors/clover";
+import { getProvider } from './utilities/payment-processor';
 
 function shouldShowBackButton(stackRouteNavigation) {
   let parent = stackRouteNavigation.dangerouslyGetParent()
@@ -58,20 +59,23 @@ const AppNavigator = createSwitchNavigator(
 );
 
 function ProcessorProvider({ children }) {
-  // logic to determine processor Provider
-  // const { data: paymentProcessorData, loading, error } = useQuery(GET_PAYMENT_PROCESSOR);
-  // console.log(paymentProcessorData, loading, error)
-  // if (loading) {
-  //   return [
-  //     children
-  //   ];
-  // }
+  //logic to determine processor Provider
+  const { data: locationData, loading } = useQuery(GET_LOCATION);
+  const provider = getProvider(locationData ? locationData.location : null);
+  if (loading || !provider) {
+    return [
+      children
+    ];
+  }
+  if (provider === 'CLOVER') {
+    return (
+      <CloverProvider>
+        {children}
+      </CloverProvider>
+    );
+  }
 
-  return (
-    <CloverProvider>
-      {children}
-    </CloverProvider>
-  );
+  return null;
 }
 
 class AppContainer extends React.Component {

@@ -169,6 +169,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>RNDeviceInfo.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>RNStarPrnt.xcscheme</key>
 		<dict>
 			<key>isShown</key>

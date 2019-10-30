@@ -5,6 +5,7 @@ import {
   useQuery,
   useMutation
 } from '@apollo/react-hooks';
+import { getUniqueId } from 'react-native-device-info';
 import {
   GET_LOCATION
 } from '../../../constants/graphql-query';
@@ -127,8 +128,18 @@ export const CloverProvider = ({children}) => {
   useEffect(() => {
     if (location) {
       const cloverConnection = new CloverConnection();
-      cloverConnection.connectToDeviceCloud("02f99667-7967-3839-490a-ffb9c842af97", "NHB4X5ZMNBPJ1", "7354c7fb-8de6-07fa-110e-9c34b69d0ead");
-      setClover(cloverConnection);
+      const deviceId = getUniqueId();
+      const currentDevice = location.tabletDevices.find((device) => device.headerId === deviceId);
+
+      if (currentDevice &&
+          currentDevice.cloverPaymentDeviceId &&
+          location.cloverMetaData &&
+          location.cloverMetaData.accessToken &&
+          location.cloverMetaData.merchantId
+        ) {
+        cloverConnection.connectToDeviceCloud(location.cloverMetaData.accessToken, location.cloverMetaData.merchantId, currentDevice.cloverPaymentDeviceId);
+        setClover(cloverConnection);
+      }
     }
   }, [location]);
   return (
@@ -203,7 +214,7 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
         });
         break;
       }
-      await delay(2000);printKitchenReceipt
+      await delay(2000);
     }
   }
   const onSaleResponse = async (response) => {

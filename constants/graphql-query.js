@@ -44,15 +44,13 @@ query GetLocation{
       taxType
       taxAmount
     }
-  }
-}
-`;
-
-export const GET_PAYMENT_PROCESSOR = gql`
-query GetPaymentProcessor{
-  location{
     cloverMetaData{
       merchantId
+      accessToken
+    }
+    tabletDevices{
+      headerId
+      cloverPaymentDeviceId
     }
   }
 }
