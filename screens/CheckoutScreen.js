@@ -1,13 +1,15 @@
-import React, { useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import {
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  View,
+  Animated,
+  Easing
 } from "react-native"
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import CheckoutBody from '../components/CheckoutBody';
-import ModalContainer from '../components/ModalContainer';
 import CancelingSaleView from '../components/payment-processors/canceling-sale-view';
 import ProcessorOrderDisplayView from '../components/payment-processors/order-display-view';
 import ProcessorPaymentView from '../components/payment-processors/payment-view';
@@ -24,56 +26,105 @@ import {
   ScreenContainer,
   IconButton,
   Container,
+  Image,
 } from "@draftbit/ui";
 
+const startFontAnimation = (scaleValue) => {
+  Animated.loop(
+    Animated.timing(scaleValue, {
+      toValue: 1,
+      duration: 2000,
+      easing: Easing.linear,
+      useNativeDriver: true
+    })).start();
+};
+
+const fontScaleValue = new Animated.Value(0);
+const fontCardScale = fontScaleValue.interpolate({
+  inputRange: [0, 0.25, .5, .75, 1],
+  outputRange: [1, 1.3, 1.6, 1.3, 1]
+});
+
+startFontAnimation(fontScaleValue);
+
 function CheckoutModal({theme}) {
+  const checkoutModalAnimatedValue = useRef(new Animated.Value(0)).current;
   const { data: { checkoutState }} = useQuery(GET_CHECKOUT_STATE);
   const [ setCheckoutReady ] = useMutation(SET_CHECKOUT_READY);
   const [ setCheckoutCanceling ] = useMutation(SET_CHECKOUT_CANCELING);
-  if (checkoutState === "IN_PROGRESS") {
-    return (
-      <ModalContainer>
-        <TouchableOpacity
-          style={styles.Cancel_Button}
-          onPress={() => {
-            setCheckoutCanceling({
-              refetchQueries: ["GetCheckoutState"]
-            }).then(() => {
-              setTimeout(() => {
-                setCheckoutReady({
-                  refetchQueries: ["GetCheckoutState"]
-                });
-              }, 2000);
-            });
-          }}
-        >
-          <Text
-            style={[
-              theme.typography.headline1,
-              {
-                color: "#FFFFFF"
-              }
-            ]}
-          >
-            Cancel
-          </Text>
-        </TouchableOpacity>
-        <Container style={[styles.Checkout_Modal_Container]}>
-          <Text style={[styles.ModalHeader, theme.typography.headline1]}>
-            Please Complete Payment With Card Reader
-          </Text>
-          <Progress.Circle size={100} indeterminate={true} />
-        </Container>
-      </ModalContainer>
-    );
-  }
+  useEffect(() => {
+    if (checkoutState === "IN_PROGRESS") {
+      Animated.timing(checkoutModalAnimatedValue, {
+          toValue: 1,
+          duration: 500,
+          easing: Easing.ease
+      }).start();
+    } else {
+      Animated.timing(checkoutModalAnimatedValue, {
+          toValue: 0,
+          duration: 500,
+          easing: Easing.ease
+      }).start();
+    }
+  }, [checkoutState]);
   return (
-    null
+    <Animated.View
+      style={[
+        styles.Checkout_Modal_Container,
+        {
+          top: checkoutModalAnimatedValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: [1000, 0]
+          })
+        }
+      ]}
+    >
+      <TouchableOpacity
+        style={styles.Cancel_Button}
+        onPress={() => {
+          setCheckoutCanceling({
+            refetchQueries: ["GetCheckoutState"]
+          }).then(() => {
+            setTimeout(() => {
+              setCheckoutReady({
+                refetchQueries: ["GetCheckoutState"]
+              });
+            }, 2000);
+          });
+        }}
+      >
+        <Text
+          style={[
+            theme.typography.headline1,
+            {
+              color: "#FFFFFF"
+            }
+          ]}
+        >
+          Cancel
+        </Text>
+      </TouchableOpacity>
+      <View style={styles.Checkout_Modal_Content}>
+        <Image
+          style={styles.Jasper_Experience}
+          source={require('../assets/images/payment.png')}
+        />
+        <Animated.View style={{ paddingVertical: 24, transform: [{ scale: fontCardScale }] }}>
+          <Animated.Text style={{
+            fontSize: 40,
+            fontWeight: 'bold'
+          }}>
+            Tap or Swipe to Complete Payment
+          </Animated.Text>
+        </Animated.View>
+      </View>
+    </Animated.View>
   );
 }
 
 function CheckoutScreen({ theme, navigation }) {
   StatusBar.setBarStyle("light-content");
+  const [, forceUpdate ] = useState();
   const { data: { checkoutState }} = useQuery(GET_CHECKOUT_STATE);
   const [ setCheckoutReady ] = useMutation(SET_CHECKOUT_READY);
   useEffect(() => {
@@ -132,13 +183,19 @@ const styles = StyleSheet.create({
     minHeight: 150
   },
   Checkout_Modal_Container: {
-    height: "40%",
-    width: "30%",
+    position: "absolute",
+    zIndex: 10,
+    height: "100%",
+    width: "100%",
     backgroundColor: 'white',
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10
+    justifyContent: "center"
+  },
+  Checkout_Modal_Content: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
   },
   ModalHeader: {
     marginTop: 50,
