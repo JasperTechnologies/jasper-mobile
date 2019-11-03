@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { StatusBar, StyleSheet, ScrollView, Text } from "react-native"
+import { StatusBar, StyleSheet, ScrollView, Text, View } from "react-native"
 import v4 from 'uuid/v4';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { GET_CURRENT_MENU_ITEM } from '../constants/graphql-query';
@@ -61,6 +61,8 @@ function MenuItemViewScreen({
     quantity: 1,
     optionValues: []
   });
+  const [ scrollView, setScrollView ] = useState(null);
+  const [ hideScreen, setHideScreen ] = useState(false);
   const [ showUpsellModal, setShowUpsellModal ] = useState(false);
   const [ setUpsellingMenuItem ] = useMutation(SET_UPSELLING_MENU_ITEM);
   const [ addOrReplaceItemToCart ] = useMutation(ADD_OR_REPLACE_ITEM_TO_CART);
@@ -167,11 +169,20 @@ function MenuItemViewScreen({
       if (isEditingMenuItem) {
         clearMenuItemState().then(() => navigation.navigate("CheckoutScreen"));
       } else if (!isUpsellingMenuItem && currentMenuItem.menuItemToUpsell) {
+        setHideScreen(true);
         setUpsellingMenuItem({
           variables: {
             menuItem: currentMenuItem.menuItemToUpsell
           }
-        }).then(() => setShowUpsellModal(true));
+        }).then(() => {
+          setShowUpsellModal(true);
+          setTimeout(() => {
+            if (scrollView) {
+              scrollView.scrollTo({ y: 0 });
+              setHideScreen(false);
+            }
+          }, 1000);
+        });
       } else {
         clearMenuItemState().then(() => navigation.navigate("MenuScreen"));
       }
@@ -182,8 +193,10 @@ function MenuItemViewScreen({
     const { options, theme } = currentMenuItem;
     return <MenuItemOptions options={options} form={form} theme={theme}/>
   }
+
   return (
     <ScreenContainer scrollable={false}>
+      {hideScreen && <View style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#EEE", zIndex: 1 }} />}
       <UpsellModal
         showModal={showUpsellModal}
         setShowModal={setShowUpsellModal}
@@ -205,6 +218,7 @@ function MenuItemViewScreen({
         <ScrollView
           contentContainerStyle={styles.ScrollView_Main}
           showsVerticalScrollIndicator={false}
+          ref={ref => setScrollView(ref)}
         >
           <Container style={styles.Invisible_View} />
           <Container style={{
