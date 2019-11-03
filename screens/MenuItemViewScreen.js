@@ -5,10 +5,12 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import { GET_CURRENT_MENU_ITEM } from '../constants/graphql-query';
 import {
   ADD_OR_REPLACE_ITEM_TO_CART,
-  CLEAR_EDITING_MENU_ITEM_STATE
+  CLEAR_MENU_ITEM_STATE,
+  SET_UPSELLING_MENU_ITEM
 } from '../constants/graphql-mutation';
 
 import MenuItemOptions from '../components/MenuItemOptions';
+import UpsellModal from '../components/UpsellModal';
 import {
   centsToDollar,
   calculateTotalPrice
@@ -32,7 +34,6 @@ const getDefaultOptionValues = (options) => {
   return options.reduce((allOptionValues, option) => {
     return [...allOptionValues, ...option.optionValues.map(o => ({ ...o, optionId: option.id }))];
   }, []).reduce((list, optionValue) => {
-
     if (optionValue.isDefault) {
       list.push(optionValue);
     }
@@ -60,12 +61,15 @@ function MenuItemViewScreen({
     quantity: 1,
     optionValues: []
   });
+  const [ showUpsellModal, setShowUpsellModal ] = useState(false);
+  const [ setUpsellingMenuItem ] = useMutation(SET_UPSELLING_MENU_ITEM);
   const [ addOrReplaceItemToCart ] = useMutation(ADD_OR_REPLACE_ITEM_TO_CART);
-  const [ clearEditingMenuItemState ] = useMutation(CLEAR_EDITING_MENU_ITEM_STATE);
+  const [ clearMenuItemState ] = useMutation(CLEAR_MENU_ITEM_STATE);
   const {
     data: {
       currentMenuItem,
       isEditingMenuItem,
+      isUpsellingMenuItem,
     },
     loading: loadingCurrentMenuItem
   } = useQuery(
@@ -76,15 +80,16 @@ function MenuItemViewScreen({
         isEditingMenuItem,
         editingMenuItemForm
       }) => {
-        if (isEditingMenuItem) {
-          setForm(editingMenuItemForm);
-        } else {
-          setForm({
-            ...form,
-            optionValues: getDefaultOptionValues(currentMenuItem.options)
-          });
+        if (currentMenuItem) {
+          if (isEditingMenuItem) {
+            setForm(editingMenuItemForm);
+          } else {
+            setForm({
+              ...form,
+              optionValues: getDefaultOptionValues(currentMenuItem.options)
+            });
+          }
         }
-
       }
     }
   );
@@ -135,12 +140,13 @@ function MenuItemViewScreen({
 
 
   this.handleBack = () => {
-    clearEditingMenuItemState();
-    if (isEditingMenuItem) {
-      navigation.navigate("CheckoutScreen");
-    } else {
-      navigation.navigate("MenuScreen");
-    }
+    clearMenuItemState().then(() => {
+      if (isEditingMenuItem) {
+        navigation.navigate("CheckoutScreen");
+      } else {
+        navigation.navigate("MenuScreen");
+      }
+    });
   }
 
   this.handleSubmit = () => {
@@ -148,6 +154,7 @@ function MenuItemViewScreen({
       variables: {
         menuItemForm: {
           ...currentMenuItem,
+          __typename: 'MenuItemForm' + v4(),
           form: {
             ...form,
             __typename: 'EditingMenuItemForm',
@@ -158,11 +165,16 @@ function MenuItemViewScreen({
       refetchQueries: ["GetCart"]
     }).then(() => {
       if (isEditingMenuItem) {
-        navigation.navigate("CheckoutScreen");
+        clearMenuItemState().then(() => navigation.navigate("CheckoutScreen"));
+      } else if (!isUpsellingMenuItem && currentMenuItem.menuItemToUpsell) {
+        setUpsellingMenuItem({
+          variables: {
+            menuItem: currentMenuItem.menuItemToUpsell
+          }
+        }).then(() => setShowUpsellModal(true));
       } else {
-        navigation.navigate("MenuScreen");
+        clearMenuItemState().then(() => navigation.navigate("MenuScreen"));
       }
-      clearEditingMenuItemState();
     });
   }
 
@@ -170,11 +182,13 @@ function MenuItemViewScreen({
     const { options, theme } = currentMenuItem;
     return <MenuItemOptions options={options} form={form} theme={theme}/>
   }
-
-
-
   return (
     <ScreenContainer scrollable={false}>
+      <UpsellModal
+        showModal={showUpsellModal}
+        setShowModal={setShowUpsellModal}
+        navigation={navigation}
+      />
       <Container style={styles.MainItemView_Container}>
         <Container style={styles.MenuItemNav_Container} elevation={0}>
           <IconButton

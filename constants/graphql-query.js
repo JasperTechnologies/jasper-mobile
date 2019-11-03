@@ -30,6 +30,35 @@ query MenuItems{
       id
       name
     }
+    menuItemToUpsell {
+      id
+      paymentProcessorId
+      title
+      description
+      calories
+      pictureURL
+      price
+      categories{
+        id
+        name
+      }
+      options{
+        id
+        title
+        priority
+        required
+        maxSelections
+        optionValues{
+          id
+          pictureURL
+          price
+          title
+          priority
+          isDefault
+          paymentProcessorId
+        }
+      }
+    }
   }
 }
 `;
@@ -160,6 +189,7 @@ query GetCurrentMenuItems{
 export const GET_CURRENT_MENU_ITEM = gql`
 query GetCurrentMenuItem{
   isEditingMenuItem @client
+  isUpsellingMenuItem @client
   editingMenuItemForm @client{
     formId
     quantity
@@ -201,6 +231,35 @@ query GetCurrentMenuItem{
         paymentProcessorId
       }
     }
+    menuItemToUpsell {
+      id
+      paymentProcessorId
+      title
+      description
+      calories
+      pictureURL
+      price
+      categories{
+        id
+        name
+      }
+      options{
+        id
+        title
+        priority
+        required
+        maxSelections
+        optionValues{
+          id
+          pictureURL
+          price
+          title
+          priority
+          isDefault
+          paymentProcessorId
+        }
+      }
+    }
   }
 }
 `;
@@ -208,6 +267,7 @@ query GetCurrentMenuItem{
 export const GET_EDITING_MENU_ITEM = gql`
 query GetEditingMenuItem{
   isEditingMenuItem @client
+  isUpsellingMenuItem @client
   editingMenuItemForm @client{
     quantity
     optionValues{

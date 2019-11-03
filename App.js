@@ -52,6 +52,7 @@ cache.writeData({
     currentMenuItems: [],
     currentMenuItem: null,
     isEditingMenuItem: false,
+    isUpsellingMenuItem: false,
     editingMenuItemForm: null,
     tipPercentage: 0,
     checkoutState: "READY"

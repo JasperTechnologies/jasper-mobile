@@ -68,6 +68,12 @@ export const SET_EDITING_MENU_ITEM = gql`
   }
 `;
 
+export const SET_UPSELLING_MENU_ITEM = gql`
+  mutation SetUpsellingMenuItem($menuItem: MenuItem) {
+    setUpsellingMenuItem(menuItem: $menuItem) @client
+  }
+`;
+
 export const ADD_OR_REPLACE_ITEM_TO_CART = gql`
   mutation AddOrReplaceItemToCart($menuItemForm: MenuItemForm) {
     addOrReplaceItemToCart(menuItemForm: $menuItemForm) @client
@@ -83,6 +89,12 @@ mutation RemoveItemFromCart($index: Int) {
 export const CLEAR_CART = gql`
   mutation ClearCart {
     clearCart @client
+  }
+`;
+
+export const CLEAR_MENU_ITEM_STATE = gql`
+  mutation ClearMenuItemState {
+    clearMenuItemState @client
   }
 `;
 

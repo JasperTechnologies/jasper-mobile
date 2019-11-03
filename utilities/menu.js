@@ -5,8 +5,8 @@ export const isMenuItemReadyToAdd = (options, optionValuesForm) => {
       return option.optionValues.reduce((requiredSelected, optionValue) => {
         const selected = optionValuesForm.find(o => o.optionId === option.id && o.id === optionValue.id);
         return selected || requiredSelected;
-      }, false);
+      }, false) && isReady;
     }
     return isReady;
-  }, false);
+  }, true);
 };

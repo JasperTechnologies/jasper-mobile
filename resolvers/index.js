@@ -15,6 +15,7 @@ export const typeDefs = gql`
     currentMenuItem: MenuItem!
     editingMenuItemForm: EditingMenuItemForm!
     isEditingMenuItem: Boolean!
+    isUpsellingMenuItem: Boolean!
     tipPercentage: Int!
     checkoutState: CheckoutState
   }
@@ -32,6 +33,7 @@ export const typeDefs = gql`
     setCheckoutCanceling: Boolean
     setCheckoutSuccess: Boolean
     purchase(deviceId: String, amountInCents: Int): String
+    clearUpsellingMenuItemState: Boolean
   }
 `;
 
@@ -74,6 +76,31 @@ export const resolvers = {
       );
       return null;
     },
+    setUpsellingMenuItem: async (_, { menuItem }, { cache }) => {
+      await cache.writeData(
+        {
+          data: {
+            isUpsellingMenuItem: true,
+            currentMenuItem: menuItem
+          }
+        }
+      );
+      return null;
+    },
+    clearMenuItemState: async (_, __, { cache }) => {
+      // cleaning state
+      await cache.writeData(
+        {
+          data: {
+            isUpsellingMenuItem: false,
+            isEditingMenuItem: false,
+            currentMenuItem: null,
+            editingMenuItemForm: null
+          }
+        }
+      );
+      return null;
+    },
     setCurrentMenuItem: async (_, { menuItem }, { cache }) => {
       await cache.writeData(
         {
@@ -102,7 +129,7 @@ export const resolvers = {
         }),
         menuItemForm
       ];
-      await client.writeQuery({
+      await client.writeData({
         query: GET_CART,
         data: {
           cart: newCart
