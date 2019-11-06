@@ -15,7 +15,8 @@ import {
   CREATE_ORDER
 } from '../../../constants/graphql-mutation';
 import {
-  printKitchenReceipt
+  printKitchenReceipt,
+  printCustomerReceipt
 } from '../../../utilities/printer';
 import LoadingContainer from '../../LoadingContainer';
 import {
@@ -24,7 +25,6 @@ import {
   toEnterInputOption,
   toEscInputOption,
   toLineItemsPayload,
-  toCustomerReceipt,
   delay
 } from './utils';
 
@@ -184,27 +184,11 @@ export function LandingView() {
 
 export function PaymentView({ cart, taxes, tipPercentage }) {
   const { clover } = useClover();
-  const { data: locationData } = useQuery(GET_LOCATION);
+  const { data: { location } } = useQuery(GET_LOCATION);
   const [ createOrder ] = useMutation(CREATE_ORDER);
   const [ updateOrder ] = useMutation(UPDATE_ORDER);
   const [ setCheckoutSuccess ] = useMutation(SET_CHECKOUT_SUCCESS);
-  const printCloverReceipt = async (payment) => {
-    // print clover receipt
-    const receipt = toCustomerReceipt(
-      cart,
-      taxes,
-      tipPercentage,
-      payment,
-      locationData ? locationData.location : null
-    );
-    for (i = 0; i < 3; i++) {
-      if (clover.connected) {
-        clover.cloverConnector.print(receipt);
-        break;
-      }
-      await delay(2000);
-    }
-  }
+
   const showThankyouScreen = async () => {
     for (i = 0; i < 3; i++) {
       if (clover.connected) {
@@ -235,8 +219,17 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
       // logging
       // createOrder();
 
-      // printCloverReceipt(response.payment);
-      printKitchenReceipt(cart, _get(response, 'payment.cardTransaction.transactionNo'), "TCP:10.0.0.194");
+      // print receipts
+      const deviceId = getUniqueId();
+      const currentDevice = location.tabletDevices.find((device) => device.headerId === deviceId);
+      if (currentDevice.receiptPrinter) {
+        printCustomerReceipt(cart, _get(response, 'payment.cardTransaction.transactionNo'), currentDevice.receiptPrinter.ipAddress);
+      }
+      if (currentDevice.kitchenPrinter) {
+        printKitchenReceipt(cart, _get(response, 'payment.cardTransaction.transactionNo'), currentDevice.kitchenPrinter.ipAddress);
+      }
+
+      // show thank you screen
       showThankyouScreen();
 
     } else {

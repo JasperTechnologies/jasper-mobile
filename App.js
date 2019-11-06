@@ -48,6 +48,7 @@ const client = new ApolloClient({
 cache.writeData({
   data: {
     cart: [],
+    newlyAddedItems: [],
     currentMenuCategory: null,
     currentMenuItems: [],
     currentMenuItem: null,

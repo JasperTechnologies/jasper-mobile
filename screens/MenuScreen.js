@@ -1,7 +1,8 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { StatusBar, StyleSheet, ScrollView, Text } from "react-native"
 import { useQuery } from '@apollo/react-hooks';
 import {
+  GET_NEWLY_ADDED_ITEMS,
   GET_CURRENT_MENU_ITEMS,
   GET_CART
 } from '../constants/graphql-query';
@@ -44,35 +45,33 @@ function ViewCartButton({navigation}) {
     text={`View Cart ${cart.length} items`}
     />
 }
-class MenuScreen extends React.Component {
-  constructor(props) {
-    super(props)
-    StatusBar.setBarStyle("light-content")
-
-    this.state = {
-      theme: Object.assign(props.theme, screenTheme)
+export default function MenuScreen({ navigation }) {
+  StatusBar.setBarStyle("light-content");
+  const { data: { newlyAddedItems } } = useQuery(GET_NEWLY_ADDED_ITEMS);
+  useEffect(() => {
+    if (newlyAddedItems.length > 0) {
+      setTimeout(() => {
+        console.log(" some stuff ")
+      }, 2000);
     }
-  }
+  }, [newlyAddedItems]);
 
-  render() {
-    const { cart = [] } = this.props;
-    return (
-      <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
-        <Container style={styles.Menu_Page_Container}>
-          <MenuHeader />
-          <ScrollView
-            contentContainerStyle={styles.Menu_Scrollview}
-            bounces={true}
-            showsVerticalScrollIndicator={true}
-            showsHorizontalScrollIndicator={true}
-          >
-            <MenuItems navigation={this.props.navigation} />
-          </ScrollView>
-          <ViewCartButton navigation={this.props.navigation} />
-        </Container>
-      </ScreenContainer>
-    )
-  }
+  return (
+    <ScreenContainer hasSafeArea={false} scrollable={false} style={styles.Root_npc}>
+      <Container style={styles.Menu_Page_Container}>
+        <MenuHeader />
+        <ScrollView
+          contentContainerStyle={styles.Menu_Scrollview}
+          bounces={true}
+          showsVerticalScrollIndicator={true}
+          showsHorizontalScrollIndicator={true}
+        >
+          <MenuItems navigation={navigation} />
+        </ScrollView>
+        <ViewCartButton navigation={navigation} />
+      </Container>
+    </ScreenContainer>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -90,4 +89,3 @@ const styles = StyleSheet.create({
     paddingBottom: 100
   },
 })
-export default withTheme(MenuScreen);

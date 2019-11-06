@@ -33,9 +33,49 @@ export function toOrderReceipt(cart, orderId) {
   return commands;
 }
 
+export function toCustomerReceipt(cart, orderId) {
+  const commands = [];
+  commands.push({
+    appendBitmapText: "=========================="
+  });
+  commands.push({
+    appendBitmapText: `Order# ${orderId}`
+  });
+  commands.push({
+    appendBitmapText: "==========================\n"
+  });
+  cart.forEach((item) => {
+    for (i = 0; i < item.form.quantity; i++) {
+      commands.push({
+        appendBitmapText: `${item.title}\n`
+      });
+      item.form.optionValues.forEach((ov) => {
+        commands.push({
+          appendBitmapText: ` ${ov.title}\n`
+        });
+      });
+    }
+  });
+  commands.push({
+    appendBitmapText: "\nThank you!\n"
+  });
+  commands.push({appendCutPaper:StarPRNT.CutPaperAction.PartialCutWithFeed});
+  return commands;
+}
+
 export async function printKitchenReceipt(cart, orderId, portName) {
   for (i = 0; i < 3; i++) {
     const kitchenPrintResult = await StarPRNT.print("StarGraphic", toOrderReceipt(cart, orderId), portName);
+    if (kitchenPrintResult.result || kitchenPrintResult.message === "Success") {
+      break;
+    }
+    await delay(2000);
+  }
+}
+
+export async function printCustomerReceipt(cart, orderId, portName) {
+  for (i = 0; i < 3; i++) {
+    const kitchenPrintResult = await StarPRNT.print("StarGraphic", toCustomerReceipt(cart, orderId), portName);
     if (kitchenPrintResult.result || kitchenPrintResult.message === "Success") {
       break;
     }

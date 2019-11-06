@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { StatusBar, StyleSheet, View, Text } from "react-native"
 import { useMutation } from '@apollo/react-hooks';
 import {
@@ -18,6 +18,9 @@ function MenuItem({
   navigation
 }) {
   const [ setCurrentMenuItem ] = useMutation(SET_CURRENT_MENU_ITEM);
+  useEffect(() => {
+
+  }, []);
   return (
     <Touchable
       style={styles.Touchable_n6x}
@@ -55,17 +58,19 @@ function MenuItem({
           >
             {item.description}
           </Text>
-          <Text
-            style={[
-              styles.Text_nus,
-              theme.typography.caption,
-              {
-                color: theme.colors.light
-              }
-            ]}
-          >
-            {item.calories} Cal.
-          </Text>
+          {item.calories &&
+            <Text
+              style={[
+                styles.Text_nus,
+                theme.typography.caption,
+                {
+                  color: theme.colors.light
+                }
+              ]}
+            >
+              {item.calories} Cal.
+            </Text>
+          }
           <Text
             style={[
               styles.Text_nm6,

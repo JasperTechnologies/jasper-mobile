@@ -4,7 +4,8 @@ import {
   GET_CURRENT_MENU_ITEMS,
   GET_CART,
   GET_CURRENT_MENU_ITEM,
-  GET_CHECKOUT_STATE
+  GET_CHECKOUT_STATE,
+  GET_NEWLY_ADDED_ITEMS
 } from '../constants/graphql-query';
 
 export const typeDefs = gql`
@@ -121,18 +122,26 @@ export const resolvers = {
       );
       return null;
     },
-    addOrReplaceItemToCart: async (_, { menuItemForm }, { client }) => {
-      const { cart } = await client.readQuery({ query: GET_CART });
+    addOrReplaceItemToCart: async (_, { menuItemForm }, { cache }) => {
+      const { cart } = await cache.readQuery({ query: GET_CART });
+      const { newlyAddedItems } = await cache.readQuery({ query: GET_NEWLY_ADDED_ITEMS });
+      const filteredCart = cart.filter((item) => {
+        return item.form.formId !== menuItemForm.form.formId;
+      });
       const newCart = [
-        ...cart.filter((item) => {
-          return item.form.formId !== menuItemForm.form.formId;
-        }),
+        ...filteredCart,
         menuItemForm
       ];
-      await client.writeData({
-        query: GET_CART,
+
+      const isAdded = filteredCart.length < cart.length;
+      const newlyAddedItemsList = [ ...newlyAddedItems ];
+      if (isAdded) {
+        newlyAddedItemsList.push(menuItemForm);
+      }
+      await cache.writeData({
         data: {
-          cart: newCart
+          cart: newCart,
+          newlyAddedItems: newlyAddedItemsList
         }
       });
       return null;

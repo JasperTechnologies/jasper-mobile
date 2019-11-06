@@ -80,6 +80,12 @@ query GetLocation{
     tabletDevices{
       headerId
       cloverPaymentDeviceId
+      kitchenPrinter{
+        ipAddress
+      }
+      receiptPrinter{
+        ipAddress
+      }
     }
   }
 }
@@ -145,9 +151,18 @@ query GetCart{
         price
         title
         priority
+        isDefault
         paymentProcessorId
       }
     }
+  }
+}
+`;
+
+export const GET_NEWLY_ADDED_ITEMS = gql`
+query GetNewlyAddedItems{
+  newlyAddedItems @client{
+    title
   }
 }
 `;
@@ -200,6 +215,7 @@ query GetCurrentMenuItem{
       price
       title
       priority
+      isDefault
       paymentProcessorId
     }
   }
@@ -277,6 +293,7 @@ query GetEditingMenuItem{
       price
       title
       priority
+      isDefault
       paymentProcessorId
     }
   }

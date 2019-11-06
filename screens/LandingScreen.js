@@ -27,7 +27,8 @@ const startAnimation = (scaleValue) => {
       easing: Easing.linear,
       useNativeDriver: true
     })).start();
-}
+};
+import { StarPRNT } from 'react-native-star-prnt';
 
 function LandingContainer() {
   const { data: locationData, loading, error } = useQuery(GET_LOCATION);
@@ -65,7 +66,7 @@ function LandingContainer() {
       <View style={styles.Jasper_Experience_Container}>
         <Image
           style={styles.Jasper_Experience}
-          source={require('../assets/images/experience-by-jasper.png')}
+          source={require('../assets/images/walkin-by-jasper.png')}
         />
       </View>
       <View style={styles.Welcome_Text_View}>

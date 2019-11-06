@@ -61,7 +61,7 @@ function UpsellModal({ showModal, setShowModal, theme, navigation }) {
       <View style={styles.Upsell_Experience_Container}>
         <Image
           style={styles.Upsell_Experience}
-          source={require('../assets/images/proposal-by-jasper.png')}
+          source={require('../assets/images/pick-by-jasper.png')}
         />
       </View>
       <View style={styles.Upsell_Modal_Content}>
@@ -72,7 +72,7 @@ function UpsellModal({ showModal, setShowModal, theme, navigation }) {
             paddingVertical: 24
           }}
         >
-          How about adding
+          Would you like to add
         </Text>
         <Image style={styles.Upsell_Item_Image} source={currentMenuItem.pictureURL} resizeMode="cover" />
         <Text
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     position: 'absolute'
   },
   Upsell_Experience: {
-    width: 300,
+    width: 170,
     height: 100
   },
   Upsell_Item_Image: {

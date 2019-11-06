@@ -111,8 +111,9 @@ function CheckoutBody({theme, navigateToMenuItem}) {
 												menuItem: item,
                         editingMenuItemForm: item.form
 											}
-										});
-										navigateToMenuItem();
+										}).then(() => {
+                      navigateToMenuItem();
+                    });
 									}}
 								/>
 							);

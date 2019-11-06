@@ -176,12 +176,10 @@ function MenuItemViewScreen({
           }
         }).then(() => {
           setShowUpsellModal(true);
-          setTimeout(() => {
-            if (scrollView) {
-              scrollView.scrollTo({ y: 0 });
-              setHideScreen(false);
-            }
-          }, 1000);
+          if (scrollView) {
+            scrollView.scrollTo({ y: 0, animated: false });
+          }
+          setHideScreen(false);
         });
       } else {
         clearMenuItemState().then(() => navigation.navigate("MenuScreen"));
@@ -248,16 +246,18 @@ function MenuItemViewScreen({
                 >
                   {currentMenuItem.description}
                 </Text>
-                <Text
-                  style={[
-                    theme.typography.headline4,
-                    {
-                      color: theme.colors.light
-                    }
-                  ]}
-                >
-                  {currentMenuItem.calories} Cal.
-                </Text>
+                {currentMenuItem.calories &&
+                  <Text
+                    style={[
+                      theme.typography.headline4,
+                      {
+                        color: theme.colors.light
+                      }
+                    ]}
+                  >
+                    {currentMenuItem.calories} Cal.
+                  </Text>
+                }
             </Container>
             {this.renderOptionsView()}
             <Container style={styles.Stepper_Container}>
