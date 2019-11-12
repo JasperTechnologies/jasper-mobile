@@ -8,7 +8,8 @@ import {
   Easing
 } from "react-native"
 import {
-  withTheme
+  withTheme,
+  Button
 } from "@draftbit/ui"
 import { useQuery, useMutation } from '@apollo/react-hooks';
 
@@ -18,10 +19,8 @@ import {
 import {
   CLEAR_MENU_ITEM_STATE
 } from '../constants/graphql-mutation';
-import {
-  Image,
-} from "@draftbit/ui";
-import { centsToDollar } from '../utilities/money';
+import MenuItem from "./MenuItem"
+
 
 function UpsellModal({ showModal, setShowModal, theme, navigation }) {
   const upsellModalAnimatedValue = useRef(new Animated.Value(0)).current;
@@ -39,59 +38,43 @@ function UpsellModal({ showModal, setShowModal, theme, navigation }) {
           easing: Easing.ease
       }).start();
     } else {
-      Animated.timing(upsellModalAnimatedValue, {
-          toValue: 0,
-          duration: 500,
-          easing: Easing.ease
-      }).start();
+      // Animated.timing(upsellModalAnimatedValue, {
+      //     toValue: -1,
+      //     duration: 500,
+      //     easing: Easing.ease
+      // }).start();
     }
   }, [showModal]);
   return (
     <Animated.View
       style={[
         styles.Upsell_Modal_Container,
+        showModal ? {} : { display: 'none' },
         {
           top: upsellModalAnimatedValue.interpolate({
-            inputRange: [0, 1],
+            inputRange: [0, 1.1],
             outputRange: [1000, 0]
           })
         }
       ]}
     >
-      <View style={styles.Upsell_Experience_Container}>
-        <Image
-          style={styles.Upsell_Experience}
-          source={require('../assets/images/pick-by-jasper.png')}
-        />
-      </View>
       <View style={styles.Upsell_Modal_Content}>
         <Text
           style={{
             fontSize: 40,
             fontWeight: "800",
-            paddingVertical: 24
+            paddingVertical: 48
           }}
         >
-          Would you like to add
+          Would You Like To Add
         </Text>
-        <Image style={styles.Upsell_Item_Image} source={currentMenuItem.pictureURL} resizeMode="cover" />
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: "800",
-            paddingVertical: 24
-          }}
-        >
-          {currentMenuItem.title}
-        </Text>
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: "800"
-          }}
-        >
-          ${centsToDollar(currentMenuItem.price)}
-        </Text>
+        <MenuItem
+            key={0}
+            item={currentMenuItem}
+            navigation={navigation}
+            isUpselling={true}
+            onPress={() => {setShowModal(false)}}
+          />
         <View
           style={{
             display: "flex",
@@ -99,7 +82,7 @@ function UpsellModal({ showModal, setShowModal, theme, navigation }) {
             paddingVertical: 24
           }}
         >
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               padding: 24,
               width: "35%"
@@ -118,8 +101,13 @@ function UpsellModal({ showModal, setShowModal, theme, navigation }) {
             >
               Yes!
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </TouchableOpacity> */}
+            <Button style={styles.Button_nxi} type="outline" color={theme.colors.primary}               onPress={() => {
+                clearMenuItemState().then(() => navigation.navigate("MenuScreen"));
+              }}>
+              Maybe Next Time!
+            </Button>
+          {/* <TouchableOpacity
             style={{
               padding: 24,
               width: "35%"
@@ -138,7 +126,7 @@ function UpsellModal({ showModal, setShowModal, theme, navigation }) {
             >
               No, Next Time!
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     </Animated.View>
@@ -162,12 +150,20 @@ const styles = StyleSheet.create({
   Upsell_Modal_Container: {
     position: "absolute",
     zIndex: 10,
-    height: "100%",
-    width: "100%",
+    left: "30%",
+    height: "80%",
+    width: "40%",
     backgroundColor: 'white',
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 4,
+		},
+		shadowOpacity: 0.5,
+		shadowRadius: 1.00,
   },
   Upsell_Modal_Content: {
     display: "flex",

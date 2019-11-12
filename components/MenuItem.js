@@ -15,7 +15,9 @@ import { centsToDollar } from '../utilities/money';
 function MenuItem({
   theme,
   item,
-  navigation
+  navigation,
+  isUpselling,
+  onPress
 }) {
   const [ setCurrentMenuItem ] = useMutation(SET_CURRENT_MENU_ITEM);
   useEffect(() => {
@@ -24,14 +26,14 @@ function MenuItem({
   return (
     <Touchable
       style={styles.Touchable_n6x}
-      onPress={() => {
+      onPress={onPress === undefined? () => {
         setCurrentMenuItem({
           variables: {
             menuItem: item
           }
         });
         navigation.navigate("MenuItemViewScreen");
-      }}
+      } : onPress}
     >
       <View style={styles.ViewStyle}>
         <Image style={styles.Image_ngw} source={item.pictureURL} />
@@ -82,6 +84,9 @@ function MenuItem({
           >
             ${centsToDollar(item.price)}
           </Text>
+          {isUpselling && <Text style={{color: "#20BF6C",
+            fontSize: 40,
+            textAlign: "center"}}>Yes</Text>}
         </Container>
       </View>
     </Touchable>
