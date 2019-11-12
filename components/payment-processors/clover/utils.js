@@ -113,7 +113,7 @@ export function toEscInputOption(cart) {
 }
 
 export function toLineItemsPayload(cart) {
-  return cart.map((item) => {
+  return cart.filter((i) => i.paymentProcessorId).map((item) => {
     return {
       name: item.title,
       price: item.price,

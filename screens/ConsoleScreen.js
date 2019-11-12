@@ -33,7 +33,7 @@ class ConsoleScreen extends React.Component {
       <ScreenContainer scrollable={false}>
         <Touchable
           onPress={() => {
-            this.props.navigation.navigate("LandingScreen")
+            this.props.navigation.navigate("LandingScreen");
           }}
         >
           <Container

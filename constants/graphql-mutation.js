@@ -28,9 +28,9 @@ mutation addAccessTokenToLocation($merchantId: String!, $accessToken: String!) {
 `
 
 // create order, mainly for logging purpose
-export const CREATE_ORDER = gql`
-mutation createOrder {
-  createOrder {
+export const CREATE_ORDER_LOG = gql`
+mutation createOrderLog($items: [OrderItemInput!]!) {
+  createOrderLog(items: $items) {
     id
   }
 }

@@ -12,12 +12,15 @@ import {
 import {
   UPDATE_ORDER,
   SET_CHECKOUT_SUCCESS,
-  CREATE_ORDER
+  CREATE_ORDER_LOG
 } from '../../../constants/graphql-mutation';
 import {
   printKitchenReceipt,
   printCustomerReceipt
 } from '../../../utilities/printer';
+import {
+  cartToOrderLogs
+} from '../../../utilities/log';
 import LoadingContainer from '../../LoadingContainer';
 import {
   toDisplayOrder,
@@ -185,7 +188,7 @@ export function LandingView() {
 export function PaymentView({ cart, taxes, tipPercentage }) {
   const { clover } = useClover();
   const { data: { location } } = useQuery(GET_LOCATION);
-  const [ createOrder ] = useMutation(CREATE_ORDER);
+  const [ createOrderLog ] = useMutation(CREATE_ORDER_LOG);
   const [ updateOrder ] = useMutation(UPDATE_ORDER);
   const [ setCheckoutSuccess ] = useMutation(SET_CHECKOUT_SUCCESS);
 
@@ -205,19 +208,20 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
     if (response.success) {
       const orderId = response.payment.order.id;
       const lineItems = toLineItemsPayload(cart);
-      // updateOrder({
-      //   variables: {
-      //     orderId,
-      //     lineItems
-      //   }
-      // }).then(({
-      //   code
-      // }) => {
-      // }).catch((e) => {
-      // });
+      updateOrder({
+        variables: {
+          orderId: '11',
+          lineItems
+        }
+      }).catch((e) => {});
 
       // logging
-      // createOrder();
+      const logs = cartToOrderLogs(cart);
+      createOrderLog({
+        variables: {
+          items: logs
+        }
+      });
 
       // print receipts
       const deviceId = getUniqueId();
@@ -247,7 +251,9 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
   }
 
   useEffect(() => {
-    clover.setOnSaleResponse(onSaleResponse);
+    if (clover) {
+      clover.setOnSaleResponse(onSaleResponse);
+    }
     showSaleView();
   }, []);
 

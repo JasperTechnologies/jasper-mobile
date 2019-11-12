@@ -18,7 +18,6 @@ import {
   Image
 } from "@draftbit/ui"
 
-
 const startAnimation = (scaleValue) => {
   Animated.loop(
     Animated.timing(scaleValue, {
