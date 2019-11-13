@@ -4,12 +4,11 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Animated,
-  Easing
 } from "react-native"
 import {
   withTheme,
-  Button
+  Button,
+  Image
 } from "@draftbit/ui"
 import { useQuery, useMutation } from '@apollo/react-hooks';
 
@@ -19,117 +18,80 @@ import {
 import {
   CLEAR_MENU_ITEM_STATE
 } from '../constants/graphql-mutation';
-import MenuItem from "./MenuItem"
+import MenuItem from "./MenuItem";
+import ModalContainer from './ModalContainer';
 
 
 function UpsellModal({ showModal, setShowModal, theme, navigation }) {
-  const upsellModalAnimatedValue = useRef(new Animated.Value(0)).current;
   const [ clearMenuItemState ] = useMutation(CLEAR_MENU_ITEM_STATE);
   const {
     data: {
       currentMenuItem
     }
   } = useQuery(GET_CURRENT_MENU_ITEM);
-  useEffect(() => {
-    if (showModal) {
-      Animated.timing(upsellModalAnimatedValue, {
-          toValue: 1,
-          duration: 500,
-          easing: Easing.ease
-      }).start();
-    } else {
-      // Animated.timing(upsellModalAnimatedValue, {
-      //     toValue: -1,
-      //     duration: 500,
-      //     easing: Easing.ease
-      // }).start();
-    }
-  }, [showModal]);
+
+  if (!showModal) {
+    return null;
+  }
   return (
-    <Animated.View
-      style={[
-        styles.Upsell_Modal_Container,
-        showModal ? {} : { display: 'none' },
-        {
-          top: upsellModalAnimatedValue.interpolate({
-            inputRange: [0, 1.1],
-            outputRange: [1000, 0]
-          })
-        }
-      ]}
-    >
-      <View style={styles.Upsell_Modal_Content}>
-        <Text
-          style={{
-            fontSize: 40,
-            fontWeight: "800",
-            paddingVertical: 48
-          }}
-        >
-          Would You Like To Add
-        </Text>
-        <MenuItem
+    <ModalContainer>
+      <View
+        style={[
+          styles.Upsell_Modal_Container
+        ]}
+      >
+        <View style={styles.Upsell_Modal_Content}>
+          <Image
+            style={{ height: 40, width: 100 }}
+            source={require('../assets/images/pick-by-jasper.png')}
+          />
+          <Text
+            style={{
+              fontSize: 40,
+              fontWeight: "800",
+              paddingBottom: 48,
+              paddingTop: 24
+            }}
+          >
+            Would You Like To Add
+          </Text>
+          <MenuItem
             key={0}
             item={currentMenuItem}
             navigation={navigation}
-            isUpselling={true}
             onPress={() => {setShowModal(false)}}
           />
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            paddingVertical: 24
-          }}
-        >
-          {/* <TouchableOpacity
+          <View
             style={{
-              padding: 24,
-              width: "35%"
+              display: "flex",
+              flexDirection: "row",
+              padding: 24
             }}
           >
-            <Text
+            <TouchableOpacity
               style={{
-                color: "#20BF6C",
-                fontSize: 40,
-                fontWeight: "800",
-                textAlign: "center"
-              }}
-              onPress={() => {
-                setShowModal(false);
-              }}
-            >
-              Yes!
-            </Text>
-          </TouchableOpacity> */}
-            <Button style={styles.Button_nxi} type="outline" color={theme.colors.primary}               onPress={() => {
-                clearMenuItemState().then(() => navigation.navigate("MenuScreen"));
-              }}>
-              Maybe Next Time!
-            </Button>
-          {/* <TouchableOpacity
-            style={{
-              padding: 24,
-              width: "35%"
-            }}
-          >
-            <Text
-              style={{
-                color: "#cf502d",
-                fontSize: 40,
-                fontWeight: "800",
-                textAlign: "center"
+                backgroundColor: "#000",
+                width: "100%",
+                borderRadius: 10,
+                padding: 24,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
               }}
               onPress={() => {
                 clearMenuItemState().then(() => navigation.navigate("MenuScreen"));
               }}
             >
-              No, Next Time!
-            </Text>
-          </TouchableOpacity> */}
+              <Text style={{
+                fontSize: 24,
+                fontWeight: "800",
+                color: '#ffffff'
+              }}>No Thanks</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </Animated.View>
+    </ModalContainer>
   );
 }
 
@@ -148,10 +110,6 @@ const styles = StyleSheet.create({
     margin: 24
   },
   Upsell_Modal_Container: {
-    position: "absolute",
-    zIndex: 10,
-    left: "30%",
-    height: "80%",
     width: "40%",
     backgroundColor: 'white',
     display: "flex",
@@ -166,27 +124,11 @@ const styles = StyleSheet.create({
 		shadowRadius: 1.00,
   },
   Upsell_Modal_Content: {
+    paddingTop: 24,
     display: "flex",
     flexDirection: "column",
     alignItems: "center"
-  },
-  Upsell_Experience_Container: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    top: "3%",
-    right: "3%",
-    position: 'absolute'
-  },
-  Upsell_Experience: {
-    width: 170,
-    height: 100
-  },
-  Upsell_Item_Image: {
-    width: 400,
-    height: 300,
-  },
+  }
 })
 
 export default withTheme(UpsellModal);

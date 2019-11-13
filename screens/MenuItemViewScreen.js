@@ -62,7 +62,6 @@ function MenuItemViewScreen({
     optionValues: []
   });
   const [ scrollView, setScrollView ] = useState(null);
-  const [ hideScreen, setHideScreen ] = useState(false);
   const [ showUpsellModal, setShowUpsellModal ] = useState(false);
   const [ setUpsellingMenuItem ] = useMutation(SET_UPSELLING_MENU_ITEM);
   const [ addOrReplaceItemToCart ] = useMutation(ADD_OR_REPLACE_ITEM_TO_CART);
@@ -169,7 +168,6 @@ function MenuItemViewScreen({
       if (isEditingMenuItem) {
         clearMenuItemState().then(() => navigation.navigate("CheckoutScreen"));
       } else if (!isUpsellingMenuItem && currentMenuItem.menuItemToUpsell) {
-        setHideScreen(true);
         setUpsellingMenuItem({
           variables: {
             menuItem: currentMenuItem.menuItemToUpsell
@@ -179,7 +177,6 @@ function MenuItemViewScreen({
           if (scrollView) {
             scrollView.scrollTo({ y: 0, animated: false });
           }
-          setHideScreen(false);
         });
       } else {
         clearMenuItemState().then(() => navigation.navigate("MenuScreen"));
@@ -194,7 +191,6 @@ function MenuItemViewScreen({
 
   return (
     <ScreenContainer scrollable={false}>
-      {hideScreen && <View style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#EEE", zIndex: 1 }} />}
       <UpsellModal
         showModal={showUpsellModal}
         setShowModal={setShowUpsellModal}

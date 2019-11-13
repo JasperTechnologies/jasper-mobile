@@ -16,13 +16,10 @@ function MenuItem({
   theme,
   item,
   navigation,
-  isUpselling,
   onPress
 }) {
   const [ setCurrentMenuItem ] = useMutation(SET_CURRENT_MENU_ITEM);
-  useEffect(() => {
 
-  }, []);
   return (
     <Touchable
       style={styles.Touchable_n6x}
@@ -84,9 +81,6 @@ function MenuItem({
           >
             ${centsToDollar(item.price)}
           </Text>
-          {isUpselling && <Text style={{color: "#20BF6C",
-            fontSize: 40,
-            textAlign: "center"}}>Yes</Text>}
         </Container>
       </View>
     </Touchable>
