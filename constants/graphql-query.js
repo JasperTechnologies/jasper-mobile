@@ -311,3 +311,9 @@ query GetCheckoutState{
   checkoutState @client
 }
 `;
+
+export const GET_PAYMENT_PROCESSOR_STATUS = gql`
+query GetPaymentProcessorStatus{
+  paymentProcessorStatus @client
+}
+`;

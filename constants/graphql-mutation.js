@@ -134,6 +134,12 @@ export const CHECKOUT_COMPLETE = gql`
   }
 `;
 
+export const SET_PAYMENT_PROCESSOR_STATUS = gql`
+  mutation SetPaymentProcessorStatus($status: String) {
+    setPaymentProcessorStatus(status: $status) @client
+  }
+`;
+
 export const PURCHASE = gql`
   mutation purchase($deviceId: ID!, $amountInCents: Int!) {
     purchase(deviceId: $deviceId, amountInCents: $amountInCents)

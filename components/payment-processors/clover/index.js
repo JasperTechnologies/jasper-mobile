@@ -1,5 +1,6 @@
 import clover from 'remote-pay-cloud';
-import React, {createContext, useContext, useState, useEffect} from 'react';
+import React, {createContext, useContext, useState, useEffect, useRef } from 'react';
+import { Text } from "react-native";
 import _get from 'lodash/get';
 import {
   useQuery,
@@ -12,7 +13,8 @@ import {
 import {
   UPDATE_ORDER,
   SET_CHECKOUT_SUCCESS,
-  CREATE_ORDER_LOG
+  CREATE_ORDER_LOG,
+  SET_PAYMENT_PROCESSOR_STATUS
 } from '../../../constants/graphql-mutation';
 import {
   printKitchenReceipt,
@@ -151,7 +153,8 @@ export const CloverProvider = ({children}) => {
     </CloverContext.Provider>
   );
 };
-export const useClover = () => useContext(CloverContext);
+
+const useClover = () => useContext(CloverContext);
 
 export function OrderDisplayView({ cart, taxes, tipPercentage }) {
   const { clover } = useClover();
@@ -210,7 +213,7 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
       const lineItems = toLineItemsPayload(cart);
       updateOrder({
         variables: {
-          orderId: '11',
+          orderId: orderId,
           lineItems
         }
       }).catch((e) => {});
@@ -258,4 +261,29 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
   }, []);
 
   return null;
+}
+
+export function CloverStatusIndicator() {
+  const { clover } = useClover();
+  const [ setPaymentProcessorStatus ] = useMutation(SET_PAYMENT_PROCESSOR_STATUS);
+  const [ connected, setConnected ] = useState(clover.connected);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (clover.connected) {
+        setPaymentProcessorStatus({ variables: { status: "CONNECTED" } });
+        setConnected(true);
+      } else {
+        setPaymentProcessorStatus({ variables: { status: "NOT_CONNECTED" } });
+        setConnected(false);
+      }
+    }, 500);
+    return () => {
+      clearInterval(interval);
+    }
+  }, []);
+
+  if (!connected) {
+    return <Text style={{ color: "#fc4903" }}>Waiting Clover Device</Text>;
+  }
+  return <Text style={{ color: "#27e327" }}>Clover Device Connected</Text>;
 }

@@ -238,6 +238,16 @@ export const resolvers = {
         }
       );
       return null;
+    },
+    setPaymentProcessorStatus: async (_, { status }, { cache }) => {
+      await cache.writeData(
+        {
+          data: {
+            paymentProcessorStatus: status
+          }
+        }
+      );
+      return null;
     }
   }
 };

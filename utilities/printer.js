@@ -76,10 +76,13 @@ export async function printKitchenReceipt(cart, orderId, portName) {
 export async function printCustomerReceipt(cart, orderId, portName) {
   for (i = 0; i < 3; i++) {
     const kitchenPrintResult = await StarPRNT.print("StarGraphic", toCustomerReceipt(cart, orderId), portName);
-    console.log(kitchenPrintResult.result, kitchenPrintResult)
     if (kitchenPrintResult.result || kitchenPrintResult.message === "Success") {
       break;
     }
     await delay(2000);
   }
+}
+
+export function findPrinters() {
+  return StarPRNT.portDiscovery('LAN');
 }

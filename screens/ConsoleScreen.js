@@ -1,6 +1,6 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { AsyncStorage, StatusBar, StyleSheet, Text } from "react-native"
-import { yummy as screenTheme } from "../config/Themes"
+import { useQuery } from '@apollo/react-hooks';
 import {
   withTheme,
   ScreenContainer,
@@ -8,56 +8,102 @@ import {
   Button,
   Touchable,
   View
-} from "@draftbit/ui"
+} from "@draftbit/ui";
+import { getUniqueId } from 'react-native-device-info';
+import {
+  GET_PAYMENT_PROCESSOR_STATUS,
+  GET_LOCATION
+} from '../constants/graphql-query';
+import { yummy as theme } from "../config/Themes"
+import { PaymentProcessorStatusIndicator } from '../components/payment-processors/status-indicator';
+import { findPrinters } from '../utilities/printer';
+function ConsoleScreen({ navigation }) {
+  const { data: { paymentProcessorStatus }} = useQuery(GET_PAYMENT_PROCESSOR_STATUS);
+  const { data: locationData } = useQuery(GET_LOCATION);
+  const [ kitchenPrinterConnected, setKitchenPrinterConnected ] = useState(false);
+  const [ receiptPrinterConnected, setReceiptPrinterConnected ] = useState(false);
 
-class ConsoleScreen extends React.Component {
-  constructor(props) {
-    super(props)
-    StatusBar.setBarStyle("light-content")
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const printers = await findPrinters() || [];
+      const deviceId = getUniqueId();
+      const location = locationData && locationData.location;
+      const currentDevice = location.tabletDevices.find((device) => device.headerId === deviceId);
+      if (currentDevice.kitchenPrinter && printers.find((printer => printer.portName === currentDevice.kitchenPrinter.ipAddress))) {
+        setKitchenPrinterConnected(true);
+      } else {
+        setKitchenPrinterConnected(false);
+      }
 
-    this.state = {
-      theme: Object.assign(props.theme, screenTheme)
+      if (currentDevice.receiptPrinter && printers.find((printer => printer.portName === currentDevice.receiptPrinter.ipAddress))) {
+        setReceiptPrinterConnected(true);
+      } else {
+        setReceiptPrinterConnected(false);
+      }
+    }, 3000);
+    return () => {
+      clearInterval(interval);
     }
-  }
+  }, []);
 
-  logout = () => {
+  const logout = () => {
     AsyncStorage.removeItem("userToken", () => {
-      this.props.navigation.navigate("EmailPasswordLoginScreen");
+      navigation.navigate("EmailPasswordLoginScreen");
     });
-  }
+  };
 
-  render() {
-    const { theme } = this.state
+  const isReady = () => {
+    if (
+      paymentProcessorStatus === "CONNECTED" &&
+      receiptPrinterConnected &&
+      kitchenPrinterConnected
+    ) {
+      return true;
+    }
 
-    return (
-      <ScreenContainer scrollable={false}>
-        <Touchable
-          onPress={() => {
-            this.props.navigation.navigate("LandingScreen");
-          }}
+    return false;
+  };
+
+  return (
+    <ScreenContainer scrollable={false}>
+      <Touchable
+        disabled={!isReady()}
+        onPress={() => {
+          navigation.navigate("LandingScreen");
+        }}
+      >
+        <Container
+          style={styles.MainContainer}
+          backgroundImageResizeMode="cover"
         >
-          <Container
-            style={styles.MainContainer}
-            backgroundImageResizeMode="cover"
-          >
-            <Text
-              style={styles.TabTo_Text_Text}
-            >Tab to Landing View</Text>
-          </Container>
-        </Touchable>
-        <View style={styles.Logout_Button_Container}>
-          <Button
-            style={styles.Logout_Button}
-            type="outline"
-            color={theme.colors.primary}
-            onPress={this.logout}
-          >
-            Logout
-          </Button>
-        </View>
-      </ScreenContainer>
-    )
-  }
+          <Text
+            style={styles.TabTo_Text_Text}
+          >{isReady() ? "Tab to Landing View" : "Waiting for Devices"}</Text>
+          <PaymentProcessorStatusIndicator />
+          {
+            receiptPrinterConnected ?
+            <Text style={{ color: "#27e327" }}>Receipt Printer Connected</Text> :
+            <Text style={{ color: "#fc4903" }}>Waiting Receipt Printer</Text>
+          }
+          {
+            kitchenPrinterConnected ?
+            <Text style={{ color: "#27e327" }}>Kitchen Printer Connected</Text> :
+            <Text style={{ color: "#fc4903" }}>Waiting Kitchen Printer</Text>
+          }
+        </Container>
+      </Touchable>
+      <View style={styles.Logout_Button_Container}>
+        <Button
+          style={styles.Logout_Button}
+          type="outline"
+          color={theme.colors.primary}
+          onPress={this.logout}
+        >
+          Logout
+        </Button>
+      </View>
+    </ScreenContainer>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -72,7 +118,8 @@ const styles = StyleSheet.create({
   },
   TabTo_Text_Text: {
     fontWeight: 'bold',
-    fontSize: 40
+    fontSize: 40,
+    paddingBottom: 24
   },
   Logout_Button_Container: {
     position: "absolute",
@@ -81,4 +128,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withTheme(ConsoleScreen)
+export default ConsoleScreen

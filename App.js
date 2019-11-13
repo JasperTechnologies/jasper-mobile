@@ -56,7 +56,8 @@ cache.writeData({
     isUpsellingMenuItem: false,
     editingMenuItemForm: null,
     tipPercentage: 0,
-    checkoutState: "READY"
+    checkoutState: "READY",
+    paymentProcessorStatus: "NOT_CONNECTED"
   },
 });
 
