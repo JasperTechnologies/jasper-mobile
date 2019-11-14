@@ -35,7 +35,7 @@ function EmptyView() {
   );
 }
 
-const tipPercentages = [0, 10, 15, 20, 25]
+const tipPercentages = [0, 5, 10, 15, 20]
 
 function CheckoutBody({theme, navigateToMenuItem}) {
 	const [ removeItemFromCart ] = useMutation(REMOVE_ITEM_FROM_CART);

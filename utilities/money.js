@@ -41,7 +41,7 @@ export const getSubtotalTaxOfCart = (items, taxes) => {
 };
 
 export const getTipsOfCart = (items, tipPercent) => {
-  return (getSubtotalOfCart(items) * (tipPercent/100));
+  return Math.floor(getSubtotalOfCart(items) * (tipPercent/100));
 }
 
 export const getTotalOfCart = (items) => {
@@ -52,7 +52,7 @@ export const getPaymentSummary = (items, taxes, tipPercent) => {
   const subTotal = Math.floor(getSubtotalOfCart(items));
   const tax = Math.floor(getSubtotalTaxOfCart(items, taxes));
   const total = subTotal + tax;
-  const tip = Math.floor(getTipsOfCart(items, tipPercent));
+  const tip = getTipsOfCart(items, tipPercent);
   const totalPayment = total + tip;
   return {
     subTotal,
