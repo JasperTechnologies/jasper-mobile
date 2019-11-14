@@ -1,5 +1,6 @@
 import React from "react"
 import { StatusBar, StyleSheet, Text, FlatList, ScrollView } from "react-native"
+import { useMutation } from '@apollo/react-hooks';
 import CheckoutRemoveButton from '../components/CheckoutRemoveButton';
 import { yummy as screenTheme } from "../config/Themes"
 import {
@@ -11,81 +12,96 @@ import {
   Image,
   View,
   Touchable
-} from "@draftbit/ui"
+} from "@draftbit/ui";
+import {
+	SET_EDITING_MENU_ITEM,
+} from '../constants/graphql-mutation';
 
 const theme = screenTheme
 
 function CartItem({item, index, onEdit, onDelete}) {
-return <Touchable
-	key={`${item.name}-${index}`}
-	onPress={onEdit}
->
-	<View style={styles.CartItem_Cell}>
-		<View style={styles.CartItem_Cell_Image_Container}>
-			<Image style={styles.CartItem_Cell_Image} source={item.pictureURL} resizeMode="cover" />
-		</View>
-		<View style={styles.CartItem_Cell_Content}>
-			<View>
-				<View style={styles.CartItem_Top_Container}>
-					<Text
-						style={[
-							theme.typography.headline1,
-							{
-								color: theme.colors.strong
-							}
-						]}
-					>
-						{item.title}
-					</Text>
-					<View style={styles.CartItem_Count_Container}>
-						<Text
-							style={[
-								theme.typography.headline3,
-								{
-									color: theme.colors.primary
-								}
-							]}
-						>
-							{item.form.quantity}
-						</Text>
-					</View>
-					<View style={styles.CartItem_Price_Container}>
-						<Text
-							style={[
-								theme.typography.headline3
-							]}
-						>
-							{`$${centsToDollar(calculateTotalPrice(item.price, item.form.quantity, item.form.optionValues))}`}
-						</Text>
-					</View>
-				</View>
-				{
-					item.form.optionValues.map((optionValue, optionIndex) => {
-						return (
-							<Text
-								key={`${optionValue.name}-${optionIndex}`}
-								style={[
-									theme.typography.headline4,
-									{
-										color: theme.colors.strong
-									}
-								]}
-							>
-								{optionValue.title}
-							</Text>
-						);
-					})
-				}
-				<View style={styles.Remove_Button_Container}>
-					<CheckoutRemoveButton
-						removeItemFromCart={() => onDelete(index)}
-						item={item}
-					/>
-				</View>
-			</View>
-		</View>
-	</View>
-</Touchable>
+  const [ setEditingMenuItem ] = useMutation(SET_EDITING_MENU_ITEM);
+  return <Touchable
+  	key={`${item.name}-${index}`}
+  	onPress={() => {
+      setEditingMenuItem({
+        variables: {
+          menuItem: {
+            ...item,
+            __typename: 'MenuItem'
+          },
+          editingMenuItemForm: item.form
+        }
+      });
+      onEdit();
+    }}
+  >
+  	<View style={styles.CartItem_Cell}>
+  		<View style={styles.CartItem_Cell_Image_Container}>
+  			<Image style={styles.CartItem_Cell_Image} source={item.pictureURL} resizeMode="cover" />
+  		</View>
+  		<View style={styles.CartItem_Cell_Content}>
+  			<View>
+  				<View style={styles.CartItem_Top_Container}>
+  					<Text
+  						style={[
+  							theme.typography.headline1,
+  							{
+  								color: theme.colors.strong
+  							}
+  						]}
+  					>
+  						{item.title}
+  					</Text>
+  					<View style={styles.CartItem_Count_Container}>
+  						<Text
+  							style={[
+  								theme.typography.headline3,
+  								{
+  									color: theme.colors.primary
+  								}
+  							]}
+  						>
+  							{item.form.quantity}
+  						</Text>
+  					</View>
+  					<View style={styles.CartItem_Price_Container}>
+  						<Text
+  							style={[
+  								theme.typography.headline3
+  							]}
+  						>
+  							{`$${centsToDollar(calculateTotalPrice(item.price, item.form.quantity, item.form.optionValues))}`}
+  						</Text>
+  					</View>
+  				</View>
+  				{
+  					item.form.optionValues.map((optionValue, optionIndex) => {
+  						return (
+  							<Text
+  								key={`${optionValue.name}-${optionIndex}`}
+  								style={[
+  									theme.typography.headline4,
+  									{
+  										color: theme.colors.strong
+  									}
+  								]}
+  							>
+  								{optionValue.title}
+  							</Text>
+  						);
+  					})
+  				}
+  				<View style={styles.Remove_Button_Container}>
+  					<CheckoutRemoveButton
+  						removeItemFromCart={() => onDelete(index)}
+  						item={item}
+  					/>
+  				</View>
+  			</View>
+  		</View>
+  	</View>
+  </Touchable>
 }
 
 const styles = StyleSheet.create({

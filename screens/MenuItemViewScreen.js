@@ -1,7 +1,7 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { StatusBar, StyleSheet, ScrollView, Text, View } from "react-native"
 import v4 from 'uuid/v4';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
 import { GET_CURRENT_MENU_ITEM } from '../constants/graphql-query';
 import {
   ADD_OR_REPLACE_ITEM_TO_CART,
@@ -66,36 +66,32 @@ function MenuItemViewScreen({
   const [ setUpsellingMenuItem ] = useMutation(SET_UPSELLING_MENU_ITEM);
   const [ addOrReplaceItemToCart ] = useMutation(ADD_OR_REPLACE_ITEM_TO_CART);
   const [ clearMenuItemState ] = useMutation(CLEAR_MENU_ITEM_STATE);
+  const [ getCurrentMenuItem, { called, loading, data: menuItemViewData = {} }] = useLazyQuery(GET_CURRENT_MENU_ITEM);
+
   const {
-    data: {
-      currentMenuItem,
-      isEditingMenuItem,
-      isUpsellingMenuItem,
-    },
-    loading: loadingCurrentMenuItem
-  } = useQuery(
-    GET_CURRENT_MENU_ITEM,
-    {
-      onCompleted: ({
-        currentMenuItem,
-        isEditingMenuItem,
-        editingMenuItemForm
-      }) => {
-        if (currentMenuItem) {
-          if (isEditingMenuItem) {
-            setForm(editingMenuItemForm);
-          } else {
-            setForm({
-              ...form,
-              optionValues: getDefaultOptionValues(currentMenuItem.options)
-            });
-          }
-        }
+    currentMenuItem,
+    isEditingMenuItem,
+    isUpsellingMenuItem,
+  } = menuItemViewData;
+
+  useEffect(() => {
+    getCurrentMenuItem();
+  }, []);
+
+  useEffect(() => {
+    if (currentMenuItem) {
+      if (isEditingMenuItem) {
+        setForm(menuItemViewData.editingMenuItemForm);
+      } else {
+        setForm({
+          ...form,
+          optionValues: getDefaultOptionValues(currentMenuItem.options)
+        });
       }
     }
-  );
+  }, [currentMenuItem]);
 
-  if (loadingCurrentMenuItem || !currentMenuItem) {
+  if (loading || !currentMenuItem) {
     return null;
   }
 
@@ -155,9 +151,10 @@ function MenuItemViewScreen({
       variables: {
         menuItemForm: {
           ...currentMenuItem,
-          __typename: 'MenuItemForm' + v4(),
+          __typename: 'MenuItemForm',
           form: {
             ...form,
+            id: form.formId ? form.formId : v4(),
             __typename: 'EditingMenuItemForm',
             formId: form.formId ? form.formId : v4()
           }

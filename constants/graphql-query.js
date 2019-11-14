@@ -142,6 +142,7 @@ query GetCart{
       }
     }
     form{
+      id
       formId
       quantity
       optionValues{
@@ -206,6 +207,7 @@ query GetCurrentMenuItem{
   isEditingMenuItem @client
   isUpsellingMenuItem @client
   editingMenuItemForm @client{
+    id
     formId
     quantity
     optionValues{
@@ -247,7 +249,7 @@ query GetCurrentMenuItem{
         paymentProcessorId
       }
     }
-    menuItemToUpsell {
+    menuItemToUpsell{
       id
       paymentProcessorId
       title
@@ -285,6 +287,7 @@ query GetEditingMenuItem{
   isEditingMenuItem @client
   isUpsellingMenuItem @client
   editingMenuItemForm @client{
+    id
     quantity
     optionValues{
       id

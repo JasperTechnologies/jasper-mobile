@@ -9,7 +9,6 @@ import {
 } from '../constants/graphql-query';
 import {
   REMOVE_ITEM_FROM_CART,
-	SET_EDITING_MENU_ITEM,
 	SET_TIP_PERCENTAGE,
   SET_CHECKOUT_IN_PROGRESS,
 	CHECKOUT_COMPLETE
@@ -40,7 +39,6 @@ const tipPercentages = [0, 10, 15, 20, 25]
 
 function CheckoutBody({theme, navigateToMenuItem}) {
 	const [ removeItemFromCart ] = useMutation(REMOVE_ITEM_FROM_CART);
-	const [ setEditingMenuItem ] = useMutation(SET_EDITING_MENU_ITEM);
 	const [ setTipPercentage ] = useMutation(SET_TIP_PERCENTAGE);
 	const [ setCheckoutInProgress ] = useMutation(SET_CHECKOUT_IN_PROGRESS);
 	const [ checkoutComplete ] = useMutation(CHECKOUT_COMPLETE)
@@ -94,7 +92,7 @@ function CheckoutBody({theme, navigateToMenuItem}) {
 						cart.map((item, index) => {
 							return (
 								<CartItem
-									key={index}
+									key={`${index}-${item.title}`}
 									item={item}
 									index={index}
 									onDelete={() => {
@@ -106,14 +104,7 @@ function CheckoutBody({theme, navigateToMenuItem}) {
                     });
                   }}
 									onEdit={() => {
-										setEditingMenuItem({
-											variables: {
-												menuItem: item,
-                        editingMenuItemForm: item.form
-											}
-										}).then(() => {
-                      navigateToMenuItem();
-                    });
+                    navigateToMenuItem();
 									}}
 								/>
 							);

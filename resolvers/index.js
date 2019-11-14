@@ -13,6 +13,7 @@ export const typeDefs = gql`
     cart: [MenuItemForm!]
     currentMenuCategory: MenuCategory!
     currentMenuItems: [MenuItem!]
+    newlyAddedItems: [MenuItemForm]
     currentMenuItem: MenuItem!
     editingMenuItemForm: EditingMenuItemForm!
     isEditingMenuItem: Boolean!
@@ -33,6 +34,7 @@ export const typeDefs = gql`
     setCheckoutReady: Boolean
     setCheckoutCanceling: Boolean
     setCheckoutSuccess: Boolean
+    setEditingMenuItem: Boolean
     purchase(deviceId: String, amountInCents: Int): String
     clearUpsellingMenuItemState: Boolean
   }
@@ -75,7 +77,7 @@ export const resolvers = {
           }
         }
       );
-      return null;
+      return true;
     },
     setUpsellingMenuItem: async (_, { menuItem }, { cache }) => {
       await cache.writeData(

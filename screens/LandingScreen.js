@@ -7,7 +7,8 @@ import {
 } from '../constants/graphql-query';
 import {
   CLEAR_CART,
-  SET_TIP_PERCENTAGE
+  SET_TIP_PERCENTAGE,
+  CLEAR_MENU_ITEM_STATE
 } from '../constants/graphql-mutation';
 import {
   withTheme,
@@ -33,9 +34,11 @@ function LandingContainer() {
   const { data: locationData, loading, error } = useQuery(GET_LOCATION);
   const [ clearCart ] = useMutation(CLEAR_CART);
   const [ setTipPercentage ] = useMutation(SET_TIP_PERCENTAGE);
+  const [ clearMenuItemState ] = useMutation(CLEAR_MENU_ITEM_STATE);
   useEffect(() => {
-    // clean up
+    // clean up states
     clearCart();
+    clearMenuItemState();
     setTipPercentage({
       variables: {
         tipPercentage: 0
