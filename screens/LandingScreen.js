@@ -8,7 +8,8 @@ import {
 import {
   CLEAR_CART,
   SET_TIP_PERCENTAGE,
-  CLEAR_MENU_ITEM_STATE
+  CLEAR_MENU_ITEM_STATE,
+  SET_ORDER_TYPE
 } from '../constants/graphql-mutation';
 import {
   withTheme,
@@ -35,6 +36,7 @@ function LandingContainer() {
   const [ clearCart ] = useMutation(CLEAR_CART);
   const [ setTipPercentage ] = useMutation(SET_TIP_PERCENTAGE);
   const [ clearMenuItemState ] = useMutation(CLEAR_MENU_ITEM_STATE);
+  const [ setOrderType ] = useMutation(SET_ORDER_TYPE);
   useEffect(() => {
     // clean up states
     clearCart();
@@ -42,6 +44,11 @@ function LandingContainer() {
     setTipPercentage({
       variables: {
         tipPercentage: 0
+      }
+    });
+    setOrderType({
+      variables: {
+        orderType: null
       }
     });
   }, []);

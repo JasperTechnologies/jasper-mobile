@@ -320,3 +320,9 @@ query GetPaymentProcessorStatus{
   paymentProcessorStatus @client
 }
 `;
+
+export const GET_ORDER_TYPE = gql`
+query GetOrderType{
+  orderType @client
+}
+`;

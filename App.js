@@ -65,7 +65,8 @@ cache.writeData({
     editingMenuItemForm: null,
     tipPercentage: 0,
     checkoutState: "READY",
-    paymentProcessorStatus: "NOT_CONNECTED"
+    paymentProcessorStatus: "NOT_CONNECTED",
+    orderType: null
   },
 });
 

@@ -8,7 +8,8 @@ import {
 } from '@apollo/react-hooks';
 import { getUniqueId } from 'react-native-device-info';
 import {
-  GET_LOCATION
+  GET_LOCATION,
+  GET_ORDER_TYPE
 } from '../../../constants/graphql-query';
 import {
   UPDATE_ORDER,
@@ -191,6 +192,7 @@ export function LandingView() {
 export function PaymentView({ cart, taxes, tipPercentage }) {
   const { clover } = useClover();
   const { data: { location } } = useQuery(GET_LOCATION);
+  const { data: { orderType } } = useQuery(GET_ORDER_TYPE);
   const [ createOrderLog ] = useMutation(CREATE_ORDER_LOG);
   const [ updateOrder ] = useMutation(UPDATE_ORDER);
   const [ setCheckoutSuccess ] = useMutation(SET_CHECKOUT_SUCCESS);
@@ -230,10 +232,10 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
       const deviceId = getUniqueId();
       const currentDevice = location.tabletDevices.find((device) => device.headerId === deviceId);
       if (currentDevice.receiptPrinter) {
-        printCustomerReceipt(cart, _get(response, 'payment.cardTransaction.transactionNo'), currentDevice.receiptPrinter.ipAddress);
+        printCustomerReceipt(cart, _get(response, 'payment.cardTransaction.transactionNo'), orderType, currentDevice.receiptPrinter.ipAddress);
       }
       if (currentDevice.kitchenPrinter) {
-        printKitchenReceipt(cart, _get(response, 'payment.cardTransaction.transactionNo'), currentDevice.kitchenPrinter.ipAddress);
+        printKitchenReceipt(cart, _get(response, 'payment.cardTransaction.transactionNo'), orderType, currentDevice.kitchenPrinter.ipAddress);
       }
 
       // show thank you screen

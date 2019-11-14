@@ -1,5 +1,11 @@
 import { StarPRNT } from 'react-native-star-prnt';
-export function toOrderReceipt(cart, orderId) {
+
+const ORDER_TYPE_TO_TEXT = {
+  'EAT_HERE': 'EAT HERE',
+  'TO_GO': 'TO GO'
+};
+
+export function toOrderReceipt(cart, orderId, orderType) {
   const commands = [];
   let itemCount = 1;
   const totalItemCount = cart.reduce((count, item) => {
@@ -11,7 +17,10 @@ export function toOrderReceipt(cart, orderId) {
         appendBitmapText: "=========================="
       });
       commands.push({
-        appendBitmapText: `Order# ${orderId}`
+        appendBitmapText: `Order#: ${orderId}`
+      });
+      commands.push({
+        appendBitmapText: `Order Type: ${ORDER_TYPE_TO_TEXT[orderType]}`
       });
       commands.push({
         appendBitmapText: "==========================\n"
@@ -33,13 +42,16 @@ export function toOrderReceipt(cart, orderId) {
   return commands;
 }
 
-export function toCustomerReceipt(cart, orderId) {
+export function toCustomerReceipt(cart, orderId, orderType) {
   const commands = [];
   commands.push({
     appendBitmapText: "=========================="
   });
   commands.push({
-    appendBitmapText: `Order# ${orderId}`
+    appendBitmapText: `Order#: ${orderId}`
+  });
+  commands.push({
+    appendBitmapText: `Order Type: ${ORDER_TYPE_TO_TEXT[orderType]}`
   });
   commands.push({
     appendBitmapText: "==========================\n"
@@ -63,9 +75,9 @@ export function toCustomerReceipt(cart, orderId) {
   return commands;
 }
 
-export async function printKitchenReceipt(cart, orderId, portName) {
+export async function printKitchenReceipt(cart, orderId, orderType, portName) {
   for (i = 0; i < 3; i++) {
-    const kitchenPrintResult = await StarPRNT.print("StarGraphic", toOrderReceipt(cart, orderId), portName);
+    const kitchenPrintResult = await StarPRNT.print("StarGraphic", toOrderReceipt(cart, orderId, orderType), portName);
     if (kitchenPrintResult.result || kitchenPrintResult.message === "Success") {
       break;
     }
@@ -73,9 +85,9 @@ export async function printKitchenReceipt(cart, orderId, portName) {
   }
 }
 
-export async function printCustomerReceipt(cart, orderId, portName) {
+export async function printCustomerReceipt(cart, orderId, orderType, portName) {
   for (i = 0; i < 3; i++) {
-    const kitchenPrintResult = await StarPRNT.print("StarGraphic", toCustomerReceipt(cart, orderId), portName);
+    const kitchenPrintResult = await StarPRNT.print("StarGraphic", toCustomerReceipt(cart, orderId, orderType), portName);
     if (kitchenPrintResult.result || kitchenPrintResult.message === "Success") {
       break;
     }

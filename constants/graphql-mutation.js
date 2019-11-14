@@ -140,6 +140,12 @@ export const SET_PAYMENT_PROCESSOR_STATUS = gql`
   }
 `;
 
+export const SET_ORDER_TYPE = gql`
+  mutation SetOrderType($orderType: String) {
+    setOrderType(orderType: $orderType) @client
+  }
+`;
+
 export const PURCHASE = gql`
   mutation purchase($deviceId: ID!, $amountInCents: Int!) {
     purchase(deviceId: $deviceId, amountInCents: $amountInCents)

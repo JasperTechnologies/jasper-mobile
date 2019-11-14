@@ -250,6 +250,16 @@ export const resolvers = {
         }
       );
       return null;
-    }
+    },
+    setOrderType: async (_, { orderType }, { cache }) => {
+      await cache.writeData(
+        {
+          data: {
+            orderType
+          }
+        }
+      );
+      return null;
+    },
   }
 };
