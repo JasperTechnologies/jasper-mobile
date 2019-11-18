@@ -5,7 +5,8 @@ export function cartToOrderLogs(cart) {
       optionValueIds: item.form.optionValues ? item.form.optionValues.map(ov => {
         return ov.id;
       }) : [],
-      quantity: item.form.quantity
+      quantity: item.form.quantity,
+      isUpsoldItem: item.form.isUpsold
     };
   });
 }

@@ -156,7 +156,8 @@ function MenuItemViewScreen({
             ...form,
             id: form.formId ? form.formId : v4(),
             __typename: 'EditingMenuItemForm',
-            formId: form.formId ? form.formId : v4()
+            formId: form.formId ? form.formId : v4(),
+            isUpsold: isUpsellingMenuItem
           }
         }
       },

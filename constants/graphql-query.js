@@ -145,6 +145,7 @@ query GetCart{
       id
       formId
       quantity
+      isUpsold
       optionValues{
         id
         pictureURL
