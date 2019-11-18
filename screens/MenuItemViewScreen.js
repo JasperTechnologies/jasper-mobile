@@ -259,7 +259,11 @@ function MenuItemViewScreen({
           </Container>
         </ScrollView>
         <FooterNavButton
-          text={`Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.optionValues))}`}
+          text={
+            isEditingMenuItem ?
+            `Update Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.optionValues))}` :
+            `Add ${form.quantity} To Cart $${centsToDollar(calculateTotalPrice(currentMenuItem.price, form.quantity, form.optionValues))}`
+          }
           onPress={this.handleSubmit}
           disabled={!isMenuItemReadyToAdd(currentMenuItem.options, form.optionValues)}
         />
