@@ -271,7 +271,7 @@ export function CloverStatusIndicator() {
   const [ connected, setConnected ] = useState(clover.connected);
   useEffect(() => {
     const interval = setInterval(() => {
-      if (clover.connected) {
+      if (clover && clover.connected) {
         setPaymentProcessorStatus({ variables: { status: "CONNECTED" } });
         setConnected(true);
       } else {

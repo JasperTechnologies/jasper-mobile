@@ -151,3 +151,9 @@ export const PURCHASE = gql`
     purchase(deviceId: $deviceId, amountInCents: $amountInCents)
   }
 `;
+
+export const CLEAR_NOTIFICATION_QUEUE = gql`
+  mutation ClearNotificationQueue {
+    clearNotificationQueue @client
+  }
+`;

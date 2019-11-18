@@ -5,6 +5,7 @@ import {
 } from './constants/graphql-query';
 import { createAppContainer, createSwitchNavigator } from "react-navigation"
 import InactiveDetector from "./components/InactiveDetector";
+import Notification from './components/Notification';
 import ProcessorNavigationDetector from "./components/payment-processors/processor-navigation-detector";
 import MenuItemViewScreen from "./screens/MenuItemViewScreen"
 import EmailPasswordLoginScreen from "./screens/EmailPasswordLoginScreen"
@@ -12,7 +13,7 @@ import ConsoleScreen from "./screens/ConsoleScreen"
 import LandingScreen from "./screens/LandingScreen"
 import MenuScreen from "./screens/MenuScreen"
 import CheckoutScreen from "./screens/CheckoutScreen"
-import ThankYouScreen from "./screens/ThankYouScreen"
+import ThankYouScreen from "./screens/ThankYouScreen";
 
 import { CloverProvider } from "./components/payment-processors/clover";
 import { getProvider } from './utilities/payment-processor';
@@ -90,6 +91,7 @@ class AppContainer extends React.Component {
     const { navigation } = this.props;
     return (
       <ProcessorProvider>
+        <Notification />
         <ProcessorNavigationDetector navigation={navigation} />
         <InactiveDetector navigation={navigation}>
           <AppNavigator navigation={navigation} />

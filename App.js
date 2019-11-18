@@ -38,7 +38,6 @@ const authLink = setContext(async (_, { headers }) => {
 
 const cache = new InMemoryCache({
   dataIdFromObject: object => {
-    console.log(object.__typename)
     switch (object.__typename) {
       case 'MenuItemForm': return object.formId; // use the `key` field as the identifier
       default: return object.id; // fall back to default handling

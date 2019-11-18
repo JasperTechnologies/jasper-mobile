@@ -135,7 +135,7 @@ export const resolvers = {
         menuItemForm
       ];
 
-      const isAdded = filteredCart.length < cart.length;
+      const isAdded = filteredCart.length < newCart.length;
       const newlyAddedItemsList = [ ...newlyAddedItems ];
       if (isAdded) {
         newlyAddedItemsList.push(menuItemForm);
@@ -256,6 +256,16 @@ export const resolvers = {
         {
           data: {
             orderType
+          }
+        }
+      );
+      return null;
+    },
+    clearNotificationQueue: async (_, __, { cache }) => {
+      await cache.writeData(
+        {
+          data: {
+            newlyAddedItems: []
           }
         }
       );
