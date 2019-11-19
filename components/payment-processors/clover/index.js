@@ -268,7 +268,7 @@ export function PaymentView({ cart, taxes, tipPercentage }) {
 export function CloverStatusIndicator() {
   const { clover } = useClover();
   const [ setPaymentProcessorStatus ] = useMutation(SET_PAYMENT_PROCESSOR_STATUS);
-  const [ connected, setConnected ] = useState(clover.connected);
+  const [ connected, setConnected ] = useState(clover && clover.connected);
   useEffect(() => {
     const interval = setInterval(() => {
       if (clover && clover.connected) {
